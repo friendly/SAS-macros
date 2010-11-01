@@ -1,0 +1,142 @@
+=head1 Description
+
+The SCATMAT macro produces a flexible scatterplot matrix, showing all
+pairwise plots of n variables specified in the C<VAR=> parameter.
+
+If a classification variable is specified with the C<GROUP=>
+parameter, the value(s) of that variable determine the shape and color
+of the plotting symbol.  In addition, various interpolation options
+(C<INTERP=>) and annotation options (C<ANNO=>) may be used to add graphic
+summaries to each pairwise plot.
+
+=head1 Usage
+
+The SCATMAT macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %scatmat(data=auto, var=price mpg weight, group=origin);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the data set to be plotted [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+List of the variables to be plotted. This can be
+              a blank-separated list, or any of the standard SAS
+           abbreviations like C<VAR=X1-X4> or C<VAR=VARA--VARB>.
+           The macro imposes a restriction of 15 on the number
+           of variables.
+           [Default: C<VAR=_NUMERIC_>]
+
+=item NAMES=
+
+Alternative variable names, used for labels in the diagonal
+             panels.
+
+=item GROUP=
+
+Grouping or class variable, used to determine plot symbols
+             and plot interpolations
+
+=item INTERP=
+
+Plot interpolation method used in each off-diagonal plot.
+             For example, C<INTERP=RL> draws regression lines.
+          [Default: C<INTERP=NONE>]
+
+=item HSYM=
+
+Height of the plot symbols in the off-diagonal panels.
+
+=item HTITLE=
+
+Height of variable name labels used in the diagonal panels.
+             If not specified, the program uses C<HTITLE=2*NV> to try to
+          preserve readability.
+
+=item PLOTOPT=
+
+Additional plot options passed to PROC GPLOT on the PLOT
+             statement.
+
+=item SYMBOLS=
+
+Symbols used for points.  If there are more groups than
+             symbols, the available symbols are recycled as needed.
+          Use C<SYMBOLS=NONE> to suppress point symbols.
+          [Default: C<SYMBOLS=CIRCLE SQUARE + : $ = X _ Y>]
+
+=item COLORS=
+
+Colors used for points.  If there are more groups than
+             colors, the available colors are recycled as needed.
+          [Default: C<COLORS=BLACK RED GREEN BLUE BROWN YELLOW ORANGE PURPLE>]
+
+=item ANNO=
+
+You can specify one or more keywords to add additional graphic
+             information to the diagonal or off-diagonal panels.
+             [Default: C<ANNO=NONE>]
+
+=over 4
+
+=item C<ANNO=ELLIPSE> 
+
+adds data ellipses to off-diagonal plots.
+
+=item C<ANNO=LOWESS> 
+
+adds smoothed loess curves.
+
+=item C<ANNO=BOX> 
+
+adds a marginal boxplot in the diagonal panels.
+
+=item C<ANNO=RUG>
+
+adds a marginal rugplot in the diagonal panels.
+
+=back 4
+
+=item GTEMP=
+
+Temporary graphics catalog used to record the individual
+             plots as they are produced.  This should not be the same
+          as the C<GOUT=> catalog.  [Default: C<GTEMP=GTEMP>]
+
+=item KILL=
+
+Delete gtemp when done? [Default: C<KILL=Y>]
+
+=item GOUT=
+
+Name of graphic catalog for the final scatterplot matrix 
+             [Default: C<GOUT=GSEG>]
+
+
+=back 4
+
+=head2 Dependencies
+
+Depending on options selected, the SCATMAT macro calls several
+other macros not included here.  It is assumed that these are stored
+in an autocall library.  If not, you'll have to %include each one
+you use.
+
+  %gdispla  - device-independent DISPLAY/NODISPLAY control [always]
+  %gensym   - generate symbol statements    [always]
+  %lowess   - smoothed lowess curves        [ANNO incl. LOWESS]
+  %contour  - data ellipses                 [ANNO incl. ELLIPSE]
+  %boxaxis  - boxplot for diagonal panels   [ANNO incl. BOX]
+  %rug      - rug plot for diagonal panels  [ANNO incl. RUG]
+
+These are all available from http://euclid.psych.yorku.ca/ftp/sas
+(though in different subdirectories).
+
+

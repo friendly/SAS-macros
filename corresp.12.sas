@@ -1,0 +1,1 @@
+/home/ftp/pub/sas/sssg/macros/corresp.sas

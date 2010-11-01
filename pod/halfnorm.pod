@@ -1,0 +1,101 @@
+=head1 Description
+
+The HALFNORM macro plots the ordered absolute values of residuals
+from a generalized linear model against expected values of normal
+order statistics.  A simulated envelope, correponding to an
+approximate 95% confidence interval, is added to the plot to aid
+assessment of whether the distribution of residuals corresponds
+to a good-fitting model.
+
+=head1 Usage
+
+The HALFNORM macro is called with keyword parameters.  The C<RESP=>
+and C<MODEL=> parameters are required.  The arguments may be listed
+within parentheses in any order, separated by commas. For example:
+
+  %halfnorm(resp=count, class=sex response, model=sex|year|response@2);
+
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Specifies the name of the input data set to be analyzed.
+The default is the last data set created.
+
+=item Y=
+
+
+=item RESP=
+
+Specifies the name of the response variable to be analyzed
+
+=item TRIALS=
+
+The name of a trials variable, for C<DIST=BIN>, with the data
+in events/trials form.
+
+=item MODEL=
+
+Specifies the model formula, the right-had-side of the
+MODEL statement.  You can use the | and @ shorthands.
+
+=item CLASS=
+
+Names of any class variables in the model
+
+=item DIST=
+
+Error distribution.  The default is C<DIST=NORMAL.>
+
+=item LINK=
+
+Link function.  The default is C<LINK=IDENTITY.>
+
+=item OFFSET=
+
+The name(s) of any offset variables in the model.
+
+=item FREQ=
+
+The name of a frequency variable, when the data are in grouped
+form.
+
+=item ID=
+
+The name of a character variable used as an observation
+identifier in the plot...
+
+=item OUT=
+
+Specifies the name of the output data set. The output data
+set contains the input variables, absolute residuals (_ARES_),
+half-normal expected value (_Z_),
+Default: _RES_.
+
+=item LABEL=
+
+Specifies whether and how to label observations in the plot.
+C<LABEL=ALL> means that all observations are labelled with the
+C<ID=> variable value; C<LABEL=NONE> means that no observations are
+labelled; C<LABEL=ABOVE> means that observations above the mean
+of the simulations are labelled; C<LABEL=TOP> n means that the
+highest n observations are labelled.
+
+=item SEED=
+
+Specifies the seed for the random number generators. C<SEED=0>
+(the default) uses the time-of-day as the seeed, so a
+different set of simulated observations is drawn each time
+the program is run.
+
+=item RES=
+
+The type of residual to plot.  Possible values are:
+STRESCHI (adjusted Pearson residual), STRESDEV (adjusted deviance
+residual), 
+
+
+=back 4

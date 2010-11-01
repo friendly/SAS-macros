@@ -1,0 +1,120 @@
+=head1 Description
+
+The BARS macro creates an Annotate data set to draw error bars
+in a plot.  The error bars may be drawn for a response variable 
+displayed on the Y axis or on the X axis.  The other (C<CLASS=>)
+variable may be character or numeric.  
+
+=head1 Usage
+
+The BARS macro is called with keyword parameters.  The C<VAR=> and C<CLASS=>
+variables must be specified.  The length of the error bars should be
+specified with either the C<BARLEN=> parameter or the C<LOWER=> and C<UPPER=>
+parameters.
+
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %bars(class=age, var=logodds, lower=lower, upper=upper);
+  proc gplot data=mydata;
+     plot logodds * age / anno=_bars_;
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of input data set [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Name of the response variable, to be plotted on the
+axis given by the C<BAXIS=> parameter.
+
+=item CLASS=
+
+Name of the independent variable, plotted on the
+other axis.
+
+=item CVAR=
+
+Name of a curve variable, when PROC GPLOT is used with
+the statement C<PLOT &VAR * &CLASS = &CVAR>.
+
+=item BY=
+
+Name of a BY variable for multiple plots, when PROC GPLOT
+is used with the statement C<BY &BY;>.
+
+=item BAXIS=
+
+One of X or Y, indicating the axis along which error bars
+are drawn [Default: C<BAXIS=Y>]
+
+=item BARLEN=
+
+A numeric variable or constant giving the error bar length,
+for example, when the input data set contains a standard
+error variable or multiple thereof.  If C<BARLEN=> is given,
+the C<LOWER=> and C<UPPER=> values are ignored, and error bars
+are drawn at the values &VAR +- &Z * &BARLEN.
+
+=item Z=
+
+A numeric value giving the multiplier of the C<BARLEN=>
+value used to determine the lower and upper error bar
+values.
+
+=item LOWER=
+
+A numeric variable or constant giving the lower error bar value.
+Use the C<LOWER=> and C<UPPER=> parameters if the error bars are
+non-symmetric or if the lower and upper values are contained
+as separate variables in the input data set.
+
+=item UPPER=
+
+A numeric variable or constant giving the upper error bar value.
+
+=item TYPE=
+
+Type of error bars to be drawn: one of C<UPPER>, C<LOWER>, or C<BOTH>
+and possibly one of C<ALT> or C<ALTBY>.  C<TYPE=LOWER> draws only the
+lower error bars; C<TYPE=UPPER> draws only the upper error bars;
+C<TYPE=BOTH> draws both upper and lower error bars.  Use
+C<TYPE=ALT BOTH> to have the error bars alternate (lower, upper)
+over observations in the input data set;  use
+C<TYPE=ALTBY BOTH> to have the error bars alternate over values
+of the C<BY=> variable. [Default: C<TYPE=BOTH>]
+
+=item SYMBOL=
+
+The plotting symbol, drawn at (C<&CLASS, &var>).  If not specified,
+no symbols are drawn.
+
+=item COLOR=
+
+Color for lines and symbols, a character constant (enclosed
+in quotes), or variable name [Default: C<COLOR='BLACK'>]
+
+=item LINE=
+
+The Annotate line style used for error bars [Default: C<LINE=1>]
+
+=item SIZE=
+
+Size of symbols and thickness of lines [Default: C<SIZE=1>]
+
+=item BARWIDTH=
+
+The width of error bar tops, in data units [Default:
+C<BARWIDTH=.5>]
+
+=item OUT=
+
+Name of the output data set, to be used as an Annotate
+data set with PROC GPLOT [Default: C<OUT=_BARS_>]
+
+
+=back 4

@@ -1,0 +1,19 @@
+# fix .sas Doc: strings
+
+# remove *s
+perl -pi~ -e 's#\*(\s+Doc: http:.*\s+)\*# $1 #'  `tcgrep -lE sas '\*(\s+Doc: http:.*\s+)\*' ~/datavis.ca/sas/macros | perl -pe's|.*/||'` 
+perl -pi~ -e 's#\*(\s+Doc: http:.*\s+)\*# $1 #'  `tcgrep -lE sas '\*(\s+Doc: http:.*\s+)\*' ~/datavis.ca/sas/vcd/macros | perl -pe's|.*/||'` 
+perl -pi~ -e 's#\*(\s+Doc: http:.*\s+)\*# $1 #'  `tcgrep -lE sas '\*(\s+Doc: http:.*\s+)\*' ~/datavis.ca/sas/sssg/macros | perl -pe's|.*/||'`
+
+# remove |s
+perl -pi~ -e 's#\|(\s+Doc: http:.*\s+)\|# $1 #'  `tcgrep -lE sas '\|(\s+Doc: http:.*\s+)\|' ~/datavis.ca/sas/macros | perl -pe's|.*/||'` 
+perl -pi~ -e 's#\|(\s+Doc: http:.*\s+)\|# $1 #'  `tcgrep -lE sas '\|(\s+Doc: http:.*\s+)\|' ~/datavis.ca/sas/vcd/macros | perl -pe's|.*/||'` 
+
+# change /SCS/sasmac/
+tcgrep -lE sas 'http://www.math.yorku.ca/SCS/sasmac/' ~/datavis.ca/sas/macros | perl -pe's|.*/||'
+perl -p -e 's|Doc: http://www.math.yorku.ca/SCS/sasmac/|Doc: http://www.datavis.ca/sasmac/|' `tcgrep -lE sas 'http://www.math.yorku.ca/SCS/sasmac/' ~/datavis.ca/sas/macros | perl -pe's|.*/||'`
+
+
+
+tcgrep -lE sas 'http://www.math.yorku.ca/SCS/vcd/' ~/datavis.ca/sas/vcd/macros | perl -pe's|.*/||'
+perl -p -e 's|Doc: http://www.math.yorku.ca/SCS/vcd/|Doc: http://www.datavis.ca/sasmac/|' `tcgrep -lE sas 'http://www.math.yorku.ca/SCS/vcd/' ~/datavis.ca/sas/vcd/macros | perl -pe's|.*/||'`

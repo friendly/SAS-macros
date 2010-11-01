@@ -1,0 +1,98 @@
+=head1 Description
+
+The LINES macro creates an annotate data set to draw lines in a 2D or 3D
+scatterplot.  This is useful when you need to plot two variables (e.g,
+observed, predicted) against a common X, with separate curves for the
+levels of a class variable.  In PROC GPLOT, for example, you cannot do
+
+   proc gplot;
+      plot (obs fit) * X = group;
+
+However, you can add the fitted lines to a plot of obs*X:
+
+  %lines(x=X, y=fit, class=group, out=_lines_);
+   proc gplot;
+      plot obs * X = group / anno=_lines_;
+
+If no C<CLASS=> variable is specified, one set of lines is drawn to connect
+the X,Y[,Z] points in their order in the input data set.  If a C<CLASS=> variable
+is specified, one set of such lines is drawn for each level of the C<CLASS=>
+variable.
+
+=head1 Usage
+
+The LINES macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %lines();
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item X=
+
+The name of the X variable for the plot
+
+=item Y=
+
+The name of the Y variable for the plot
+
+=item Z=
+
+The name of the Z variable for a G3D plot (optional)
+
+=item BY=
+
+BY variable(s), used to produce multiple plots for each level
+             of the C<BY=> variables.
+
+=item CLASS=
+
+CLASS variable, used to produce multiple lines within a given
+             plot.
+
+=item SYS=
+
+XSYS & YSYS value [Default: C<SYS=2>]
+
+=item COLOR=
+
+Colors used for the levels of the C<CLASS=> variable.
+             [Default: C<COLOR=BLUE RED GREEN BLACK PURPLE YELLOW BROWN ORANGE>]
+
+=item LINE=
+
+List of line styles used for the levels of the C<CLASS=> variable.
+             [Default: C<LINE=1 3 5 8 20 22 25 34>]
+
+=item SIZE=
+
+Line thickness [Default: C<SIZE=1>]
+
+=item SUBSET=
+
+Expression to select points [Default: C<SUBSET=1>]
+
+=item COPY=
+
+List of variables copied to output dataset
+
+=item IN=
+
+Optional input annotate data set, concatenated to the output
+             data set
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=_LINES_>]
+
+
+
+=back 4
+

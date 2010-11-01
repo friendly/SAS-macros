@@ -1,0 +1,92 @@
+
+=head1 Description
+
+The DATACHK macro performs basic data screening/checking on numeric variables
+in a dataset, and is designed to give a compact overview of many variables.
+The output is a small subset of that produced by
+the univariate procedure.  For a each variable, a few statistics
+and the lowest/highest observations are shown in a format like:
+
+ Variable             Stat    Value       Extremes Id
+
+
+ ATBAT                N            322          16 Tony Armas
+                      Miss           0          19 Cliff Johnson
+ Times at Bat         Mean    380.9286          19 Terry Kennedy
+                      Std      153.405          20 Mike Schmidt
+                      Skew    -0.07806
+                                                663 Joe Carter
+                                                677 Don Mattingly
+                                                680 Kirby Puckett
+                                                687 T Fernandez
+                    --------------------------------------------
+
+
+In addition, a schematic plot (boxplot) is shown for the standard
+scores for all variables when the C<SPLOT=Y> option is given (assuming
+the SPLOT macro is available.)
+
+If a C<CLASS=> variable is specified, this output is produced for each
+value of the C<CLASS=> variable.
+
+The macro also prints a table of standardized (Z) scores, for all
+observations which have at least C<NOUT> z-scores greater than C<ZOUT>
+in absolute value.
+
+=head1 Usage
+
+The DATACHK macro takes 10 keyword arguments.  The C<VAR=> variable list
+is required.
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=_last_
+
+Name of input data set
+
+=item VAR=
+
+Variable(s) to be screened.  You may use any of the
+shorthands for variable lists, e.g., C<X1-X20>,
+C<STATA--STATZ>, C<_NUMERIC_>.
+
+=item CLASS=
+
+Class/grouping variable
+
+=item ID=
+
+Name of id variable, used to label observations
+in the output.
+
+=item OUT=_hilo_
+
+Name of the output dataset, containing the
+highest and lowest observations on each variable.
+
+=item LS=80
+
+Output linesize, mainly used for the boxplots
+produced by the SPLOT option.
+
+=item LOHI=4
+
+Number of low/high obs printed [Not yet]
+
+=item ZOUT=2
+
+Z-score for treating an obs as unusual
+
+=item NOUT=2
+
+Number of |z|>&ZOUT to print an observation
+
+=item SPLOT=yes
+
+Print boxplots of std scores?
+
+
+=back 4
+

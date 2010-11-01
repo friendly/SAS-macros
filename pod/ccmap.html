@@ -1,0 +1,253 @@
+<html> 
+<head>
+	<title>SAS Macro Programs: ccmap - Produce a conditioned choropleth map</title>
+	<link rev=made href="mailto:friendly@yorku.ca">
+	<link rel="stylesheet" href="macdoc.css" type="text/css">
+	<!-- Author: Michael Friendly York University  -->
+</head>
+<body>
+<!-- pnuts --> 
+<CENTER>
+<TABLE WIDTH="100%" BGCOLOR="#FFFF99" >
+<TR>
+<TD width="10%"><FONT SIZE=+2><tt><b> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/ccmap.sas">ccmap</a></b></tt></FONT></TD>
+
+<TD align="center"><FONT FACE="Arial"><FONT SIZE=+1>Produce a conditioned choropleth map</FONT></FONT></TD>
+
+<TD  width="10%" align="right"><FONT SIZE=+2><tt><b> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/ccmap.sas">ccmap</a></b></tt></FONT></TD>
+</TR>
+</TABLE>
+</CENTER>
+<h1>SAS Macro Programs: <tt>ccmap</tt></h1>
+
+$Version: <br>
+<b>
+<a href="../friendly.html">Michael Friendly</a><br>
+York University
+</b><br>
+<script language="JavaScript">
+<!--
+	document.write("Updated " + document.lastModified);
+// -->
+</script>
+<hr>
+
+<h2>The <tt>ccmap</tt> macro (<A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/ccmap.sas">
+<IMG  WIDTH=20 HEIGHT=20 SRC="../icons/download.gif" alt="[download]" border=0> get ccmap.sas</A>)</h2>
+<h3>Produce a conditioned choropleth map</h3>
+
+<p>The <tt>CCMAP</tt> macro produces a set of choropleth maps for one response
+variable where the geographic units are partitioned into groups
+by two conditioning variables.  Each region appears in all maps,
+but is only shaded (in relation the the <a href="#item_response"><code>RESPONSE=</code></a> variable) in those
+views defined by the ranges of the conditioning (<a href="#item_given"><code>GIVEN=</code></a>) variable.
+This makes it possible to see how the geographic distribution of the
+response changes with the conditioning variables.</p>
+<p>See: Dan Carr's CCmaps page:  <a href="http://www.galaxy.gmu.edu/~dcarr/CCmaps/">http://www.galaxy.gmu.edu/~dcarr/CCmaps/</a>
+for information on CCmaps.</p>
+
+
+<H2><a name="usage">Usage</a></H2>
+<p>The <tt>CCMAP</tt> macro is defined with keyword parameters.  The <a href="#item_response"><code>RESPONSE=</code></a>
+(or <a href="#item_var"><code>VAR=</code></a>) variable is required, as are two <a href="#item_given"><code>GIVEN=</code></a> variables. The <a href="#item_id"><code>ID=</code></a>
+variable must name the geographic region in the <a href="#item_map"><code>MAP=</code></a> and <a href="#item_data"><code>DATA=</code></a> data
+sets.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:</p>
+<pre>
+  %ccmap();</pre>
+<p>For useful results, you should also specify the <a href="#item_midpoints"><code>MIDPOINTS=</code></a> values of the
+<a href="#item_response"><code>RESPONSE=</code></a> variable and define a corresponding set of PATTERN statements.</p>
+
+<H3><a name="parameters">Parameters</a></H3>
+<dl>
+<dt><strong><a name="item_data">DATA=</a></strong><br />
+</dt>
+<dd>
+The name of the input data set
+</dd>
+
+<dt><strong><a name="item_map">MAP=</a></strong><br />
+</dt>
+<dd>
+Name of the input map data set [Default: <code>MAP=MYMAPS.USVISMAP</code>]
+</dd>
+
+<dt><strong><a name="item_response">RESPONSE=</a></strong><br />
+</dt>
+<dd>
+Response variable shown on maps
+</dd>
+
+<dt><strong><a name="item_var">VAR=</a></strong><br />
+</dt>
+<dd>
+Synonym for <a href="#item_response"><code>RESPONSE=</code></a>
+</dd>
+
+<dt><strong><a name="item_id">ID=</a></strong><br />
+</dt>
+<dd>
+The name of the map ID variable indicating geographic regions in the
+             <a href="#item_map"><code>MAP=</code></a> and <a href="#item_data"><code>DATA=</code></a> data sets.
+</dd>
+
+<dt><strong><a name="item_weight">WEIGHT=</a></strong><br />
+</dt>
+<dd>
+Region weight variable (e.g. population), used for calculating weighted
+             means/medians for the levels of the conditioning variables.
+</dd>
+
+<dt><strong><a name="item_given">GIVEN=</a></strong><br />
+</dt>
+<dd>
+The names of 2 Conditioning variables, X, Y
+</dd>
+
+<dt><strong><a name="item_slices">SLICES=</a></strong><br />
+</dt>
+<dd>
+Number of slices for X,Y [Default: <code>SLICES=2 2</code>]
+</dd>
+
+<dt><strong><a name="item_overlap">OVERLAP=</a></strong><br />
+</dt>
+<dd>
+Allowed overlap between slices of the <a href="#item_given"><code>GIVEN=</code></a> variables, in percent. Ignored if
+             the given variables are character. [Default: <code>OVERLAP=0.10</code>]
+</dd>
+
+<dt><strong><a name="item_levels">LEVELS=</a></strong><br />
+</dt>
+<dd>
+Number of levels for the <a href="#item_var"><code>VAR=</code></a> variable in the maps [Default: <code>LEVELS=7</code>]
+</dd>
+
+<dt><strong><a name="item_midpoints">MIDPOINTS=</a></strong><br />
+</dt>
+<dd>
+Midpoints for the <a href="#item_var"><code>VAR=</code></a> variable. You should use this to
+             specify a common set of midpoints for the response variable
+          in the maps, so they all use the same midpoints.  You can
+          append PCT to a list of numeric midpoint values to have the
+          macro calculate the corresponding percentiles of the <a href="#item_var"><code>VAR=</code></a>
+          variable.  Specifying <a href="#item_midpoints"><code>MIDPOINTS=</code></a> overrides the <a href="#item_levels"><code>LEVELS=</code></a>
+          parameter.
+</dd>
+
+<dt><strong><a name="item_coutline">COUTLINE=</a></strong><br />
+</dt>
+<dd>
+Outline color for the map regions. Specify COUTLINE=, (null) to suppress
+             the region outlines. [Default: <code>COUTLINE=GRAYCC</code>]
+</dd>
+
+<dt><strong><a name="item_legend">LEGEND=</a></strong><br />
+</dt>
+<dd>
+NONE, or name of a LEGEND statement, e.g., <code>LEGEND=LEGEND1.  I</code>f
+             you do not specify LEGEND=, you will get a default PROC GMAP
+          legend in each map, probably not what you want.
+</dd>
+
+<dt><strong><a name="item_gmapoptions">GMAPOPTIONS=</a></strong><br />
+</dt>
+<dd>
+Other GMAP options
+</dd>
+
+<dt><strong><a name="item_anno">ANNO=</a></strong><br />
+</dt>
+<dd>
+Name of an additional input annotate dataset. If supplied, this is
+             used in all of the maps.
+</dd>
+
+<dt><strong><a name="item_hstrip">HSTRIP=</a></strong><br />
+</dt>
+<dd>
+Height (in %) for marginal label strip used to identify the
+             values of the <a href="#item_given"><code>GIVEN=</code></a> variables. [Default: <code>HSTRIP=6</code>]
+</dd>
+
+<dt><strong><a name="item_stripbg">STRIPBG=</a></strong><br />
+</dt>
+<dd>
+Strip background color [Default: <code>STRIPBG=YELLOW</code>]
+</dd>
+
+<dt><strong><a name="item_stripfg">STRIPFG=</a></strong><br />
+</dt>
+<dd>
+Strip foreground color [Default: <code>STRIPFG=BLACK</code>]
+</dd>
+
+<dt><strong><a name="item_gtemp">GTEMP=</a></strong><br />
+</dt>
+<dd>
+Temporary graphics catalog used to generate the individual
+             maps. [Default: <code>GTEMP=GTEMP</code>]
+</dd>
+
+<dt><strong><a name="item_kill">KILL=</a></strong><br />
+</dt>
+<dd>
+Delete gtemp when done? [Default: <code>KILL=Y</code>]
+</dd>
+
+<dt><strong><a name="item_gout">GOUT=</a></strong><br />
+</dt>
+<dd>
+The name of the graphics catalog [Default: <code>GOUT=GSEG</code>]
+</dd>
+
+<dt><strong><a name="item_name">NAME=</a></strong><br />
+</dt>
+<dd>
+The name of the graph in the graphic catalog [Default: <code>NAME=CCMAP</code>]
+</dd>
+</dl>
+
+<H3><a name="dependencies">Dependencies</a></H3>
+<p>CCMAP requires the following macros:</p>
+<pre>
+  gdispla.sas     Device-independent DISPLAY/NODISPLAY control
+  panels.sas      Display a set of plots in rectangular panels
+  slice.sas       Divide a variable into slices</pre>
+
+
+<H3><a name="examples">Example</a></H3>
+<pre>
+ %include macros(ccmap);        *-- or include in an autocall library;
+ %include data(guerry);
+
+ *-- Define a palette of 7 colors from Red to Blue thru Yellow;
+ %brewerpal(n=7, palette=RdYlBu, out=palette);
+ %genpat(data=palette, n=nobs, colors=color);
+
+ legend1
+    mode=share
+    position=(bottom inside left)
+    across=4
+    label=(position=middle j=c 'Pop/Crime' j=c '(00s)')
+    shape=bar(3,1);
+
+ %ccmap(data=guerry, map=mymaps.gfrance(where=(density&lt;5)),
+    var=Crime_pers, given=Literacy Wealth,
+    id=dept, weight=Pop1831,
+    midpoints = 20 30 40 50 60 70 80 PCT,
+    legend=legend1,
+    slices=2 2, overlap=0.10);
+</pre>      
+<img src="gccmap1.gif">
+
+<h3>See also</h3>
+<a href="meanplot.html">meanplot</a> Plot means for factorial designs<br>
+<a href="panels.html">panels</a> Display a set of plots in rectangular panels<br>
+<a href="stat2dat.html">stat2dat</a> Convert summary dataset to raw data equivalent<br>
+<hr>
+<!-- pnuts --> 
+
+</body>
+</html>

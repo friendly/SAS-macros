@@ -1,0 +1,103 @@
+=head1 Description
+
+The BREWERPAL macro generates a set of SAS/Graph colors for one of the
+color palettes developed by Cynthia Brewer.  These include color scales
+for sequential (quantitative) variables, discrete (qualitative) variables,
+and bipolar (diverging) variables, with varying numbers of levels.  The
+intended use is for constructing sets of color values with SAS/Graph, such
+as in SYMBOL and PATTERN statements.
+
+See: http://www.personal.psu.edu/faculty/c/a/cab38/ColorBrewerBeta2.html
+for an online application demonstrating these color scales.
+
+The result is returned in an output data set with a COLOR variable (RGB
+color code).  Optionally, the list of all colors may be saved to a macro
+variable as a blank-separated list.
+
+=head2 Method
+
+The BREWERPAL macro is modeled on the RColorBrewer R package.  
+See: http://cran.us.r-project.org/src/contrib/Descriptions/RColorBrewer.html
+
+It requires that the data set colors.brewer has already been created (by the file 
+brewer.sas).
+You may have to modify the libname statement in the macro, or specify the C<LIB=>
+parameter for something other than 'colors'.
+
+As implemented here, it simply selects observations from the &lib..brewer data set.
+
+
+=head1 Usage
+
+The BREWERPAL macro is defined with keyword parameters.  Typically, the C<N=>
+and C<PALETTE=> arguments are specified.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %brewerpal(n=7, palette=Accent);
+
+=head2 Parameters
+
+=over 4
+
+=item N=
+
+Number of different colors included in the palette [Default: C<N=3>]
+
+=item PALETTE=
+
+Palette name.  Must be one of the values created in the palnames lists:
+
+  Diverging:   BrBG PiYG PRGn PuOr RdBu RdGy RdYlBu RdYlGn Spectral
+  Qualitative: Accent Dark2 Paired Pastel1 Pastel2 Set1 Set2 Set3;
+  Sequential:  Blues BuGn BuPu GnBu Greens Greys Oranges OrRd
+                  PuBu PuBuGn PuRd Purples RdPu Reds YlGn YlGnBu YlOrBr YlOrRd
+
+             If C<PALETTE=> is not specified, all palettes are selected.
+
+=item LIB=
+
+Library name for the brewer data set  [Default: C<LIB=COLORS>]
+
+=item CATEGORY=
+
+Palette category: DIV, QUAL or SEQ.  If not specified, all palette
+             categories are selected.
+
+=item OUT=
+
+Name of the output data set. Contains the variable COLOR, as well as
+             the Red, Green, Blue (decimal) components of each color [Default: C<OUT=PALETTE>]
+
+=item RESULT=
+
+Name of output macro variable containing color list.  If specified,
+             a macro variable of that name is created with a list of all distinct
+          colors in the C<OUT=> data set.
+
+
+=back 4
+
+=head1 Examples
+
+  *-- Typical usage, for a given palette;
+  %brewerpal(n=6, palette=Blues, result=blues6);
+  %put blues6 = &blues6;
+  title 'Blues palette, n=6 colors';
+  proc print;
+  *-- Generate pattern statements with the blues6 list;
+  %genpat(n=6, colors=&blues6);
+
+  %brewerpal(n=9, palette=YlOrRd);
+  title 'Yellow-Orange-Red palette, n=9 colors';
+  proc print;
+
+  *-- All n=4 palettes for diverging colors;
+  %brewerpal(n=4, category=div);
+  title 'Diverging palettes, n=4 colors';
+  proc print;
+
+
+
+=back 4
+

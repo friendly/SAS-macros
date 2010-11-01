@@ -1,0 +1,121 @@
+=head1 Description
+
+The SPARKLINE macro draws sparklines, described by Tufte as "small, high resolution 
+graphics embedded in a context of words, numbers, images."  The essential idea is
+to draw a minimal, small graph that can be used inline in text and tables.
+The typical usage is for time-series data.
+
+The SPARKLINE macro is designed so that, if desired, the aspect ratio (height/width)
+of the resulting small graphic can be controlled so that successive line segments
+have an average slope of 45 degrees in the plot ("banking to 45 degrees").
+
+A second macro, SPARKBAR, is designed similarly, but uses PROC GCHART rather than
+PROC GPLOT to produce the graph.
+
+
+=head1 Usage
+
+The SPARKLINE macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %sparkline(data=rulers, y=years, x=order)
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item Y=
+
+Vertical variable for the plot
+
+=item X=
+
+Horizontal variable for the plot
+
+=item HEIGHT=
+
+Height of the sparkline [Default: C<HEIGHT=12>]
+
+=item WIDTH=
+
+Desired width, or width=AUTO to bank to 45 degrees [Default: C<WIDTH=AUTO>]
+
+=item UNIT=
+
+Unit for height and width [Default: C<UNIT=PT>]
+
+=item HAXIS=
+
+Name of axis statement for horizontal axis
+
+=item COLOR=
+
+Color of the line [Default: C<COLOR=GRAY>]
+
+=item ANNO=
+
+Mark first/last/min/max specially? C<ANNO=DOT> adds graphic annotations
+             showing the first, last, minimum and maximum points by special
+          symbols, as controlled by the parameters C<VMIN=>, C<VMAX=> and so forth
+          described below. [Default: C<ANNO=NONE>]
+
+=item VMIN=
+
+Symbol displayed at minimum data point [Default: C<VMIN=DOT>]
+
+=item VMAX=
+
+Symbol displayed at maximum data point [Default: C<VMAX=DOT>]
+
+=item VLAST=
+
+Symbol displayed at first/last data point [Default: C<VLAST=DOT>]
+
+=item CMIN=
+
+Colour of symbol displayed at minimum data point [Default: C<CMIN=RED>]
+
+=item CMAX=
+
+Colour of symbol displayed at maximum data point [Default: C<CMAX=RED>]
+
+=item CLAST=
+
+Colour of symbol displayed at first/last data point [Default: C<CLAST=GREEN>]
+
+=item NAME=
+
+The name of the graph in the graphic catalog [Default: C<NAME=SPARK>]
+
+=item GOUT=
+
+Name of the graphic catalog in which the graph is written [Default: C<GOUT=GSEG>]
+
+
+=back 4
+
+=head1 References
+
+=over 4
+
+=item Davis, K., Sparklines using SAS and JMP, NESUG 2007
+   L<http://www.nesug.org/Proceedings/nesug07/sa/sa06.pdf>
+
+=item Tufte, E: "Beautiful Evidence". Graphics Press, 2006
+
+=back 4
+
+=head1 Examples
+
+ %include data(rulers);
+ axis1 order=(0 to 45 by 5) length=95 pct;
+ %sparkline(data=rulers, y=years, x=order, anno=DOTS, haxis=axis1);
+
+ %sparkbar(data=rulers, y=years, x=order, color=greyB0);
+
+

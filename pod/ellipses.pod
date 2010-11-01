@@ -1,0 +1,180 @@
+=head1 Description
+
+The ELLIPSES macro plots a bivariate scatterplot with a bivariate
+data ellipse for one or more groups.
+
+=head1 Usage
+
+The ELLIPSES macro is defined with keyword parameters.  The C<X=> and C<Y=> 
+variables are required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %ellipses(data=auto, x=price, y=weight);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item X=
+
+Name of the X variable
+
+=item Y=
+
+Name of the Y variable
+
+=item Z=
+
+Name of a Z variable (for G3D)
+
+=item VAR=
+
+Two (or three) variable names x y (z), separated by spaces.  
+             Instead of specifying C<X=> and C<Y=> separately, you can specify
+          the names of the variables with the C<VAR=> parameter.
+
+=item WHERE=
+
+WHERE clause to select observations
+
+=item WEIGHT=
+
+Numeric weight for observations
+
+=item GROUP=
+
+Name of a Group variable (optional). If a C<GROUP=> variable is
+             specified, one ellipse is produced for each value of this
+             variable in the data set.  If no C<GROUP=> variable is specified, 
+             a single ellipse is drawn for the entire sample.  
+             The C<GROUP=> variable may be character or numeric.
+
+=item CLASS=
+
+Synonym for C<GROUP=>
+
+=item GPFMT=
+
+Name of a Format for group labels.
+
+=item PVALUE=
+
+Confidence coefficient (1-alpha). This is the proportion of 
+             data from a bivariate normal distribution contained within
+             the ellipse.  Several values may be specified in a list 
+             (e.g., C<C<PVALUE=>.5 >.9), in which case one ellipse is generated
+             for each value. [Default: C<PVALUE=0.68>]
+
+=item LINE=
+
+Line style(s) for ellipse [Default: C<LINE=5>]
+
+=item WIDTH=
+
+Line width(s) for ellipse [Default: C<WIDTH=1>]
+
+=item ANNOADD=
+
+Additional annotations added to the plot. [Default: C<ANNOADD=MEAN GPLABEL>]
+
+=item INANNO=
+
+Additional (input) annotations data set
+
+=item STD=
+
+Error bar metric: STD or STDERR. C<STD=STDERR >gives error
+             bars equal to each mean +- one standard error for both
+             variables.  C<STD=STD >gives error bars whose
+             length is one standard deviation for both variables.
+             [Default: C<STD=STDERR>]
+
+=item POINTS=
+
+Number of points on each ellipse [Default: C<POINTS=40>]
+
+=item ALL=
+
+Include an ellipse for total sample? Specifies whether the 
+             ellipse for the total sample should be drawn in addition to 
+          those for each group.  If there is no C<GROUP=> variable,
+             C<ALL=YES >just draws the ellipse twice. [Default: C<ALL=NO>]
+
+=item OUT=
+
+The name of the output Annotate data set used to draw the
+             ellipses, error bars and group labels. [Default: C<OUT=ELLIPSES>]
+
+=item PLOT=
+
+Plot the results? If C<PLOT=YES>, the macro plots the data together
+             with the generated ellipses.  Otherwise, only the output 
+          Annotate data set is generated.[Default: C<PLOT=YES>]
+
+=item HAXIS=
+
+Name of an AXIS statement for the horizontal axis.  By default,
+             the plot range of the C<X=> variable is defined by the data, so
+             the ellipses may be clipped and generate warnings in the PROC
+             GPLOT step.  To avoid this, define an AXIS statement that
+             defines a suitable range and specify that with C<C<HAXIS=>.>
+
+=item VAXIS=
+
+Name of an AXIS statement for the vertical axis.  See description
+             for C<C<HAXIS=>.>
+
+=item I=
+
+SYMBOL statement interpolate option. Use C<I=RL >to include the
+             regression line, C<I=RQ >to draw a quadratic, etc. [Default: C<I=NONE>]
+
+=item INTERP=
+
+(synonym for C<I=>)
+
+=item COLORS=
+
+List of colors for each of the groups.  If there are  g  groups,
+             specify  g  colors if C<ALL=NO>, and g +  1  colors if C<ALL=YES.>
+             The colors specified are recycled as needed.
+             [Default: C<COLORS=RED BLUE GREEN BLACK PURPLE BROWN ORANGE YELLOW >]
+
+=item SYMBOLS=
+
+List of symbols, separated by spaces, used for plotting points in
+             each of the groups. Recycled as needed.
+          [Default: C<SYMBOLS=DOT SQUARE CIRCLE >+ STAR -     PLUS   :      $     =]
+
+=item HSYM=
+
+Height of plot symbols [Default: C<HSYM=1.2>]
+
+=item HTEXT=
+
+Height of text in the plot [Default: C<HTEXT=1.5>]
+
+=item NAME=
+
+The name of the graph in the graphic catalog [Default: C<NAME=ELLIPSES>]
+
+=item GOUT=
+
+The name of the graphics catalog [Default: C<GOUT=GSEG>]
+
+
+=back 4
+
+=head1 Examples
+
+ %include data(auto) ;
+ %contour(data=auto,
+          x=price, y=weight, group=origin,
+          pvalue=.5);
+
+

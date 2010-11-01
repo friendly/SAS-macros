@@ -1,0 +1,110 @@
+=head1 Description
+
+The CALISCMP macro extracts goodness of fit statistics from the
+RAM data sets produced in a series of models fit to a given data
+set using PROC CALIS.  The C<COMPARE=> parameter allows pairs of
+nested models to be tested.
+
+=head1 Usage
+
+For each model, use the C<OUTRAM=> option on the PROC CALIS statement
+to same the model fit statistics in a separate data set.  For example,
+
+     proc calis data=lord cov summary outram=ram1;
+     lineqs ....
+     proc calis data=lord cov summary outram=ram2;
+     lineqs ....
+     ...
+
+The CALISCMP macro is defined with keyword parameters.  The C<RAM=>
+parameter must specify a list of one or more OUTRAM data sets.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %caliscmp(ram=ram1 ram2 ram3 ram4,
+     models=%str(H1 rho=1/H2/H3 rho=1/H4),
+     compare=1 2 / 3 4 /1 3/ 2 4);
+
+
+=head2 Parameters
+
+=over 4
+
+=item RAM=
+
+List of the names of two or more RAM data sets from 
+CALIS runs, separated by spaces.
+
+=item MODELS=
+
+List of model descriptions or labels, separated by '/',
+in the order corresponding to the C<RAM=> list.  If not
+specified, the models are labeled 'Model 1', 'Model 2', ...
+
+=item STATS=
+
+List of statistics to be printed for each model.
+[Default: C<STATS=NPARM DF CHISQUAR P>_CHISQ RMR GFI AGFI AIC
+CAIC SBC CENTRALI PARSIMON CNHOELT]
+
+=item COMPARE=
+
+List of pairs of models to be compared, separated by '/'.
+Each pair consists of two integers, referring to the
+models specified in the C<RAM=> and C<MODELS=> lists.
+
+Each pair should refer to two nested models, where the 
+first is the more restrictive or more constrained.
+For each pair, the macro calculates the difference in
+Chi-squares, which is tested as a Chi-square on the difference
+in degrees of freedom.
+
+=item OUT=
+
+Name of the outoput data set containing the fit statistics
+for all models. [Default: C<OUT=RAMSTATS>]
+
+=back 4
+
+=head1 Example
+
+The SAS/STAT User's Guide (``Intro to Structural Equations...'')
+describes four models fit to Lord's data on four vocabulary tests,
+two short tests with liberal time limits, two long, speeded tests.
+After fitting these models with separate PROC CALIS calls, compare
+the fit statistics, and test for differences among pairs of models
+as follows:
+
+  %caliscmp(ram=ram1 ram2 ram3 ram4,
+     models=%str(H1 rho=1/H2/H3 rho=1/H4),
+     compare=1 2 / 3 4 /1 3/ 2 4);
+
+This produces the following output:
+
+                 Model Comparison Statistics from 4 RAM data sets
+
+                                                        RMS
+ Model      Parameters   df   Chi-Square   P>ChiSq   Residual     GFI     Adj GFI
+
+ H1 rho=1        4        6     37.3412    0.00000    2.53409   0.97048   0.95081
+ H2              5        5      1.9320    0.85847    0.69829   0.99849   0.99699
+ H3 rho=1        8        2     36.2723    0.00000    2.43656   0.97122   0.85608
+ H4              9        1      0.7033    0.40168    0.27150   0.99946   0.99458
+
+                                   Schwarz                            Critical
+ Model         AIC       C_AIC       BIC     Centrality   Parsimony       N
+
+ H1 rho=1    25.3412    -7.5114    -1.5114     0.97614     0.97454      219.51
+ H2          -8.0680   -35.4452   -30.4452     1.00237     0.83224     3714.12
+ H3 rho=1    32.2723    21.3214    23.3214     0.97394     0.32509      108.04
+ H4          -1.2967    -6.7722    -5.7722     1.00023     0.16659     3540.52
+
+
+          Model Comparison                 ChiSq   df   p-value 
+         ---------------------------------------------------------
+         H1 rho=1 vs. H2                 35.4092    1   0.00000 ****
+         H3 rho=1 vs. H4                 35.5690    1   0.00000 ****
+         H1 rho=1 vs. H3 rho=1            1.0689    4   0.89918     
+         H2 vs. H4                        1.2287    4   0.87335     
+
+

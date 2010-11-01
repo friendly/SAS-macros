@@ -1,0 +1,131 @@
+=head1 Description
+
+The MAP2GEN macro reads a SAS/Graph map data set and writes the
+polygons in ArcView Generate format. This is a commonly used input
+format for various cartographic programs, but the details often
+matter.
+
+=head2 Method
+
+Generate map files can be in either 'line' format (a simple list of
+line segments, usually forming polygons for geographic regions),
+or 'polygon' format (similar, except the ID line for each region
+also contains the (x,y) coordinates of the polygon center and the
+region label.
+
+Line format files can be written as shown below, from any SAS/Graph
+map.  Some programs that read such files require that the polygons
+be closed, so that the last X,Y pair is the same as the first X,Y
+pair; use C<CLOSE=1> if so.
+
+ id1
+ x-coord,y-coord
+ x-coord,y-coord
+ ...
+ end
+ id2
+ x-coord,y-coord
+ x-coord,y-coord
+ ...
+ end
+ end
+
+Polygon format files are similar, except that the first line for each
+region also contains the X,Y coordinates of a center point in the polygon
+used for labeling.  In this case, a separate MAP2= data set is required,
+and is merged with the C<MAP=> data set.
+
+ id1,x-coord-label,y-coord-label,idlabel
+ x-coord,y-coord
+ x-coord,y-coord
+ ...
+ end
+ id2,x-coord-label,y-coord-label,idlabel
+ x-coord,y-coord
+ ...
+ end
+ end
+
+
+=head1 Usage
+
+The MAP2GEN macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %map2gen(map=maps.us);
+
+=head2 Parameters
+
+=over 4
+
+=item MAP=
+
+The (libname.)name of the map to be converted
+
+=item MAP2=
+
+Data set containing polygon centers and ID labels when
+C<TYPE=POLY>.
+
+=item ID=
+
+The name of an observation ID variable [Default: C<ID=ID>]
+
+=item X=
+
+Name of X (longitude) variable in MAP and MAP2 [Default: C<X=X>]
+
+=item Y=
+
+Name of Y (latitude) variable in MAP and MAP2 [Default: C<Y=Y>]
+
+=item IDLABEL=
+
+Label variable for region ID in the MAP2 data set, typically
+             the name of the region.
+
+=item DLM=
+
+Field delimiter used in writing output records. Use 
+C<DLM=%STR(,)> for comma delimited. [Default: C<DLM=%STR( )>]
+
+=item PRE=
+
+Prefix string for each x,y line [Default: C<PRE=%STR()>]
+
+=item CLOSE=
+
+Close each polygon?  A non-zero value causes the first
+             X,Y pair to be repeated at the end of each polygon.
+             [Default: C<CLOSE=1>]
+
+=item TYPE=
+
+Line or polygon style? [Default: C<TYPE=LINE>]
+
+=item XYFORMAT=
+
+Format for writing X,Y values [Default: C<XYFORMAT=BEST9.>]
+
+=item OUTFILE=
+
+The name of the output file. You can specify a
+file path, or the output will be written to the
+working directory. [Default: OUTFILE=&MAP.GEN]
+
+
+=back 4
+
+=head1 Example
+
+ %map2gen(
+   map=mymaps.gfrance,
+   map2=mymaps.gfrance2,
+   id=dept,
+   idlabel=department,
+   type=poly
+   );
+
+The output is written to GFRANCE.GEN.
+

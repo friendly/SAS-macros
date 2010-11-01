@@ -1,0 +1,88 @@
+=head1 Description
+
+The TABLE macro constructs a grouped frequency table suitable for
+input to the MOSAIC or MOSMAT macros.  The input data may be
+individual observations, or a contingency table,  which may be
+collapsed to fewer variables.  Factor variables may be converted
+to character using user-supplied formats.
+
+=head1 Usage
+
+The TABLE macro takes 7 keyword arguments.  The C<VAR=> parameter
+is required.
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input dataset.  [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Names of all factor (classification) variables to be
+included in the
+output dataset.  The observations are summed over
+any other factors, weighted by the C<WEIGHT=> variable,
+if any.
+
+=item CHAR=
+
+If non-blank, forces the C<VAR=> variables to be
+converted to character variables (using formatted
+values) in the output dataset.  If C<CHAR=> a
+numeric value (e.g., C<CHAR=8>), it specifies the
+length of each character variable; otherwise, the
+character variables default to length 16.
+
+=item WEIGHT=
+
+Name of a frequency variable, if the input dataset
+is already in frequency form.
+If not specified, each observation is assumed to be
+one case.
+
+=item ORDER=
+
+Specifies the order of the variable levels used
+in the PROC FREQ step.  C<ORDER=INTERNAL|FREQ|DATA|
+FORMATTED> are valid option values.
+
+=item FORMAT=
+
+A list of variable(s), format pairs (suitable for a
+FORMAT statement).  The C<FORMAT=> option may be used
+to recode the values of any of the C<VAR=> variables.
+
+=item OUT=
+
+The name of output dataset.  The variables in the output
+dataset are the C<VAR=> variables, plus COUNT, the
+frequency variable for each cell. [Default: C<OUT=TABLE>]
+
+
+=back 4
+
+=head1 Limitations
+
+None of the factor variables may be named C<COUNT>.
+
+=head1 Example
+
+This example reads a three-way frequency table (gender x admit x dept),
+where admit and dept are numeric variables, and collapses it to a
+two-way table, with Gender and Admit as character variables.
+
+  %include data(berkeley);
+  %table(data=berkeley, var=gender admit, weight=freq, char=Y,
+         format=admit admit. gender $sex., order=data, out=berk2);
+  %mosaic(data=berk2, var=Gender Admit);
+
+The formats C<admit.> and C<$sex.> are created with proc format:
+
+  proc format;
+     value admit 1="Admitted" 0="Rejected";
+     value $sex  'M'='Male'   'F'='Female';
+
+

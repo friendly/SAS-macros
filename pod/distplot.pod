@@ -1,0 +1,76 @@
+=head1 Description
+
+The DISTPLOT macro constructs plots of a discrete distribution
+designed to diagnose whether the data follows one of the standard
+distributions: the Poisson, Binomial, Negative Binomial, Geometric,
+or Log Series, specified by the C<DIST=> parameter.  The usual
+(C<PLOT=DIST>) plot is constructed so that the points lie along a
+straight line when the data follows that distribution.  An influence
+plot (C<PLOT=INFL>) shows the influence of each observation on the
+choice of the distribution parameter(s).
+
+=head1 Usage
+
+The DISTPLOT macro is called with keyword parameters.
+You must specify the distribution to be fit (C<DIST=>). and the
+C<COUNT=> and C<FREQ=> variables.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %distplot(data=queues, count=women, freq=queues, dist=binomial,
+      parm=0.435);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item COUNT=
+
+Basic count variable
+
+=item FREQ=
+
+Number of occurrences of count
+
+=item LABEL=
+
+Horizontal (count) label
+
+=item DIST=
+
+Name of distribution, one of C<POISSON>, C<BINOMIAL>, 
+C<GEOMETRIC>, or C<LOGSERIES>, 
+
+=item PARM=
+
+Trial value of the distribution parameter(s) to level the 
+plot.  For the Binomial distribution, PARM=p, the binomial
+probability of success; for the Poisson, PARM=lambda,
+the Poisson mean
+
+=item Z=
+
+Multiplier for error bars in the C<PLOT=DIST >plot.
+[Default: C<Z=1.96>]
+
+=item PLOT=
+
+What to plot: DIST and/or INFL [Default: C<PLOT=DIST>]
+
+=item HTEXT=
+
+Height of text labels in the plots [Default: C<HTEXT=1.4>]
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=DISTPLOT>]
+
+=item NAME=
+
+Name of the graphics catalog entry [Default: C<NAME=DISTPLT>]
+
+=back 4

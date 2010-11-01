@@ -1,0 +1,91 @@
+=head1 Description
+
+The SYMPLOT macro produces a variety of plots for diagnosing symmetry
+of a distribution and finding a power transformation to make the
+distribution more symmetric. 
+
+=over 4
+
+=item PLOT=UPLO
+
+Upper distance-to-median vs. Lower distance-to-median.  Plots
+            as a 45 degree line for a symmetric distribution.
+
+=item PLOT=MIDSPR
+
+Mid value vs. Spread.  Plots as a horizontal line for a symmetric distribution.
+
+=item PLOT=MIDZSR
+
+Mid value vs. Squared normal quantile
+
+=item PLOT=POWER
+
+Centered mid value vs. Squared spread measure. (1-slope) in this plot 
+            usually indicates a reasonable power for a tranformation to symmetry. 
+
+
+=back 4
+
+=head1 Usage
+
+The SYMPLOT macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %symplot(data=auto, var=Price, plot=POWER, trim=5 pct); 
+
+
+
+=over 4
+
+=head2 Parameters
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+The name of the variable to be analyzed.
+
+=item PLOT=
+
+Type of plot(s): NONE, or any one or more of
+             UPLO, MIDSPR, MIDZSQ, or POWER.  One plot is
+             produced for each keyword included in the C<PLOT=>
+             parameter. [Default: C<PLOT=MIDSPR POWER>] 
+
+=item TRIM=
+
+Specifies the number or percent of extreme observations  to be 
+             trimmed.  The C<TRIM=> optionis most useful in the POWER plot.
+             [Default: C<TRIM=5 PCT>]
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=SYMPLOT>]
+
+=item SYMBOL=
+
+Observation plot symbol [Default: C<SYMBOL=DOT>]
+
+=item VAXIS=
+
+Axis statement for vertical axis
+
+=item HAXIS=
+
+Axis statement for horizontal axis
+
+=item NAME=
+
+The name of the graph in the graphic catalog [Default: C<NAME=SYMPLOT>]
+
+=item GOUT=
+
+The name of the output graphics catalog [Default: C<GOUT=GSEG>] 
+
+
+=back 4
+

@@ -1,0 +1,88 @@
+=head1 Description
+
+The OUTLIER macro calculates robust Mahalanobis distances for each
+observation in a data set.  The results are robust in that potential
+outliers do not contribute to the distance of any other observations. For
+a multivariate normal sample, the points will lie on a straight line of
+unit slope; outliers will have squared distances well above the line.
+A high-resolution plot of the distances against chi-square quantitles
+is produced, optionally using the CQPLOT macro, that provides confidence
+bands as well.
+
+The macro makes one or more passes through the data.  Each pass
+assigns 0 weight to observations whose DSQ value has 
+Prob  ( chi-square ) < PVALUE.  The number of
+passes should be determined empirically so that no new observations
+are trimmed on the last step, but typically two passes are sufficient
+to avoid the impact of outliers.
+
+=head1 Usage
+
+The OUTLIER macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %outlier(data=auto, id=model);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the input data set to analyze [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+List of input variables. You may use any of the standard
+             SAS abbreviations, e.g., C<VAR=X1-X10>. [Default: C<VAR=_NUMERIC_>]
+
+=item ID=
+
+Name of an ID variable for observations
+
+=item OUT=
+
+Output dataset for plotting [Default: C<OUT=CHIPLOT>]
+
+=item PVALUE=
+
+The pvalue for the chi-square, used to determine when an
+             observation is given a weight=0 [Default: C<PVALUE=.05>]
+
+=item PASSES=
+
+Number of passes of multivariate trimming [Default: C<PASSES=2>]
+
+=item PRINT=
+
+Print the C<OUT=> data set? [Default: C<PRINT=YES>]
+
+=item PPLOT=
+
+Produce printer plot? [Default: C<PPLOT=NO>]
+
+=item GPLOT=
+
+Produce graphics plot? [Default: C<GPLOT=YES>]
+
+=item SYMBOL=
+
+Point symbol [Default: C<SYMBOL=DOT>]
+
+=item USECQPLT=
+
+Use the CQPLOT macro to do the plot? [Default: C<USECQPLT=Y>]
+
+=item NAME=
+
+Name for graphic catalog entry [Default: C<NAME=OUTLIER>]
+
+=item GOUT=
+
+name for graphic catalog [Default: C<GOUT=GSEG>]
+
+
+
+=back 4
+

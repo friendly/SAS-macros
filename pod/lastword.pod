@@ -1,0 +1,48 @@
+=head1 Description
+
+The LASTWORD macro returns the last word from a delimited list of words.
+This is useful for some generic forms of DATA Step BY processing with
+first. and last.  BY processing.
+
+=head2 Method
+
+In Version 8+, it uses the %scan function in the form %scan(&words,-1,&sep)
+The original version of this macro is by Richard A. DeVenezia.
+
+=head1 Usage
+
+The LASTWORD macro is defined with positional parameters.  The first
+parameter is required for any useful result.
+The macro is often used in a %LET statement, in the form
+
+  %let lastclass = %lastword(&class);
+
+=head2 Parameters
+
+=over 4
+
+=item WORDS
+
+A list of words separated by something 
+
+=item SEP
+
+The word separator.  [Default: SEP=%STR( )]
+
+
+=back 4
+
+=head2 Example
+
+   %let string= Able Baker Charlie;
+   %put Last word of "&string" is "%lastword(&string)";
+
+   %let classvar = Treatment Poison;
+   data test;
+       set animals;
+       by &classvar;
+       if first.%lastword(&classvar) then do;
+           ...
+           end;
+
+

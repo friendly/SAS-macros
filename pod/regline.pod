@@ -1,0 +1,84 @@
+=head1 Description
+
+The REGLINE macro creates an ANNOTATE dataset to draw a regression
+line in a plot.  It is useful for situations where the SYMBOL statement
+with C<INTERPOL=RL >cannot be used.
+
+=head1 Usage
+
+The REGLINE macro is defined with keyword parameters.
+The C<X=> and C<Y=> parameters are required; all others are optional.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+   %regline(data=iris, x=petalwid, y=petallen, width=3, xmin=0, xmax=26);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Input data set [Default: C<DATA=_LAST_>]
+
+=item Y=
+
+Ordinate variable
+
+=item X=
+
+Abscissa variable
+
+=item Z=
+
+Z value or variable name for use with proc G3D
+
+=item OTHERX=
+
+Other predictors in the model
+
+=item BY=
+
+Multiple reglines for each level of the C<BY=> variable
+
+=item XMIN=
+
+Override xmin in data?
+
+=item XMAX=
+
+Override xmax in data?
+
+=item WEIGHT=
+
+Name of a weight or frequency variable if the data
+             are grouped or you need to perform a weighted regression.
+
+=item COLOR=
+
+Line color [Default: C<COLOR=BLACK>]
+
+=item LINE=
+
+Line style [Default: C<LINE=1>]
+
+=item WIDTH=
+
+Line width [Default: C<WIDTH=1>]
+
+=item IN=
+
+Input annotate data set(s)
+
+=item OUT=
+
+Output annotate data set [Default: C<OUT=REGLINE>]
+
+=item NOTES=
+
+Suppress notes?
+
+
+
+=back 4
+

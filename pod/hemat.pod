@@ -1,0 +1,102 @@
+=head1 Description
+
+The HEMAT macro plots the covariance ellipses for a hypothesized (H)
+effect and for error (E) for all pairs of variables from a MANOVA
+or multivariate multiple regression.
+
+=head2 Method
+
+The macro calls HEPLOT within nested %do ... %end loops to plot all
+pairs of responses.  This is wrapped with calls to the GDISPLA macro 
+to suppress display of the individual plots.  The final display is
+produced by PROC GREPLAY.  In order to make this macro reusable with
+a single SAS session, the separate plots are saved in a temporary
+graphics catalog (GTEMP=work.gtemp), which is normally deleted at the end
+(C<GKILL=Y>).
+
+=head1 Usage
+
+The HEMAT macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %hemat(data=iris, stat=stats, 
+     var=SepalLen SepalWid PetalLen PetalWid,
+     effect=species);
+
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the raw data set to be plotted [Default: C<DATA=_LAST_>]
+
+=item STAT=
+
+Name of C<OUTSTAT=> dataset from PROC GLM
+
+=item EFFECT=
+
+Name of MODEL effect to be displayed for the H matrix.
+             This must be one of
+             the terms on the right hand side of the MODEL statement used
+          in the PROC GLM or PROC REG step, in the same format that this
+          efffect is labeled in the C<STAT=> dataset. This must be one of
+          the values of the _SOURCE_ variable contained in the C<STAT=> 
+          dataset.
+
+=item VAR=
+
+Names of response variables to be plotted - can be
+             a list or X1-X4 or VARA--VARB [Default: C<VAR=_NUMERIC_>]
+
+=item NAMES=
+
+Alternative variable names (used to label the diagonal
+             cells.)
+
+=item M1=
+
+First matrix: either H or H+E [Default: M1=H]
+
+=item M2=
+
+Second matrix either E or I [Default: M2=E]
+
+=item SCALE=
+
+Scale factors for M1 and M2.  See description in HEPLOT
+
+=item HTITLE=
+
+Height of variable name in diagonal cells
+
+=item SYMBOLS=
+
+Not used
+
+=item COLORS=
+
+Colors for the H and E ellipses [Default: C<COLORS=BLACK RED>]
+
+=item ANNO=
+
+Annotate diag or off-diag plot [Default: C<ANNO=NONE>]
+
+=item GTEMP=
+
+Temporary graphics catalog [Default: C<GTEMP=GTEMP>]
+
+=item KILL=
+
+Delete grtemp when done [Default: C<KILL=Y>]
+
+=item GOUT=
+
+Name of the graphic catalog [Default: C<GOUT=GSEG>]
+
+
+=back 4
+

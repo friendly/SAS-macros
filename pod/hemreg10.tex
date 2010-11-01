@@ -1,0 +1,52 @@
+
+% translated by spod2latex from hemreg.pod on Fri Sep 29 16:16:39 EDT 2006
+\subsection{The \macro{HEMREG}: Extract H and E matrices for multivariate regression}\label{mac:hemreg}
+ \index{\macro{hemreg}}
+
+The \macro{HEMREG} extracts hypothesis (H) and error (E) matrices for an
+overall test in a multivariate regression analysis, in a form similar to
+that provided by the \texttt{OUTSTAT=} option with \PROC{GLM}.  This is typically
+used with the \macro{HEPLOT}, or the \macro{MPOWER} for MMRA.
+
+\subsubsection*{Method}
+
+For a multivariate regression analysis, using
+
+\begin{listing}
+ proc glm outstat=stats;
+    model y1 y2 y3 = x1-x5;
+\end{listing}
+
+\PROC{GLM} will produce 5 separate 3x3, 1 df SSCP matrices for the separate
+predictors X1-X5, in the \texttt{OUTSTAT=} data set, but no SSCP matrix for
+the overall multivariate test. The \macro{HEMREG} uses \PROC{REG} instead,
+obtains the HypothesisSSCP and ErrorSSCP tables using ODS, and massages
+these into the same format used by \PROC{GLM}.
+
+\subsubsection*{Usage}
+
+The \macro{HEMREG} is defined with keyword parameters.  The \texttt{Y=} and
+\texttt{X=} parameters are required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:
+
+\begin{listing}
+ %hemreg(y=SAT PPVT RAVEN, x=N S NS NA SS);
+\end{listing}
+\subsubsection*{Parameters}
+\begin{proglist}
+
+\item[DATA=] Name of input dataset. \default{DATA=_LAST_}
+
+\item[Y=] List of response variables.  Must be an explicit,
+blank-seaparated list of variable names.
+
+\item[X=] List of predictor variables.  Must be an explicit,
+blank-seaparated list of variable names.
+
+\item[HYP=] Hame for the overall hypothesis \verb|_SOURCE_| (to be used as the \texttt{EFFECT=}
+parameter in the \macro{HEPLOT}.  \default{HYP=HYP}
+
+\item[OUT=] The name of output HE dataset. \default{OUT=HE}
+
+\end{proglist}

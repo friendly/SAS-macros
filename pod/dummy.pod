@@ -1,0 +1,92 @@
+=head1 Description
+
+Given a character or discrete numerical variable, the DUMMY macro creates
+dummy (0/1) variables to represent the levels of the original variable
+in a regression model.  If the original variable has c levels, (c-1)
+new variables are produced (or c variables, if C<FULLRANK=0>)
+
+=head1 Usage
+
+The DUMMY macro takes the following named parameters.  The arguments
+may be listed within parentheses in any order, separated by commas.
+For example:
+
+  %dummy(var=sex group,prefix=);
+
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input dataset.  If not specified, the most
+ recently created dataset is used.
+
+=item OUT=
+
+The name of the output dataset.  If not specified, the new
+variables are appended to the input dataset.
+
+=item VAR=
+
+The name(s) of the input variable(s) to be dummy coded.  Must be
+specified.  The variable(s) can be character or numeric.
+
+=item PREFIX=
+
+Prefix(s) used to create the names of dummy variables.  The
+default is 'D_'.  
+
+=item NAME=
+
+If C<NAME=VAL>, the dummy variables are named by appending the
+value of the C<VAR=> variable to the prefix.  Otherwise, the
+dummy variables are named by appending numbers, 1, 2, ...
+to the prefix.  The resulting name must be 8 characters or
+less.
+
+=item BASE=
+
+Indicates the level of the baseline category, which is given
+values of 0 on all the dummy variables.  C<BASE=_FIRST_ >
+specifies that the lowest value of the C<VAR=> variable is the
+baseline group; C<BASE=_LAST_ >specifies the highest value of
+the variable.  Otherwise, you can specify BASE=value to
+make a different value the baseline group.
+
+=item FULLRANK=
+
+0/1, where 1 indicates that the indicator for the BASE category
+          is eliminated.  
+
+
+=back 4
+
+=head2 Example
+
+With the input data set,
+
+ data test;
+   input y group $ @@;
+  cards;
+  10  A  12  A   13  A   18  B  19  B  16  C  21  C  19  C  
+  ;
+
+The macro statement:
+
+   %dummy ( data = test, var = group) ;
+
+produces two new variables, D_A and D_B.  Group C is the baseline
+category (corresponding to C<BASE=_LAST_>)
+
+     OBS     Y    GROUP    D_A    D_B
+        1     10      A       1      0
+        2     12      A       1      0
+        3     13      A       1      0
+        4     18      B       0      1
+        5     19      B       0      1
+        6     16      C       0      0
+        7     21      C       0      0
+        8     19      C       0      0
+

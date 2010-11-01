@@ -1,0 +1,125 @@
+=head1 Description
+
+The SPRDPLOT macro produces a spread-level plot to determine if a simple
+power transformation can equalize within-group variance of a response
+variable in a dataset classified by one or more classification
+variables.  This method may be extended to regression data by
+dividing a continuous covariate into ordered groups by use of the
+C<GROUPS=> parameter.
+
+The spread-level plot calculates log10(Spread) and log10(Level),
+where Spread is usually the Interquartile Range, and Level is usually
+the Median. 
+
+This plot has the property that *if* the relationship between
+log10(Interquartile range) and log10(Median) is reasonably linear,
+then the recommended power is p = 1 - slope, and the transformation
+is
+
+           / y**p,      p > 0
+     y --> | log(p),    p = 0
+           \ -100y**p,  p < 0
+
+The macro chooses the best power(s) from a list of simple integers
+and half-integers (C<PLIST=>), and creates new variables using those
+transformations.
+
+=head1 Usage
+
+The SPRDPLOT macro is defined with keyword parameters.
+The C<VAR=> and C<CLASS=> parameters are required.  
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %sprdplot(data=animals, var=survive, class=treat poison);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the input dataset [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+[R] Name of the variable to be transformed.  Must be
+             numeric, and should contain all positive values.
+
+=item CLASS=
+
+[R] Names of one or more class variables.  Only the first
+             C<CLASS=> variable is used as point labels in the graphics
+             plot.
+
+=item GROUPS=
+
+If the C<CLASS=> variable is continuous, use the C<GROUPS=> 
+             parameter to specify the number of groups formed from
+             the ordered values of the C<CLASS=> variable.  e.g.,
+             C<GROUPS=10 >divides the C<CLASS=> variable into deciles.
+             [Default: GROUPS=]
+
+=item LEVEL=
+
+The measure of location used for each group, either
+             MEDIAN or MEAN [Default: C<LEVEL=M>edian]
+
+=item SPREAD=
+
+The measure of spread used for each group, either
+             QRANGE or STD [Default: C<SPREAD=Q>range]
+
+=item OFFSET=
+
+Constant added to the C<VAR=> variable before transformation.
+             If the variable contains negative values, OFFSET is
+             set equal to the abs(minimum) value, to ensure that all values
+             are positive.
+
+=item PREFIX=
+
+Prefix for name of transformed variable.  If the PREFIX
+             is T_ and C<BEST=1>, the transformed variable is named T_&var.  
+             If BEST>1, the variables are named T_1&var, T_2&var, ...
+             [Default: C<PREFIX=T_>]
+
+=item PLIST=
+
+List of powers to consider.  Should be a blank-separated
+             list of numbers in increasing order.
+             [Default: PLIST=-3 -2 -1 -.5 0 .5 1 2 3]
+
+=item BEST=
+
+Number of best powers to transform &var [Default: C<BEST=1>]
+
+=item PPLOT=
+
+Produce a printer plot? [Default: C<PPLOT=N>]
+
+=item GPLOT=
+
+Produce a graphics plot? [Default: C<GPLOT=Y>]
+
+=item HTEXT=
+
+Height of text in graphics plot [Default: C<HTEXT=1.7>]
+
+=item VAXIS=
+
+Name of an AXIS statement for the vertical (spread) axis
+
+=item HAXIS=
+
+Name of an AXIS statement for the horizontal (level) axis
+
+=item OUT=
+
+Name of the output dataset containing the transformed
+             variable [Default: OUT=&DATA]
+
+
+
+=back 4
+

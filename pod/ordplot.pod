@@ -1,0 +1,62 @@
+=head1 Description
+
+The ORDPLOT macro constructs a plot whose slope and intercept can
+diagnose the form of a discrete frequency distribution.  This is
+a plot of k n(k) / n(k-1) against k, where k is the basic count
+and n(k) is the frequency of occurrence of k. The macro displays
+both a weighted and unweighted least squares line and uses the
+slope and intercept of the weighted line to determine the form
+of the distribution.
+
+=head1 Usage
+
+The ORDPLOT macro is called with keyword parameters. The C<COUNT=>
+and C<FREQ=> variables are required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  data horskick;
+     input deaths corpsyrs;
+     label deaths='Number of Deaths'
+        corpsyrs='Number of Corps-Years';
+  cards;
+        0    109
+        1     65
+        2     22
+        3      3
+        4      1
+  ;
+  %ordplot(count=Deaths, freq=corpsyrs);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the input data set [Default: C<DATA=_LAST_>]
+
+=item COUNT=
+
+The name of the basic count variable
+
+=item FREQ=
+
+The name of the variable giving the number of occurrences
+of COUNT
+
+=item LABEL=
+
+Label for the horizontal (C<COUNT=>) variable.  If not specified
+the variable label for the C<COUNT=> variable in the input
+data set is used.
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=ORDPLOT>]
+
+=item NAME=
+
+Name of the graphics catalog entry [Default: C<NAME=ORDPLOT>]
+
+=back 4

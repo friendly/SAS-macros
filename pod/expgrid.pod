@@ -1,0 +1,66 @@
+=head1 Description
+
+The EXPGRID macro creates a data set from all combinations of the
+variables and their values named in the macro call.  It is useful
+in a variety of contexts, but was written for the purpose of generating
+predicted values over a grid of independent variables in any linear
+or non-linear model.  It is a SAS implementation of the expand.grid() 
+function of R/S.
+
+=head1 Usage
+
+The EXPGRID macro is defined with an arbitrary number of arguments.
+Each of these correspond to a specification for a factor and variables in
+the output data set, separated by commas. For example,
+
+  %expgrid(n=10, trials=2 4 8, time=10 to 20 by 5, sex=Male Female);
+
+This generates a data set containing 1 * 3 * 3 * 2 observations, with
+all combinations of the four variables, N TRIALS TIME SEX.  The first
+listed factors vary most rapidly in the output data set.
+
+In this version, the result always appears as a data set named _GRID_.
+
+=head2 Parameters
+
+ Each supplied argument must be of the form,  C<VAR = VALUE>s, where
+
+=over 4
+
+=item VAR
+
+is a valid SAS variable name
+
+=item VALUEs
+
+is either a space-separated list of one or more values, which
+          can be character or numeric, or a numeric DO specification,
+          of the form, val1 TO val2 <BY val3>.  The special case of a
+          single value (e.g., C<N=10 >or C<SEX=M>ale) generates a constant 
+          variable in the output data set.   Note that this implies
+          that the string ' TO ' is treated specially; you can not have
+          a specification like C<WHERE=FROM TO BACK FORTH>.
+
+
+=back 4
+
+=head1 Examples
+
+The macro call
+
+  %expgrid(n=10, trials=2 4 8, time=10 to 20 by 5, sex=Male Female);
+
+generates the data step:
+
+  data _grid_;
+     do sex='Male  ', 'Female';
+        do time= 10 to 20 by 5;
+           do trials=2, 4, 8;
+              n = 10;
+              output;
+              end;
+           end;
+        end;
+
+
+

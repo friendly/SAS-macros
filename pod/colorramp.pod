@@ -1,0 +1,93 @@
+=head1 Description
+
+The COLORRAMP macro constructs a set of RGB colors ranging from a
+starting color to an ending color, optionally going through a middle
+color.  The result appears as the C<COLORVAR=> variable in an C<OUT=>
+output data set, and optionally as a macro variable named by the
+C<RESULT=> parameter.
+
+The ends and middle of the color scale can be specified either as
+6-character RRGGBB hex strings, as 8-character HLS strings (Hhhllss),
+or as the predefined SAS/Graph color names, e.g., 'very light purple'.
+Except for RRGGBB, this requires the SAS-supplied COLORMAC macro,
+available with SAS V8+.
+
+=head2 Method
+
+C<START=>, C<END=> and C<MIDDLE=> are each converted to decimal red, green,
+blue components, and linear interpolation is performed on each,
+from C<START=> to C<END=>, possibly through C<MIDDLE=>.  This means that
+if you prefer to use HLS colors, the result will not be exactly
+linear in HLS space, though the difference will probably be small
+unless very few colors are used.
+
+=head1 Usage
+
+The COLORRAMP macro is defined with keyword parameters.  The C<N=>
+parameter is required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %colorramp(n=10);
+  %colorramp(start=red,mid=very light gray,end=0000FF, n=8, display=Y);
+  %colorramp(start=red, end=blue, n=6, result=mycolors);
+  %put Colors: &mycolors;
+
+  %colorramp(start=H00080FF, end=H07880FF, n=10, out=mycolors);
+  %genpat(n=nobs, data=mycolors);
+
+=head2 Parameters
+
+=over 4
+
+=item N=
+
+Number of colors to be created
+
+=item START=
+
+Starting color.  This should be either a 6-digit hex string
+(rrggbb), or an 8-char HLS string (Hhhhllss),
+or the name of a SAS/Graph color. [Default: C<START=FF0000>]
+
+=item MID=
+
+Middle color.  If specified, the resulting colors go from
+   the C<START=> color to the C<MIDDLE=> color, then to the C<END=>
+color.  When C<N=> is an even number, you can get a symmetric
+set of colors by specifying C<DUPMID=1>;  otherwise, there is
+one fewer color in the set from C<START=> to C<MID=> than from
+C<MID=> to C<END=>.
+
+=item END=
+
+Ending color [Default: C<END=0000FF>]
+
+=item DUPMID=
+
+0 or 1: Duplicate middle color when N=even? [Default: C<DUPMID=0>]
+
+=item COLORVAR=
+
+Name of color the variable in the C<OUT=> data set.
+ This is a SAS/Graph RGB color of the form CXrrggbb. 
+[Default: C<COLORVAR=COLOR>]
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=COLORS>]
+
+=item DISPLAY=
+
+Show a display of the colors? [Default: C<DISPLAY=N>]
+
+=item RESULT=
+
+Name of output macro variable containing color list.  If specified,
+a macro variable of that name is created with a list of all distinct
+colors in the C<OUT=> data set.
+
+
+
+=back 4
+

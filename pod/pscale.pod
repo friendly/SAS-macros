@@ -1,0 +1,67 @@
+=head1 Description
+
+The PSCALE macro constructs an annotate data set to draw an unequally-
+spaced scale of probability values on the vertical axis of a plot
+(at either the left or right).  The probabilities are assumed to 
+correspond to equally-spaced values on a scale corresponding to
+Normal quantiles (using the probit transformation) or Logistic
+quantiles (using the logit transformation).
+
+=head1 Usage
+
+The PSCALE macro is called with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %pscale(out=pscale);
+  proc gplot;
+     plot logit * X / anno=pscale;
+
+=head2 Parameters
+
+=over 4
+
+=item ANNO=
+
+Name of annotate data set [Default: C<ANNO=PSCALE>]
+
+=item OUT=
+
+Synonym for C<ANNO=>
+
+=item SCALE=
+
+Linear scale: logit or probit [Default: C<SCALE=LOGIT>]
+
+=item LO=
+
+Low scale value [Default: LO=-3]
+
+=item HI=
+
+High scale value [Default: C<HI=3>]
+
+=item PROB=
+
+List of probability values to be displayed on the axis,
+             in the form of a list acceptable in a DO statement.
+             [Default: PROB=%str(.05, .1 to .9 by .1, .95)]
+
+=item AT=
+
+X-axis percent for the axis.  C<AT=100 >plots the axis at
+             the right; C<AT=0 >plots the axis at the left. [Default: C<AT=100>]
+
+=item TICKLEN=
+
+Length of tick marks [Default: C<TICKLEN=1.3>]
+
+=item SIZE=
+
+Size of value labels
+
+=item FONT=
+
+Font for value labels
+
+=back 4

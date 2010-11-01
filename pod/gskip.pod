@@ -1,0 +1,85 @@
+=head1 Description
+
+The GSKIP macro is designed to handle difficulties in producing
+multiple plots in one SAS job.  For EPS, GIF, CGM and WMF drivers,
+it assigns a new output filename for the next plot.  For FOILS
+(on continuous forms) it skips the normally blank non-foil
+separator page.  Otherwise, it has no effect.
+
+=head1 Usage
+
+The GSKIP macro has one optional positional parameter.  It relies on global
+macro parameters, DISPLAY, DEVTYP, FIG, GSASFILE, and GSASDIR.
+These parameters are normally initialized either in the AUTOEXEC.SAS
+file, or in device-specific macros.  For example, for normal graphic
+output to the Graph Window, assign DISPLAY and DEVTYPE as
+
+  %let devtype=SCREEN;
+  %let displa=ON;
+
+For EPS file output,
+
+  %let devtype=EPS;
+  %let fig=1;
+  %let gsasfile=myfig;
+
+GSKIP is normally used after each graphic procedure or macro to advance
+the FIG counter and open a new graphic output file.  For example,
+
+  proc gplot;
+     plot y * x;
+  %gskip();
+
+=head2 Parameters
+
+=over 4
+
+=item INC
+
+The value by which the C<FIG> counter is incremented, normally
+1 (the default).  Use the C<INC> parameter after a plot with
+a BY statement.  For example,
+
+  proc gplot;
+     plot y * x; by sex;
+  %gskip(2);
+
+=back 4
+
+=head2 Global Parameters
+
+=over 4
+
+=item DISPLAY
+
+String value, C<ON> or C<OFF>, usually set by the GDISPLA macro.
+The GISKP macro takes no action if C<DISPLAY=OFF>.
+
+=item DEVTYP
+
+String value, the type of graphic device driver.  The
+values C<EPS>, C<GIF>, C<CGM> and C<WMF> cause C<FIG=> to be incremented
+and a new output filename assigned.  If C<DEVTYPE=FOILS>,
+a blank graphic page is produced.  All others are ignored.
+
+=item FIG
+
+A numeric value, the number of the current figure.
+
+=item GSASFILE
+
+String value, the basename of the graphic output file(s).
+The output files are named according to the macro expression
+
+     %scan(&gsasfile,1,.)&fig..%lowcase(&devtyp)
+
+e.g.,  myfile1.eps, myfile2.eps, ....
+
+=item GSASDIR
+
+String value, the output directory in which the graphic
+files are written.  If not specified, output goes to the
+current directory.
+
+
+=back 4

@@ -1,0 +1,191 @@
+% LaTeX document produced by pod2latex from "corresp.pod".
+
+%\section{CORRESP}%
+
+
+%\subsection*{Description}
+The \macro{CORRESP} carries out simple correspondence analysis of a
+two-way contingency table, and various extensions (stacked analysis,
+MCA) for a multiway table, as in the \proc{CORRESP}.  It also
+produces labeled plots of the category points in either 2 or 3
+dimensions, with a variety of graphic options, and the facility to
+equate the axes automatically. 
+
+The macro takes input in one of two forms:
+
+\begin{enumerate}
+
+\item A two-way contingency table, where the columns are separate variables and the rows are separate observations (identified by a row ID variable). 
+For this form, specify:
+\begin{listing}
+     ID=ROWVAR, VAR=C1 C2 C3 C4 C5
+\end{listing}
+
+\item A contingency table in frequency form (e.g., the output from PROC FREQ), or raw data, where there is one variable for each factor.  In frequency form, there will be one observation for each cell. For this form, specify the
+table variables in the \texttt{TABLES=} parameter:
+\begin{listing}
+     TABLES=A B C
+\end{listing}
+
+Include the \texttt{WEIGHT=} parameter when the observations are in frequency
+form.
+
+\end{enumerate}
+
+\subsection*{Usage}
+The \macro{CORRESP} is called with keyword parameters.  Either the
+\texttt{VAR=} parameter or the \texttt{TABLES=} parameter (but not both) must be
+specified, but other parameters or options may be needed to carry
+out the analysis you want.  The arguments may be listed within
+parentheses in any order, separated by commas.  For example:
+\begin{listing}
+  %corresp(var=response, id=sex year);
+\end{listing}
+
+The plot may be re-drawn or customized using the output \texttt{OUT=}
+data set of coordinates and the \texttt{ANNO=} Annotate data set.
+
+\subsubsection*{Parameters}%
+
+\begin{proglist}
+
+\item[DATA=]
+Specifies the name of the input data set to be analyzed.
+\default{DATA=_LAST_}
+
+\item[VAR=]
+Specifies the names of the column variables for simple
+CA, when the data are in contingency table form.
+Not used for MCA (use the \texttt{TABLES=} parameter instead).
+
+\item[ID=]
+Specifies the name(s) of the row variable(s) for simple
+CA.  Not used for MCA.
+
+\item[TABLES=]
+Specifies the names of the factor variables used to create
+the rows and columns of the contingency table.  For a simple
+CA or stacked analysis, use a ',' or '/' to separate the
+the row and column variables.
+
+\item[WEIGHT=]
+Specifies the name of the frequency (\texttt{WEIGHT}) variable when
+the data set is in frequency form.  If \texttt{WEIGHT=} is omitted,
+the observations in the input data set are not weighted.
+
+\item[SUP=]
+Specifies the name(s) of any variables treated as supplementary.
+The categories of these variables are included in the output,
+but not otherwise used in the computations.  
+These must be included among the variables in the \texttt{VAR=} or
+\texttt{TABLES=} option.  
+
+\item[DIM=]
+Specifies the number of dimensions of the CA/MCA solution.
+Only two dimensions are plotted by the \texttt{PPLOT} option,
+however.
+
+\item[OPTIONS=]
+Specifies options for \PROC{CORRESP}.  Include \texttt{MCA} for an
+MCA analysis, \texttt{CROSS=ROW|COL|BOTH} for stacked analysis of
+multiway tables, \texttt{PROFILE=BOTH|ROW|COLUMN} for various
+coordinate scalings, etc.  \default{OPTIONS=SHORT}
+
+\item[OUT=]
+Specifies the name of the output data set of coordinates.
+\default{OUT=COORD}
+
+\item[ANNO=]
+Specifies the name of the annotate data set of labels
+produced by the macro.  \default{ANNO=LABEL}
+
+\item[PPLOT=]
+Produce printer plot? \default{PPLOT=NO}
+
+\item[GPLOT=]
+Produce graphics plot? \default{GPLOT=YES}
+
+\item[PLOTREQ=]
+The dimensions to be plotted \default{PLOTREQ=DIM2*DIM1
+ when DIM=2, PLOTREQ=DIM2*DIM1=DIM3 when DIM=3}
+
+\item[HTEXT=]
+Height for row/col labels.  If not specified, the global
+HTEXT goption is used.  Otherwise, specify one or two numbers
+to be used as the height for row and column labels.
+The \texttt{HTEXT=} option overrides the separate \texttt{ROWHT=} and \texttt{COLHT=}
+parameters (maintained for backward compatibility).
+
+\item[ROWHT=]
+Height for row labels
+
+\item[COLHT=]
+Height for col labels
+
+\item[COLORS=]
+Colors for row and column points, labels, and interpolations.
+\default{COLORS=BLUE RED}
+
+\item[POS=]
+Positions for row/col labels relative to the points.
+\default{POS=5 5}
+
+\item[SYMBOLS=]
+Symbols for row and column points \default{SYMBOLS=NONE NONE}
+
+\item[INTERP=]
+Interpolation options for row/column points. In addition to the
+standard interpolation options provided by the SYMBOL statement,
+the \macro{CORRESP} also understands the option VEC to mean
+a vector from the origin to the row or column point. 
+\default{INTERP=NONE NONE, INTERP=VEC for MCA}
+
+\item[HAXIS=]
+AXIS statement for horizontal axis.  If both \texttt{HAXIS=} and
+\texttt{VAXIS=} are omitted, the program calls the \macro{EQUATE} to
+define suitable axis statements.  This creates the axis
+statements AXIS98 and AXIS99, whether or not a graph
+is produced.
+
+\item[VAXIS=]
+AXIS statement for vertical axis- use to equate axes
+
+\item[VTOH=]
+The vertical to horizontal aspect ratio (height of one
+character divided by the width of one character) of the
+printer device, used to equate axes for a printer plot,
+when \texttt{PPLOT=YES}. \default{VTOH=2}
+
+\item[INC=]
+X, Y axis tick increments (for the \macro{EQUATE}).  Ignored
+if \texttt{HAXIS=} and \texttt{VAXIS=} are specified. \default{INC=0.1 0.1}
+
+\item[XEXTRA=]
+The number of extra X axis tick marks at the left and right.  Use to
+allow extra space for labels. \default{XEXTRA=0 0}
+
+\item[YEXTRA=]
+The number of extra Y axis tick marks \default{YEXTRA=0 0}
+
+item M0=
+
+Length of origin marker, in data units. \default{M0=0.05}
+
+\item[DIMLAB=]
+Prefix for dimension labels \default{DIMLAB=Dimension when DIM=2,
+otherwise, <DIMLAB=Dim>}
+
+\item[NAME=]
+Name of the graphics catalog entry \default{NAME=corresp}        
+
+\end{proglist}
+
+\subsection*{Dependencies}%
+
+The \macro{CORRESP} calls several other macros not included here.
+It is assumed these are stored in an autocall library.  If not,
+you'll have to \%include them in your SAS session or batch program.
+
+\macro{LABEL} --- label points 
+\macro{EQUATE} --- equate axes
+

@@ -1,0 +1,24 @@
+=head1 Description
+
+The GKILL macro deletes entries in a graphics catalog.  This is
+useful in situations where PROC GREPLAY is used repeatedly in a
+single session or batch file, and each new sequence of plots for 
+PROC GREPLAY should start with a clean slate. 
+
+
+=head2 Parameters
+
+=over 4
+
+=item CATALOG=
+
+The name of the graphics catalog [Default: WORK.GSEG]
+
+=item ENTRIES=
+
+Name(s) of entries to delete [Default: _ALL_]
+
+
+
+=back 4
+

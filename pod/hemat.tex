@@ -1,0 +1,72 @@
+
+% translated by spod2latex from hemat.pod on Fri Sep 29 13:48:47 EDT 2006
+\subsection{The \macro{HEMAT}: HE plots for all pairs of response variables}\label{mac:hemat}
+ \index{\macro{hemat}}
+
+The \macro{HEMAT} plots the covariance ellipses for a hypothesized (H)
+effect and for error (E) for all pairs of variables from a MANOVA
+or multivariate multiple regression.
+
+\subsubsection*{Method}
+
+The macro calls HEPLOT within nested \%do ... \%end loops to plot all
+pairs of responses.  This is wrapped with calls to the \macro{GDISPLA} 
+to suppress display of the individual plots.  The final display is
+produced by \PROC{GREPLAY}.  In order to make this macro reusable with
+a single SAS session, the separate plots are saved in a temporary
+graphics catalog (\texttt{GTEMP=work.gtemp}), which is normally deleted at the end
+(\texttt{GKILL=Y}).
+
+\subsubsection*{Usage}
+
+The \macro{HEMAT} is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:
+
+\begin{listing}
+ %hemat(data=iris, stat=stats, 
+    var=SepalLen SepalWid PetalLen PetalWid,
+    effect=species);
+\end{listing}
+\subsubsection*{Parameters}
+\begin{proglist}
+
+\item[DATA=] Name of the raw data set to be plotted. \default{DATA=_LAST_}
+
+\item[STAT=] Name of \texttt{OUTSTAT=} dataset from \PROC{GLM}
+
+\item[EFFECT=] Name of MODEL effect to be displayed for the H matrix.
+This must be one of
+the terms on the right hand side of the MODEL statement used
+in the \PROC{GLM} or \PROC{REG} step, in the same format that this
+efffect is labeled in the \texttt{STAT=} dataset. This must be one of
+the values of the \verb|_SOURCE_| variable contained in the \texttt{STAT=} 
+dataset.
+
+\item[VAR=] Names of response variables to be plotted - can be
+a list or \texttt{X1-X4} or \texttt{VARA--VARB}. \default{VAR=_NUMERIC_}
+
+\item[NAMES=] Alternative variable names (used to label the diagonal
+cells.)
+
+\item[M1=] First matrix: either H or H+E. \default{M1=H}
+
+\item[M2=] Second matrix either E or I. \default{M2=E}
+
+\item[SCALE=] Scale factors for M1 and M2.  See description in HEPLOT
+
+\item[HTITLE=] Height of variable name in diagonal cells
+
+\item[SYMBOLS=] Not used
+
+\item[COLORS=] Colors for the H and E ellipses. \default{COLORS=BLACK RED}
+
+\item[ANNO=] Annotate diag or off-diag plot. \default{ANNO=NONE}
+
+\item[GTEMP=] Temporary graphics catalog. \default{GTEMP=GTEMP}
+
+\item[KILL=] Delete grtemp when done. \default{KILL=Y}
+
+\item[GOUT=] Name of the graphic catalog. \default{GOUT=GSEG}
+
+\end{proglist}

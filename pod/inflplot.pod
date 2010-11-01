@@ -1,0 +1,168 @@
+=head1 Description
+
+The INFLPLOT macro produces a variety of influence plots for a regression
+model -- plots of studentized residuals vs.  leverage (hat-value),
+using an influence measure (COOK's D, DFFITS, COVRATIO) as the size of
+a bubble symbol.  The plot show the components of influence (residual
+and leverage) as well as their combined effect.
+
+Plots can be produced either as bubble plots with PROC GPLOT or GCONTOUR
+plots of any of the influence measures overlaid with bubble symbols.
+The contour plots show how the influence measures vary with residual
+and leverage.  Horizontal reference lines in the plots delimit
+observations whose studentized residuals are individually or jointly
+(with a Bonferonni correction) significant Vertical reference lines in
+the plot shows observations which are of "high leverage".
+
+=head1 Usage
+
+The INFLPLOT macro is defined with keyword parameters. The C<Y=> and
+C<X=> parameters are required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %inflplot(Y=response, X=X1 X2 X3 X4, ...);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item Y=
+
+Name of the criterion variable.
+
+=item X=
+
+Names of the predictors in the model.  Must be a blank-separated
+list of variable names.
+
+=item ID=
+
+The name of an observation ID variable.  If not specified, observations
+are labeled sequentially, 1, 2, ...
+
+=item BUBBLE=
+
+Influence measure shown by the bubble size.
+Specify one of COOKD, DFFITS, or COVRATIO [Default: C<BUBBLE=COOKD>]
+
+=item CONTOUR=
+
+Specifies influence measures shown as contours in the plot(s).
+One or more of COOKD, DFFITS, or COVRATIO.
+
+=item LABEL=
+
+Points to label with the value of the ID variable in the plot: 
+One of ALL, NONE or INFL.  The choice INFL causes only influential
+points to be labelled. [Default: C<LABEL=INFL>] 
+
+=item INFL=
+
+Criterion for declaring an influential observation,  
+a logical expression using any of the variables in the
+output C<OUT=> data set of regression diagnostics.
+The default is 
+
+             INFL=%STR(ABS(RSTUDENT) > TCRIT
+               OR HATVALUE > HCRIT
+               OR ABS(&BUBBLE)  > BCRIT)
+
+=item LSIZE=
+
+Observation label size.  The height of other text is controlled by
+             the C<HTEXT=> goption. [Default: C<LSIZE=1.5>]
+
+=item LCOLOR=
+
+Observation label color [Default: C<LCOLOR=BLACK>]
+
+=item LPOS=
+
+Observation label position, using a position value
+             understood by the Annotate facility. [Default: C<LPOS=5>]
+
+=item BSIZE=
+
+Bubble size scale factor [Default: C<BSIZE=10>]
+
+=item BSCALE=
+
+Scale for the bubble size. C<BSCALE=AREA >makes the bubble area 
+             proportional to the influence measure;  C<BSCALE=RADIUS >makes the bubble
+             radius proportional to influence. [Default: C<BSCALE=AREA>]
+
+=item BCOLOR=
+
+Bubble color [Default: C<BCOLOR=RED>]
+
+=item HREF=
+
+Locations of horizontal reference lines. The macro variables
+             HCRIT and HCRIT1 are internally calculated as 2 and 3 times the
+          average HAT value. [Default: HREF=&HCRIT &HCRIT1]
+
+=item VREF=
+
+Locations of vertical reference lines. The program computes
+             critical values of the t-statistic for an individual residual
+          (TCRIT) or for all residuals using a Bonferroni correction
+          (TCRIT1)  [Default: VREF=-&TCRIT1 -&TCRIT 0 &TCRIT &TCRIT1]
+
+=item REFCOL=
+
+Color of reference lines [Default: C<REFCOL=BLACK>]
+
+=item REFLIN=
+
+Line style for reference lines. Use 0 to suppress. [Default: C<REFLIN=33>]
+
+=item GPLOT=
+
+Whether to draw the plot using PROC GPLOT, Y or N.  This may be useful
+             if you use the C<CONTOUR=> option and want to suppress the GPLOT version.
+
+=item OUT=
+
+The name of the output data set containing regression diagnostics
+             [Default: C<OUT=_DIAG_>]
+
+=item OUTANNO=
+
+Output data set containing point labels [Default: C<OUTANNO=_ANNO_>]
+
+=item NAME=
+
+The name of the graph in the graphic catalog [Default: C<NAME=INFLPLOT>]
+
+=item GOUT=
+
+The name of the graphics catalog
+
+
+=back 4
+
+=head2 Dependencies
+
+ %gskip
+
+
+=head2 Example
+
+ %include macros(inflplot);
+ %include data(duncan) ;
+ %inflplot(data=duncan,
+   y=Prestige,       
+   x=Income Educ,  
+   id=job,
+   bubble=cookd,
+   bsize=14, lsize=2.5, bcolor=red,
+   out=infl, outanno=labels,
+   contour=cookd covratio);
+
+
+

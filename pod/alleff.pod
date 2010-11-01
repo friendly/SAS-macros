@@ -1,0 +1,169 @@
+=head1 Description
+
+The ALLEFF macro constructs a side-by-side plot of the values of
+main effects, interactions, and residuals for any linear model,
+as described in SSSG, Section 7.4.3, and Hoaglin et al. (1991), 
+`Fundamentals of Exploratory Analysis of Variance', Wiley.
+
+The goal is to display the effect values for the levels of all
+main effects and interactions, together with the values of residuals
+(whose mean square is the MSE) in a single comprehensive display.
+
+=head1 Usage
+
+The EFFPLOT macro is defined with keyword parameters.  The C<RESPONSE=>
+and C<MODEL=> parameters are required.  The arguments may be listed
+within parentheses in any order, separated by commas. For example:
+
+  %alleff(data=rats, response=gain, model=amount feed amount*feed);
+
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item RESPONSE=
+
+The name of the response variable in the model  
+
+=item MODEL=
+
+A blank-separated list of terms in a MODEL statement for GLM.  In 
+this version, all model variables are treated as CLASS
+variables, and the terms in the model may not use GLM '|' notation.  
+That is, a two-way factorial design should be specified
+as C<MODEL=A B A>*B, rather than A|B.
+
+=item PRINT=
+
+Things to print: Any one or more of DESIGN FIT EFFECT LABEL
+
+=item SCALE=
+
+If non-blank, the effect values are scaled by sqrt(n/df),
+ so that their values are comparable as mean squares.  Use
+ C<SCALE=1 >when the goal is to see the size of the effects
+ in relation to the size of the MSE.  [This should probably
+ be the default, but is not.]
+
+=item VAXIS=
+
+AXIS statement for vertical axis.  If not specified,
+             the program uses C<AXIS1 LABEL=(A=90)> and C<VAXIS=AXIS1>.
+
+=item HAXIS=
+
+AXIS statement for horizontal axis.  If not specified,
+             the program uses C<AXIS2 OFFSET=(4)> and C<HAXIS=AXIS2>.  For 3+
+             factors, it also uses C<VALUE=(A=-20)> to allow longer effect labels to
+             fit on the horizontal axis.
+
+=item HTEXT=
+
+Height of text labels for effects.  If not specified, the
+             global HTEXT goption is used.
+
+=item SYMBOLS=
+
+A list of SAS/Graph symbols to be used for 1-factor (main)
+effects, 2-factor effects, 3-factor effects, ...
+There should be as many symbols as factors in the design.
+Using the defaults for C<SYMBOLS=>, C<COLORS>= and C<INTERP=> causes
+the program to generate the following SYMBOL statements:
+
+  symbol1 value=dot color=blue interpol=none h=1.5;
+  symbol2 value=square color=red interpol=hilob h=1.5;
+  symbol3 value=none color=green interpol=hilob h=1.5;
+  symbol4 v=none i=none c=black;
+
+Alternatively, you can define your own SYMBOL statements,
+SYMBOL1, SYMBOL2, ... before calling ALLEFF and specify
+C<SYMBOLS=SYMB>.  In this case, no SYMBOL statements are
+generated internally.  [Default: C<SYMBOLS=DOT SQUARE NONE>]
+
+=item COLORS=
+
+A list of SAS/Graph colors to be used for 1-factor (main)
+effects, 2-factor effects, 3-factor effects, ... of length
+equal to the number of factors.  Ignored if C<SYMBOLS=SYMB>.
+[Default: C<COLORS=BLUE RED GREEN>]
+
+=item INTERP=
+
+A list of SAS/Graph interpolation options to be used for 1-factor (main)
+effects, 2-factor effects, 3-factor effects, ... of length
+equal to the number of factors.   Ignored if C<SYMBOLS=SYMB.>
+[Default: C<INTERP=NONE NONE HILOB>]
+
+=item HSYM=
+
+Height of symbols in generated SYMBOL statements.  Ignored if C<SYMBOLS=SYMB>.
+             [Default: C<HSYM=1.5>]
+
+=item RESIDS=
+
+Specifies how to display the residuals in the plot.  At present,
+only C<RESIDS=BOXAXIS> is recognized, which causes the program to use
+the BOXAXIS macro to draw a boxplot of residuals after the final model
+effect. 
+
+=item OUTFIT=
+
+Output data set containing effect values as columns.
+             The effect values are named by abbreviating the model
+             variables to 1 or 2 characters. [Default: C<OUTFIT=OUTFIT>]
+
+=item OUTEFF=
+
+Output data set containing effect values in the form used
+             for the plot.
+
+=item NAME=
+
+Name for the graphics catalog entry. [Default: C<NAME=ALLEFF>]
+
+=item GOUT=
+
+Name for the graphics catalog used to store the plot. [Default: C<GOUT=GSEG>]
+
+
+=back 4
+
+=head2 Requires
+
+  SAS/IML
+  boxaxis
+  combine
+  expglm (experimental)
+
+=head2 Limitations
+
+Only handles fully crossed designs, though not all terms need be included
+in the model.
+
+All model terms are treated as CLASS variables.  Under SAS V <7, there
+is a limit of 4 factors.
+
+Should incorporate the necessary macro code to construct the design
+matrix directly, rather than relying on IML routines from desmat.sas.
+(use GLMMOD)
+
+=head2 Acknowledgements
+
+=over 4
+
+=item  
+
+Jack Hamilton and Ian Whitlock helped solve some thorny problems
+ in manipulating the effect data into the form required for plotting.
+
+=item 
+
+John Hendrickx provided the %DESMAT macro and supporting IML routines.
+
+=back 4
+

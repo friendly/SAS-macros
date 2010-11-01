@@ -1,0 +1,86 @@
+=head1 Description
+
+The AGREE program is a collection of SAS/IML modules for preparing
+observer agreement charts which portray the agreement between two
+raters.
+
+=head1 Usage
+
+The modules are typically loaded into the SAS/IML workspace with
+the %include statement.  The required input parameters are specified
+with IML statements, and the AGREE module is called as follows,
+
+  proc iml;
+     %include 'path/to/agree.sas';
+     *-- set global variables, if desired;     
+     font = 'hwpsl009';
+     htext=1.3;
+
+     *-- data, labels, title, weights;
+     freq =
+        {  5     3     0      0,
+           3    11     4      0,
+           2    13     3      4,
+           1     2     4     14 };
+     vnames = {"New Orleans Neurologist" "Winnipeg Neurologist"};
+     lnames = {"Certain" "Probable" "Possible" "Doubtful"};
+     title  = "Multiple Sclerosis: New Orleans patients";
+     w = 1;         *-- diagonals onl   , or ...;
+     w = {1 (8/9)}; *-- diagonals + 1-off;
+     run agree(freq, w, vnames, lnames, title);
+
+=head2 Parameters
+
+The required parameters for the run agree statement are:
+
+=over 4
+
+=item table
+
+A square numeric matrix containing the contingency table
+to be analyzed.
+
+=item weight
+
+A vector of one or more weights used to give ``partial
+credit'' for disagreements by one or more categories.
+To ignore all but exact agreements, let weight=1.  
+To take into account agreements one-step apart (with a 
+weight of 5/6), let C<weight={1 5/6}>.
+
+=item vnames
+
+A character vector of two elements, containing the names
+of the row and column variables.
+
+=item lnames
+
+A character vector containing the names of the row and
+column categories.  If table is I<n x n>, then
+lnames should contain I<n> elements.
+
+=item title
+
+A character string containing the title for the plot.
+
+=back 4
+
+=head2 Global input variables
+
+The program uses two global variables to determine the font and
+character height for text in the agreement chart.
+
+=over 4
+
+=item font
+
+A character string specifying the font used.
+The default is Helvetica ('hwpsl009') if a PostScript
+driver is being used, SWISS otherwise.
+
+=item htext
+
+A numeric value specifying the height of text characters.
+
+=back 4
+

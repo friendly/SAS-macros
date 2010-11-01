@@ -1,0 +1,73 @@
+
+% translated by spod2latex from boxtid.pod
+\section{The \macro{BOXTID}: Power transformations by Box-Tidwell method}\label{mac:boxtid}
+
+The \macro{BOXTID} finds power transformations for some or all of the
+predictors in a regression model using the Box-Tidwell method.  In
+addition, it can produce plots showing the influence of individual
+observations on the selection of powers. These are partial residual
+plots for the constructed variables X * log X.
+
+As a convenience, an output data set containing the optimally
+transformed variables is also produced.
+
+\subsection*{Usage}
+
+The \macro{BOXTID} takes 14 keyword arguments.  You must specify either
+the \texttt{RESP=} or \texttt{YVAR=} parameter, and the names of all predictors (\texttt{XVAR=}).
+For example:
+
+\begin{listing}
+  %boxtid(data=angell, yvar=moralint,
+       xvar=hetero mobility, id=city);
+\end{listing}
+\subsubsection*{Parameters}
+
+Default values are shown after the parameter name.
+
+\begin{proglist}
+
+\item[DATA=\_last\_] Name of input data set
+
+\item[RESP=] The name of the response variable
+
+\item[YVAR=] Response variable (synonym for \texttt{RESP=})
+
+\item[XVAR=] Names of the predictors in the model.  This must
+be a simple list of variable names, i.e., lists
+like \texttt{X1-X10} are not allowed.
+
+\item[XTRANS=] Variables to be transformed: names or indices.
+If \texttt{XVAR=X1 X2 X3 X7 X9}, you may specify either
+\texttt{XTRANS=X3 X7 X9} or \texttt{XTRANS=3 4 5} for the same effect.
+If not specified, all variables in the \texttt{XVAR=} list
+are transformed.
+
+\item[PREFIX=t\_] Prefix for names of transformed variables.  If the
+X variables are X1 X2 X3, the output data set will
+contain T\_X1, T\_X2, T\_X3 when the \texttt{PREFIX=T\_}.
+
+\item[ID=] Name of an ID variable, used as a point label in plots.
+
+\item[OUT=boxtid] Name of output data set
+
+\item[ROUND=0.5] Round powers.  The estimated power for each predictor
+is rounded to the nearest \texttt{ROUND=} unit in constructing
+the transformed variables.
+
+\item[MAXIT=15] Maximum number of iterations
+
+\item[CONVERGE=0.001] Convergence criterion.  The process stops when the
+largest change in an estimated power is less than
+the \texttt{CONVERGE=} value, or when \texttt{MAXIT} iterations would
+be exceeded.
+
+\item[PPLOT=] Specifies printer plots, if any to be produced.
+Either or both of the keywords TRANS and INFL.
+
+\item[GPLOT=INFL] Specifies high-res influence plots.
+
+\item[QUIET=N] Y or N.  \texttt{QUIET=Y} suppresses printout of the iteration
+history.
+
+\end{proglist}

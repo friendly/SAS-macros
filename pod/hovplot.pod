@@ -1,0 +1,127 @@
+=head1 Description
+
+The HOVPLOT macro provides a graphical display of information
+related to the Levine and Brown-Forsythe tests of homogeneity of 
+variance in factorial ANOVA designs.  
+
+Of the recommended tests of homogeneity of variance, the Levine 
+test and the Brown-Forsythe test take simple forms amenable to
+graphical display.  Both of these are based on an ANOVA of simple 
+functions of a dispersion variable,
+
+   Z  = abs (Y - median)      [Brown-Forsythe]
+   Z  = abs (Y - mean)        [Levine, C<TYPE=ABS>]
+   Z  =     (Y - mean)^2      [Levine, C<TYPE=SQUARE>]
+
+O'Brien's (1979) test, is a modification of Levine's Z^2, with a more
+complex formula.  The Brown-Forsythe test appears to have the greatest
+power for detecting non-constant variance.
+
+The HOVPLOT macro displays these quantities by a set of boxplots,
+one for each cell in the design.  Lack of homogeneity of variance
+is indicated by differences in spread across cells.
+
+=head2 Method
+
+Statistical tests are provided by PROC GLM using the
+C<HOVTEST=> option on the MEANS statement, but only for one-way
+designs.  The HOVPLOT extends this test to n-way designs by
+combining multiple C<CLASS=> variables into a single combined variable
+(whose values should be distinct) representing all the cells in
+the design.
+
+=head1 Usage
+
+The HOVPLOT macro is defined with keyword parameters.  The C<VAR=> and
+C<CLASS=> parameters are required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %hovplot(data=animals, var=time, class=Treatmt Poison, sortby=_iqr_);
+
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the input dataset [Default: C<DATA=_LAST_>]
+
+=item WHERE=
+
+WHERE clause to subset the data
+
+=item CLASS=
+
+Grouping variable(s)
+
+=item CLASSFMT=
+
+Format used for the C<CLASS=> variable(s)
+
+=item SEP=
+
+Separator character used to join the values of 2 or more CLASS vars [Default: SEP=%str()]
+
+=item VAR=
+
+Name of the analysis variable
+
+=item ID=
+
+Observation ID variable, used to label extreme observations
+             in the boxplots.
+
+=item SORTBY=
+
+How to order the classes in the boxplot.  Specify the
+             name of a dataset variable, or one of the keywords
+             _mean_, _iqr_, _median_, etc. recognized by the
+             BOXPLOT macro. [Default: SORTBY=]
+
+=item CONNECT=
+
+Line style to connect medians, or 0 to suppress connecting lines [Default: C<CONNECT=1>]
+
+=item NOTCH=
+
+0 or 1, where 1 gives a notched boxplot
+
+=item METHOD=
+
+Type of HOV test: one of C<BF> or C<LEVINE>, C<LEVINE(TYPE=ABS)>,
+ C<LEVINE(TYPE=SQUARE)>, or C<OBRIEN>.  Use C<METHOD=> (null) or 
+C<METHOD=NONE> to suppress the numerical test.
+[Default: C<METHOD=BF>]
+
+=item CENTER=
+
+Central value subtracted from Y [Default: C<CENTER=MEDIAN>]
+
+=item FUNCTION=
+
+Function of (Y-&center) plotted, either ABS or SQUARE
+             [Default: C<FUNCTION=ABS>]
+
+=item OUT=
+
+Name of output dataset, a copy of the input dataset, 
+             containing additional variables _CLASS_, MEDIAN, MEAN, N
+
+=item NAME=
+
+Name for graphic catalog entry [Default: C<NAME=HOVPLOT>]
+
+=item GOUT=
+
+The name of the graphics catalog [Default: C<GOUT=GSEG>]
+
+
+=back 4
+
+=head1 Dependencies
+
+Requires: combine.sas, boxplot.sas
+
+

@@ -1,0 +1,225 @@
+=head1 Description
+
+The BIPLOT macro produces generalized biplot displays for multivariate
+data, and for two-way and multi-way tables of either quantitative
+or frequency data.  It also produces labeled plots of the row and
+column points in 2 dimensions, with a variety of graphic options,
+and the facility to equate the axes automatically.
+
+
+=head2 Input data
+
+The macro takes input in one of two forms:
+
+(a) A data set in table form, where the columns are separate
+variables and the rows are separate observations (identified by
+a row ID variable).    In this arrangment, use the C<VAR=> argument
+to specify this list of variables and the C<ID=> variable to specify
+an additional variable whose values are labels for the rows.
+
+Assume a dataset of reaction times to 4 topics in 3 experimental tasks,
+in a SAS dataset like this:
+
+    TASK   TOPIC1   TOPIC2   TOPIC3   TOPIC4
+    Easy     2.43     3.12     3.68     4.04
+    Medium   3.41     3.91     4.07     5.10
+    Hard     4.21     4.65     5.87     5.69
+
+For this arrangment, the macro would be invoked as follows:
+
+  %biplot(var=topic1-topic4, id=task);
+
+(b) A contingency table in frequency form (e.g., the output from
+PROC FREQ), or multi-way data in the univariate format used as
+input to PROC GLM.  In this case, there will be two or more factor
+(class) variables, and one response variable, with one observation
+per cell.  For this form, you must use the C<VAR=> argument to
+specify the two (or more) factor (class) variables, and specify
+the name of response variable as the C<RESPONSE=> parameter. Do not specify
+an C<ID=> variable for this form.
+
+For contingency table data, the response will be the cell frequency, and
+you will usually use the C<POWER=0> parameter to perform an analysis of
+the log frequency.
+
+The same data in this format would have 12 observations, and look like:
+
+     TASK  TOPIC    RT
+     Easy    1     2.43
+     Easy    2     3.12
+     Easy    3     3.68
+     ...
+     Hard    4     5.69
+
+For this arrangment, the macro would be invoked as follows:
+
+  %biplot(var=topic task, response=RT);
+
+In this arrangement, the order of the C<VAR=> variables does not matter.
+The columns of the two-way table are determined by the variable which
+varies most rapidly in the input dataset (topic, in the example).
+
+=head1 Usage
+
+The BIPLOT macro is defined with keyword parameters.  The C<VAR=>
+parameter must be specified, together with either one C<ID=> variable
+or one C<RESPONSE=> variable.
+
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %biplot();
+
+The plot may be re-drawn or customized using the output C<OUT=>
+data set of coordinates and the C<ANNO=> Annotate data set.
+
+The graphical representation of biplots requires that the axes in the
+plot are equated, so that equal distances on the ordinate and abscissa
+represent equal data units (to perserve distances and angles in the plot).
+A '+', whose vertical and horizontal lengths should be equal,
+is drawn at the origin to indicate whether this has been achieved.
+
+If you do not specifiy the C<HAXIS=> and C<YAXIS=> parameters, 
+the EQUATE macro is called to generate the AXIS statements to equate the
+axes.  In this case the C<INC=>, C<XEXTRA=>, and C<YEXTRA=>, parameters
+may be used to control the details of the generated AXIS statements.
+
+By default, the macro produces and plots a two-dimensional solution.
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Specifies the name of the input data set to be analyzed.
+ [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Specifies the names of the column variables 
+when the data are in table form, or the names of the
+factor variables when the data are in frequency form
+or GLM form. [Default: C<VAR=_NUM_>]
+
+=item ID=
+
+Observation ID variable when the data are in table form.
+
+=item RESPONSE=
+
+Name of the response variable (for GLM form)    
+
+=item DIM=
+
+Specifies the number of dimensions of the CA/MCA solution.
+Only two dimensions are plotted by the PPLOT and GPLOT options,
+however. [Default: C<DIM=2>]
+
+=item FACTYPE=
+
+Biplot factor type: GH, SYM, JK or COV [Default: C<FACTYPE=SYM>]
+
+=item VARDEF=
+
+Variance def for C<FACTYPE=COV>: DF | N [Default: C<VARDEF=DF>]
+
+=item SCALE=
+
+Scale factor for variable vectors [Default: C<SCALE=1>]
+
+=item POWER=
+
+Power transform of response [Default: C<POWER=1>]
+
+=item OUT=
+
+Specifies the name of the output data set of coordinates.
+[Default: C<OUT=BIPLOT>]
+
+=item ANNO=
+
+Specifies the name of the annotate data set of labels
+produced by the macro.  [Default: C<ANNO=BIANNO>]
+
+=item STD=
+
+How to standardize columns: NONE | MEAN | STD [Default: C<STD=MEAN>]
+
+=item COLORS=
+
+Colors for OBS and VARS [Default: C<COLORS=BLUE RED>]
+
+=item SYMBOLS=
+
+Symbols for OBS and VARS [Default: C<SYMBOLS=NONE NONE>]
+
+=item INTERP=
+
+Markers/interpolation for OBS and VARS. [Default: C<INTERP=NONE VEC>]
+
+=item LINES=
+
+Lines for OBS and VARS interpolation [Default: C<LINES=33 20>]
+
+=item PPLOT=
+
+Produce a printer plot? [Default: C<PPLOT=NO>]
+
+=item VTOH=
+
+The vertical to horizontal aspect ratio (height of one
+character divided by the width of one character) of the
+printer device, used to equate axes for a printer plot,
+when C<PPLOT=YES>. [Default: C<VTOH=2>]
+
+=item GPLOT=
+
+Produce a graphics plot? [Default: C<GPLOT=YES>]
+
+=item PLOTREQ=
+
+The dimensions to be plotted [Default: C<PLOTREQ=DIM2*DIM1>]
+
+=item HAXIS=
+
+AXIS statement for horizontal axis.  If both C<HAXIS=> and
+C<VAXIS=> are omitted, the program calls the EQUATE macro to
+define suitable axis statements.  This creates the axis
+statements AXIS98 and AXIS99, whether or not a graph
+is produced.
+
+=item VAXIS=
+
+The name of an AXIS statement for the vertical axis.
+
+=item INC=
+
+The length of X and Y axis tick increments, in data units
+(for the EQUATE macro).  Ignored if C<HAXIS=> and C<VAXIS=> are
+specified. [Default: C<INC=0.5 0.5>]
+
+=item XEXTRA=
+
+Number of extra X axis tick marks at the left and right.  Use to
+allow extra space for labels. [Default: C<XEXTRA=0 0>]
+
+=item YEXTRA=
+
+Number of extra Y axis tick marks at the bottom and top.
+[Default: C<YEXTRA=0 0>]
+
+=item M0=
+
+Length of origin marker, in data units. [Default: M0=0.5]
+
+=item DIMLAB=
+
+Prefix for dimension labels [Default: C<DIMLAB=Dimension>]
+
+=item NAME=
+
+Name of the graphics catalog entry [Default: C<NAME=BIPLOT>]        
+
+=back 4
+

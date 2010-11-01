@@ -1,0 +1,178 @@
+<html> 
+<head>
+	<title>SAS Macro Programs: hemat - HE plots for all pairs of response variables</title>
+	<link rev=made href="mailto:friendly@yorku.ca">
+	<link rel="stylesheet" href="macdoc.css" type="text/css">
+	<!-- Author: Michael Friendly York University  -->
+</head>
+<body>
+<!-- pnuts --> 
+<CENTER>
+<TABLE WIDTH="100%" BGCOLOR="#FFFF99" >
+<TR>
+<TD width="10%"><FONT SIZE=+2><tt><b> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/hemat.sas">hemat</a></b></tt></FONT></TD>
+
+<TD align="center"><FONT FACE="Arial"><FONT SIZE=+1>HE plots for all pairs of response variables</FONT></FONT></TD>
+
+<TD  width="10%" align="right"><FONT SIZE=+2><tt><b> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/hemat.sas">hemat</a></b></tt></FONT></TD>
+</TR>
+</TABLE>
+</CENTER>
+<h1>SAS Macro Programs: <tt>hemat</tt></h1>
+
+$Version: <br>
+<b>
+<a href="../friendly.html">Michael Friendly</a><br>
+York University
+</b>
+<script language="JavaScript">
+<!--
+	document.write("Updated " + document.lastModified);
+// -->
+<hr>
+
+<h2>The <tt>hemat</tt> macro (<A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/hemat.sas">
+<IMG  WIDTH=20 HEIGHT=20 SRC="../icons/ftp.gif" alt="[ftp]"> get hemat.sas</A>)</h2>
+<h3>HE plots for all pairs of response variables</h3>
+
+<hr />
+<p>
+</p>
+<h1><a name="description">Description</a></h1>
+<p>The <tt>HEMAT</tt> macro plots the covariance ellipses for a hypothesized (H)
+effect and for error (E) for all pairs of variables from a MANOVA
+or multivariate multiple regression.</p>
+<p>
+</p>
+<hr />
+<h1><a name="usage">Usage</a></h1>
+<p>The <tt>HEMAT</tt> macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:</p>
+<pre>
+  %hemat(data=iris, stat=stats, 
+  var=SepalLen SepalWid PetalLen PetalWid,
+  effect=species);</pre>
+<p>
+</p>
+<h2><a name="parameters">Parameters</a></h2>
+<dl>
+<dt><strong><a name="item_data_3d">DATA=</a></strong><br />
+</dt>
+<dd>
+Name of the raw data set to be plotted [Default: <code>DATA=_LAST_</code>]
+</dd>
+
+<dt><strong><a name="item_stat_3d">STAT=</a></strong><br />
+</dt>
+<dd>
+Name of <code>OUTSTAT=</code> dataset from PROC GLM
+</dd>
+
+<dt><strong><a name="item_effect_3d">EFFECT=</a></strong><br />
+</dt>
+<dd>
+Name of MODEL effect to be displayed for the H matrix.
+             This must be one of
+             the terms on the right hand side of the MODEL statement used
+          in the PROC GLM or PROC REG step, in the same format that this
+          efffect is labeled in the <a href="#item_stat_3d"><code>STAT=</code></a> dataset. This must be one of
+          the values of the _SOURCE_ variable contained in the <a href="#item_stat_3d"><code>STAT=</code></a> 
+          dataset.
+</dd>
+
+<dt><strong><a name="item_var_3d">VAR=</a></strong><br />
+</dt>
+<dd>
+Names of response variables to be plotted - can be
+             a list or X1-X4 or VARA--VARB [Default: <code>VAR=_NUMERIC_</code>]
+</dd>
+
+<dt><strong><a name="item_names_3d">NAMES=</a></strong><br />
+</dt>
+<dd>
+Alternative variable names (used to label the diagonal
+             cells.)
+</dd>
+
+<dt><strong><a name="item_m1_3d">M1=</a></strong><br />
+</dt>
+<dd>
+First matrix: either H or H+E [Default: M1=H]
+</dd>
+
+<dt><strong><a name="item_m2_3d">M2=</a></strong><br />
+</dt>
+<dd>
+Second matrix either E or I [Default: M2=E]
+</dd>
+
+<dt><strong><a name="item_scale_3d">SCALE=</a></strong><br />
+</dt>
+<dd>
+Scale factors for M1 and M2.  See description in HEPLOT
+</dd>
+
+<dt><strong><a name="item_htitle_3d">HTITLE=</a></strong><br />
+</dt>
+<dd>
+Height of variable name in diagonal cells
+</dd>
+
+<dt><strong><a name="item_symbols_3d">SYMBOLS=</a></strong><br />
+</dt>
+<dd>
+Not used
+</dd>
+
+<dt><strong><a name="item_colors_3d">COLORS=</a></strong><br />
+</dt>
+<dd>
+Colors for the H and E ellipses [Default: <code>COLORS=RED</code>]
+</dd>
+
+<dt><strong><a name="item_anno_3d">ANNO=</a></strong><br />
+</dt>
+<dd>
+Annotate diag or off-diag plot [Default: <code>ANNO=NONE</code>]
+</dd>
+
+<dt><strong><a name="item_gtemp_3d">GTEMP=</a></strong><br />
+</dt>
+<dd>
+Temporary graphics catalog [Default: <code>GTEMP=GTEMP</code>]
+</dd>
+
+<dt><strong><a name="item_kill_3d">KILL=</a></strong><br />
+</dt>
+<dd>
+Delete grtemp when done [Default: <code>KILL=Y</code>]
+</dd>
+
+<dt><strong><a name="item_gout_3d">GOUT=</a></strong><br />
+</dt>
+<dd>
+Name of the graphic catalog [Default: <code>GOUT=GSEG</code>]
+</dd>
+</dl>
+
+</body>
+
+</html>
+      
+<h3>Example</h3>
+<pre>
+%include macros(hemat);        *-- or include in an autocall library;
+
+%hemat();
+</pre>
+
+<h3>See also</h3>
+<a href="meanplot.html">meanplot</a> Plot means for factorial designs<br>
+<a href="panels.html">panels</a> Display a set of plots in rectangular panels<br>
+<a href="stat2dat.html">stat2dat</a> Convert summary dataset to raw data equivalent<br>
+<hr>
+<!-- pnuts --> 
+
+</body>
+</html>

@@ -1,0 +1,326 @@
+<html> 
+<head>
+	<title>heplot - Plot Hypothesis and Error matrices for a bivariate</title>
+	<link rev=made href="mailto:friendly@yorku.ca">
+	<link rel="stylesheet" href="macdoc.css" type="text/css">
+	<!-- Author: Michael Friendly York University  -->
+<!-- BeginInsertHead -->
+<script type="text/javascript" src="/SCS/menu/JSCookMenu.js"></script>
+<link rel="stylesheet" href="/SCS/menu/ThemeMacro/theme.css" type="text/css" />
+<script type="text/javascript" src="/SCS/menu/ThemeMacro/theme.js"></script>
+<script language="javascript" src="macmenu2.js"></script>
+<!-- EndInsertHead -->
+
+</head>
+<body>
+<!-- BeginInsertBody -->
+<div id="Panel">
+<script type="text/javascript">
+cmDraw ('Panel', macmenu, 'hbr', cmThemeMacro, 'ThemeMacro');
+</script>
+</div>
+<!-- EndInsertBody -->
+
+<!-- pnuts -->
+<CENTER>
+<TABLE width="100%">
+<TR>
+<td class="linksasL"> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/heplot.sas">heplot</a></td>
+<td class="title">Plot Hypothesis and Error matrices for a bivariate</td>
+<td class="linksasR"> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/heplot.sas">heplot</a></td>
+</TR>
+</TABLE>
+</CENTER>
+<h1>SAS Macro Programs: <tt>heplot</tt></h1>
+
+$Version: 1.6-2 (09 Jan 2007 09:29:06)<br>
+<b>
+<a href="../friendly.html">Michael Friendly</a><br>
+York University
+</b><br>
+<script language="JavaScript">
+<!--
+	document.write("Updated " + document.lastModified);
+// -->
+</script>
+<hr>
+
+<h2>The <tt>heplot</tt> macro (<A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/heplot.sas">
+<IMG  WIDTH=20 HEIGHT=20 SRC="../icons/download.gif" alt="[download]" border=0> get heplot.sas</A>)</h2>
+<h3>Plot Hypothesis and Error matrices for a bivariate</h3>
+
+<p>The <tt>HEPLOT</tt> macro plots the covariance ellipses for a hypothesized (H)
+effect and for error (E) for two variables from a MANOVA.  The plot helps
+to show how the means of the groups differ on the two variables
+jointly, in relation to the within-group variation.  The test statistics
+for any MANOVA are essentially saying how 'large' the variation in
+H is, relative to the variation in E, and in how many dimensions.
+The HEPLOT shows a two-dimensional visualization of the answer to this
+question.  An alternative two-dimensional view is provided by the
+CANPLOT macro, which shows the data, variables, and within-group ellipses
+projected into the space of the largest two canonical variables---
+linear combinations of the responses for which the group differences
+are largest.</p>
+<p>Typically, you perform a MANOVA analysis with PROC GLM, and save the
+output statistics, including the H and E matrices, using the <code>OUTSTAT=</code>
+option.  This must be supplied to the macro as the value of the
+<a href="#item_stat"><code>STAT=</code></a> parameter.  If you also supply the raw data for the analysis
+via the <a href="#item_data"><code>DATA=</code></a> parameter, the means for the levels of the <a href="#item_effect"><code>EFFECT=</code></a>
+parameter are also shown on the plot.</p>
+<p>Various kinds of plots are possible, determined by the M1= and M2=
+parameters.  The default is M1=H and M2=E.  If you specify M2=I
+(identity matrix), then the H and E matrices are transformed to H* = eHe
+(where e=E^-1/2), and E*=eEe=I, so the errors become uncorrelated, 
+and the size of H* can be judged more simply in relation to a 
+circular E*=I. For multi-factor designs, is it sometimes useful to 
+specify M1=H+E, so that each factor can be examined in relation to the
+within-cell variation.</p>
+
+
+<H2><a name="usage">Usage</a></H2>
+<p>The <tt>HEPLOT</tt> macro is defined with keyword parameters.  The <code>STATS=</code>
+parameter and either the <a href="#item_var"><code>VAR=</code></a> or the <a href="#item_x"><code>X=</code></a> and <a href="#item_y"><code>Y=</code></a> parameters are required.
+You must also specify the <a href="#item_effect"><code>EFFECT=</code></a> parameter, indicating the H matrix
+to be extracted from the <code>STATS=</code> data set.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:</p>
+<pre>
+  proc glm data=dataset outstat=HEstats;
+     model y1 y2  = A B A*B / ss3;
+     manova;
+  %heplot(data=dataset, stat=HEstats, var=y1 y2, effect=A );
+  %heplot(data=dataset, stat=HEstats, var=y1 y2, effect=A*B );</pre>
+
+<H3><a name="parameters">Parameters</a></H3>
+<dl>
+<dt><a name="item_stat">STAT=</a><br />
+</dt>
+<dd>
+Name of the <code>OUTSTAT=</code> dataset from proc glm containing the
+             SSCP matrices for model effects and ERROR, as indicated by
+          the _SOURCE_ variable.
+</dd>
+
+<dt><a name="item_data">DATA=</a><br />
+</dt>
+<dd>
+Name of the input, raw data dataset (for means)
+</dd>
+
+<dt><a name="item_x">X=</a><br />
+</dt>
+<dd>
+Name of the horizontal variable for the plot
+</dd>
+
+<dt><a name="item_y">Y=</a><br />
+</dt>
+<dd>
+Name of the vertical variable for the plot
+</dd>
+
+<dt><a name="item_var">VAR=</a><br />
+</dt>
+<dd>
+2 response variable names: x y.  Instead of specifying <a href="#item_x"><code>X=</code></a>
+             and <a href="#item_y"><code>Y=</code></a> separately, you can specify the names of two response
+          variables with the <a href="#item_var"><code>VAR=</code></a> parameter.
+</dd>
+
+<dt><a name="item_effect">EFFECT=</a><br />
+</dt>
+<dd>
+Name of the MODEL effect to be displayed for the H matrix.
+             This must be one of
+             the terms on the right hand side of the MODEL statement used
+          in the PROC GLM or PROC REG step, in the same format that this
+          efffect is labeled in the <a href="#item_stat"><code>STAT=</code></a> dataset. This must be one of
+          the values of the _SOURCE_ variable contained in the <a href="#item_stat"><code>STAT=</code></a> 
+          dataset.
+</dd>
+
+<dt><a name="item_class">CLASS=</a><br />
+</dt>
+<dd>
+Names of class variables(s), used to find the means for groups
+             to be displayed in the plot.  The default value is the value
+          specified for EFFECT=, except that '*' characters are changed
+          to spaces. Set CLASS=, (null) for a quantitative regressor or to
+             suppress plotting the means.
+</dd>
+
+<dt><a name="item_efflab">EFFLAB=</a><br />
+</dt>
+<dd>
+Label (up to 16 characters) for the H effect, annotated near the max/min
+             corner of the H ellipse. [Default: EFFLAB=&amp;EFFECT]
+</dd>
+
+<dt><a name="item_effloc">EFFLOC=</a><br />
+</dt>
+<dd>
+Location for the effect label: MAX (above) or MIN (below).[Default: <code>EFFLOC=MAX</code>]
+</dd>
+
+<dt><a name="item_mplot">MPLOT=</a><br />
+</dt>
+<dd>
+Matrices to plot <code>MPLOT=1 </code>plots only the H ellipse. [Default: <code>MPLOT=1 2</code>]
+</dd>
+
+<dt><a name="item_gpfmt">GPFMT=</a><br />
+</dt>
+<dd>
+The name of a SAS format for levels of the group/effect variable used in labeling
+             group means.
+</dd>
+
+<dt><a name="item_alpha">ALPHA=</a><br />
+</dt>
+<dd>
+Non-coverage proportion for the ellipses [Default: <code>ALPHA=0.32</code>]
+</dd>
+
+<dt><a name="item_pvalue">PVALUE=</a><br />
+</dt>
+<dd>
+Coverage proportion, 1-alpha [Default: <code>PVALUE=0.68</code>]
+</dd>
+
+<dt><a name="item_ss">SS=</a><br />
+</dt>
+<dd>
+Type of SS to extract from the <a href="#item_stat"><code>STAT=</code></a> dataset. The possibilities
+             are SS1-SS4, or CONTRAST (but the SSn option on the MODEL statement in
+          PROC GLM will limit the types of SSCP matrices produced).
+          This is the value of the _TYPE_ variable in the <a href="#item_stat"><code>STAT=</code></a> dataset.
+          [Default: <code>SS=SS3</code>]
+</dd>
+
+<dt><a name="item_where">WHERE=</a><br />
+</dt>
+<dd>
+To subset both the <a href="#item_stat"><code>STAT=</code></a> and <a href="#item_data"><code>DATA=</code></a> datasets
+</dd>
+
+<dt><a name="item_anno">ANNO=</a><br />
+</dt>
+<dd>
+Name of an input annotate data set, used to add additional
+             information to the plot of y * x.
+</dd>
+
+<dt><a name="item_add">ADD=</a><br />
+</dt>
+<dd>
+Specify <code>ADD=CANVEC </code>to add canonical vectors to the plot. The
+             PROC GLM step must have included the option CANONICAL on the
+          MANOVA statement.
+</dd>
+
+<dt><a name="item_m1">M1=</a><br />
+</dt>
+<dd>
+First matrix: either H or H+E [Default: M1=H]
+</dd>
+
+<dt><a name="item_m2">M2=</a><br />
+</dt>
+<dd>
+Second matrix either E or I [Default: M2=E]
+</dd>
+
+<dt><a name="item_scale">SCALE=</a><br />
+</dt>
+<dd>
+Scale factors for M1 and M2.  This can be a pair of numeric
+             values or expressions using any of the scalar values calculated
+          in the PROC IML step.  The default scaling [<code>SCALE=1 1</code>]
+             results in a plot of E/dfe and H/dfe, where the size 
+          and orientation of E shows error variation on the data scale,
+          and H is scaled conformably, allowing the group means to be
+          shown on the same scale. The _natural scaling_ of H and E
+          as generalized mean squares would be H/dfh and E/dfe, which is
+          obtained using SCALE=dfe/dfh 1, Equivalently, the E matrix can
+          be shrunk by the same factor by specifying <code>SCALE=1 </code>dfh/dfe.
+</dd>
+
+<dt><a name="item_vaxis">VAXIS=</a><br />
+</dt>
+<dd>
+Name of an axis statement for the y variable
+</dd>
+
+<dt><a name="item_haxis">HAXIS=</a><br />
+</dt>
+<dd>
+Name of an axis statement for the x variable
+</dd>
+
+<dt><a name="item_legend">LEGEND=</a><br />
+</dt>
+<dd>
+Name of a LEGEND statement.  If not specified, a legend for
+             the M1 annd M2 matrices is drawn beneath the plot.
+</dd>
+
+<dt><a name="item_colors">COLORS=</a><br />
+</dt>
+<dd>
+Colors for the H and E ellipses [Default: <code>COLORS=BLACK RED</code>]
+</dd>
+
+<dt><a name="item_lines">LINES=</a><br />
+</dt>
+<dd>
+Line styles for the H and E ellipses [Default: <code>LINES=1 21</code>]
+</dd>
+
+<dt><a name="item_width">WIDTH=</a><br />
+</dt>
+<dd>
+Line widths for the H and E ellipses [Default: <code>WIDTH=3 2</code>]
+</dd>
+
+<dt><a name="item_htext">HTEXT=</a><br />
+</dt>
+<dd>
+Height of text in the plot.  If not specified, the global
+             graphics option HTEXT controls this.
+</dd>
+
+<dt><a name="item_out">OUT=</a><br />
+</dt>
+<dd>
+Name of the output dataset containing the points on the
+             H and E ellipses. [Default: <code>OUT=OUT</code>]
+</dd>
+
+<dt><a name="item_name">NAME=</a><br />
+</dt>
+<dd>
+Name of the graphic catalog entry [Default: <code>NAME=HEPLOT</code>]
+</dd>
+
+<dt><a name="item_gout">GOUT=</a><br />
+</dt>
+<dd>
+Name of the graphic catalog [Default: <code>GOUT=GSEG</code>]
+</dd>
+</dl>      
+<h3>Example</h3>
+<pre>
+%include macros(heplot);        *-- or include in an autocall library;
+
+%heplot();
+</pre>
+<center>
+<img src="heplott.gif">
+</center>
+
+<h3>See also</h3>
+<hr>
+<!-- pnuts -->
+
+</body>
+</html>

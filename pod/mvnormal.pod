@@ -1,0 +1,98 @@
+=head1 Description
+
+The MVNORMAL macro generates random samples from multivariate normal
+distributions with a specified covariance matrix and one or more
+specified mean vectors.
+
+=head2 Method
+
+The macro uses the CALL VNORMAL routine in SAS/IML to generate the
+samples.  
+
+=head1 Usage
+
+The MVNORMAL macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %mvnormal(data=mycorr, var=X1 X2 X3 X4);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set containing either correlations
+             (and standard deviations)  or variances and covariances, as
+             specified by the C<TYPE=> parameter.  This must be in a form
+             similar to that produced by PROC CORR with the C<OUTP=> 
+             option, and possibly the COV option as well.  For a correlation
+              matrix, this will contain correlations
+             (C<_TYPE_='CORR'>) and standard deviations (C<_TYPE_='STD'>);
+             a covariance matrix will contain observations of C<_TYPE_='COV'.>
+
+=item VAR=
+
+A list of names of variables to be generated.  Mut be an explicit
+             list of blank-separated names, rather than an abbreviated list
+             like X1-X5.
+
+=item TYPE=
+
+Type of input data set: CORR or COV. [Default: C<TYPE=COV>]
+
+=item MEANS=
+
+Name of an input dataset containing mean vector(s) for the
+             C<VAR=> variables.  One group of N obsrvations is generated for
+             each observation in the C<MEANS=> dataset.
+
+=item CLASS=
+
+Name of class/group variable in means data set.  The C<MEANS=>
+             dataset should contain one observation for each group.
+
+=item N=
+
+Sample size (for each group). [Default: C<N=10>]
+
+=item SEED=
+
+Seed for random number generator.  If not specified, the
+             time of day is used as the seed.
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=SAMPLE>]
+
+
+=back 4
+
+=head1 Example
+
+ *-- common correlation matrix for all groups;
+ data corr;
+  _typeC<_ = 'CORR'>;
+  input _type_ _name_ $ X1 X2 X3;
+ cards;
+ CORR  X1    1    .5   .3
+ CORR  X2   .5     1   .2
+ CORR  X3   .3    .2    1
+ STD    .   10     5    7
+ ;
+ data means;
+  input gp group $  _type_ $  X1 X2 X3;
+ cards;
+ 1  A  MEAN   10  10  10
+ 2  B  MEAN   20  20  20
+ 3  C  MEAN   30  30  30
+
+ %mvnormal(data=corr, type=CORR, var=X1 X2 X3
+  ,means=means
+  ,class=group
+  );
+
+
+=back 4
+

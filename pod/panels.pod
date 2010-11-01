@@ -1,0 +1,202 @@
+=head1 Description
+
+The PANELS macro constructs a template in which to replay a series of
+graphs, assumed all the same size, in a rectangular array of R
+rows and C columns. By default, the panels are displayed
+left-to-right across rows,  starting either from the top
+(C<ORDER=DOWN>) or bottom (C<ORDER=UP>).  If the number of rows and
+columns are unequal, the aspect ratio of individual panels can
+be maintained by setting equate=Y.  It is assumed that all the
+plots have already been created, and stored in a graphics catalog
+(the default, WORK.GSEG is used automatically by SAS/GRAPH
+procedures).
+
+For interactive use within the SAS Session Manager you should be
+aware that all plots are stored cumulatively in the graphics
+catalog throughout your session, unless explicitly changed with
+the C<GOUT=> option in graphics procedures or macros  To create multiple
+panelled plots you can use the C<FIRST=> and C<LAST=> parameters or a C<REPLAY=>
+list to specify which plots are used in a given call.
+
+=head1 Usage
+
+Call the PANELS macro after the steps which create the graphs in the
+graphics catalog.  The GDISPLA macro may be used to suppress the
+display of the original full-sized graphs.
+The C<ROWS=> and C<COLS=> parameters must be specified.
+
+  goptions hsize=7in vsize=5in;
+  %gdispla(OFF);
+  proc gplot data=mydata;
+     plot y * x = group;
+     by sex;
+
+  %gdispla(ON);
+  %panels(rows=1, cols=2);
+
+=head2 Parameters
+
+=over 4
+
+=item ROWS=
+
+=item COLS=
+
+The C<ROWS=> and C<COLS=> arguments are required, and specify the
+  size of the array of plots to be displayed. These are the only
+  required arguments.
+
+=item PLOTS=
+
+If there are fewer than &ROWS*&COLS plots, specify the number
+  as the C<PLOTS=> argument. Optionally, there can be an additional
+  plot, which is displayed (as a GSLIDE title, for example) in
+  the top nn% of the display, as specified by the C<TOP=> argument.
+
+=item TOP=
+
+If TOP=nn is specified, the top nn% of the display is reserved
+  for one additional panel, to serve as the plot
+  title or annotation. The other panels are replayed in the bottom
+  100-&top percent of the display. The vertical size of the top panel is 
+  determined by the C<TOPHEIGHT=> argument.  
+
+=item TOPNAME=
+
+Specifies the plot name or number of the graph to be used as the
+  top panel.  If not specified, the macro uses the next graph after
+  the last one from the GIN catalog used in filling the replay list,
+  i.e., %eval(&last+&plots-1). 
+
+=item TOPHEIGHT=
+
+Specifies the vertical size of the panel used to replay the top
+  panel.  If you use PROC GSLIDE to create an overall title for the
+  graph, use the default C<TOPHEIGHT=100>.  If you want to use a graph
+  rescaled to fit entirely within the top panel (i.e., with
+  TOPHEIGHT=&TOP), that graph should be created with an aspect ratio
+  to match the shape of the desired top panel; otherwise it will be
+  deformed to fit.
+
+=item ORDER=
+
+The C<ORDER=> argument specifies the order of the panels in the
+  C<REPLAY=> list, when C<REPLAY=> is not specified. 
+  Typically, the panels are displayed across the columns, starting
+  in the top row.
+  C<ORDER=UP> means that the panels in the bottom row are
+  are drawn first, and numbered 1, 2, ..., &COLs. C<ORDER=DOWN> means
+  that the panels in the top row are drawn first, numbered 1, 2, ..., 
+  &COLs.  If you add the keyword BYROWS to ORDER=, the panels are
+  displayed up or down the rows.  For example, when C<ROWS=3>, C<COLS=5>,
+  C<ORDER=DOWN BYROWS> generates the C<REPLAY=> list as,
+
+      replay=1:1  2:4  3:7  4:10  5:13
+             6:2  7:5  8:8  9:11 10:14
+            11:3 12:6 13:9 14:12 15:15
+
+=item EQUATE=
+
+The C<EQUATE=> argument determines if the size of the panels is adjusted
+  so that the aspect ratio of the plots is preserved.  If C<EQUATE=Y>,
+  the size of each plot is adjusted to the maximum of &ROWS and &COLS.
+  This is usually desired, as long as the graphic options HSIZE and
+  VSIZE are the same when the plots are replayed in the panels
+  template as when they were originally generated.  The default is
+  C<EQUATE=Y.>
+
+=item REPLAY=
+
+The C<REPLAY=> argument specifies the list of plots to be replayed
+  in the constructed template, in one of the forms used with the
+  PROC GREPLAY REPLAY statement, for example, C<REPLAY=1>:1 2:3 3:2
+  4:4 or C<REPLAY=1>:plot1 2:plot3 3:plot2 4:plot4.  If C<TOP=> is used
+  for a top panel, that graph should be replayed in panel 0.
+
+=item TEMPLATE=
+
+The name of the template constructed to display the plots. The
+  default is C<TEMPLATE=PANEL>&ROWS.&COLS.
+
+=item TC=
+
+The name of the template catalog used to store the template.
+  You may use a two-part SAS data set name to save the template
+  permanently.
+
+=item FIRST=
+
+By default, the C<REPLAY=> argument is constructed to replay plot
+i in panel i.  If the C<REPLAY=> argument is not specified, you can
+override this default assignment by specifying C<FIRST=> the sequential
+number of the first graph in the graphics catalog to plot (default:
+FIRST=1), where:                       
+
+=over 4
+
+=item >0
+
+A positive integer means the absolute number of the first graph in the input catalog to be
+replayed.  For example, C<FIRST=3> starts with the third graph.
+      
+=item <1 
+
+An integer less than 1 means the number of first graph relative to last
+graph in the input catalog (i.e. C<FIRST=0> means 
+last graph only, C<FIRST=-1> means the first is the one before last, etc.) 
+
+=back 4
+
+=item LAST=
+
+The C<LAST=> parameter may be used to specify the number of the last graph
+in the input graphics catalog to be replayed.  The default is LAST=0,
+which refers to the last plot in the graphics catalog.  The C<LAST=> value
+is interpreted as follows:
+
+=over 4
+
+=item >0
+
+A positive integer means the absolute number of last graph in the input catalog to be
+replayed.  For example, C<LAST=4> ends with the fourth graph.
+
+=item <1 
+
+An integer less than 1 means the number of last graph relative to last
+graph in the input catalog (i.e. C<LAST=0> means 
+last graph only, C<LAST=-1> means to end with the one before last, etc.) 
+
+=back 4
+
+
+=item SHAPE=
+
+Ordinarily, the graphs are replayed in a rectangular template (C<SHAPE=RECT>),
+  but for some applications graphs are generated as the lower or upper triangle
+  of a square matrix, with or without the diagonal.  Specify C<SHAPE=>
+  LOWTRI(D) or UPTRI(D) for these cases.
+
+=item GIN=
+
+GIN specifies the name of the input graphics catalog, from which the
+  plots to be replayed are taken. The default is C<GIN=WORK.GSEG.>
+
+=item GOUT=
+
+GOUT= specifies the name of the graphics catalog in which the panelled
+  plot is stored. The default is C<GOUT=WORK.GSEG.>
+
+
+=back 4
+
+=head1 Notes
+
+To use PANELS within another macro (such as SCATMAT), it is best to generate
+the individual graphs to a temporary graphics catalog rather than to the 
+same catalog used for the replayed graphs.
+
+The GREPLAY procedure does not allow a graph name to be assigned to the
+graph generated by by a TREPLAY or REPLAY statement.
+
+

@@ -1,0 +1,38 @@
+=head1 Description
+
+The DEFINED macro returns a value of 0 (false) if the argument is
+the name of a non-existent macro variable.  It returns a 1 if the
+macro variable exists in the global macro environment.
+
+=head2 Method
+
+You can check if a macro variable has been defined by checking the
+dictionary.macro or sashelp.vmacro view.  
+This version was provided in a sas-l posting by David Ward.                  
+
+=head2 Parameters
+
+=over 4
+
+=item MVAR
+
+The name of a macro variable
+
+
+=back 4
+
+=head1 Example
+
+The DEFINED macro is usually used within other macros, e.g.,
+
+  %global test;
+  %let test=3;
+
+  %macro testit;
+  %if %defined(test)
+     %then put TEST is defined as &test;
+     %else put TEST is undefined;
+  %mend;
+
+  %testit;
+

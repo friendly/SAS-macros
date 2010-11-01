@@ -1,0 +1,222 @@
+=head1 Description
+
+The CORRESP macro carries out simple correspondence analysis of a
+two-way contingency table, and various extensions (stacked analysis,
+MCA) for a multiway table, as in the CORRESP procedure.  It also
+produces labeled plots of the category points in either 2 or 3
+dimensions, with a variety of graphic options, and the facility to
+equate the axes automatically. 
+
+The macro takes input in one of two forms:
+
+=over 4
+
+=item (a)
+ 
+A two-way contingency table, where the columns are separate variables
+and the rows are separate observations (identified by a row ID variable.
+For this form, specify:
+
+     ID=ROWVAR, VAR=C1 C2 C3 C4 C5
+
+=item (b)
+ 
+A contingency table in frequency form (e.g., the output from PROC FREQ),
+or raw data, where there is one variable for each factor.  In frequency
+form, there will be one observation for each cell.
+For this form, specify:
+
+     TABLES=A B C
+
+Include the C<WEIGHT=> parameter when the observations are in frequency
+form.
+
+=head1 Usage
+
+The CORRESP macro is called with keyword parameters.  Either the
+C<VAR=> parameter or the C<TABLES=> parameter (but not both) must be
+specified, but other parameters or options may be needed to carry
+out the analysis you want.  The arguments may be listed within
+parentheses in any order, separated by commas.  For example:
+
+  %corresp(var=response, id=sex year);
+
+The plot may be re-drawn or customized using the output C<OUT=>
+data set of coordinates and the C<ANNO=> Annotate data set.
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Specifies the name of the input data set to be analyzed.
+[Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Specifies the names of the column variables for simple
+CA, when the data are in contingency table form.
+Not used for MCA.
+
+=item ID=
+
+Specifies the name(s) of the row variable(s) for simple
+CA.  Not used for MCA.
+
+=item TABLES=
+
+Specifies the names of the factor variables used to create
+the rows and columns of the contingency table.  For a simple
+CA or stacked analysis, use a ',' or '/' to separate the
+the row and column variables.
+
+=item WEIGHT=
+
+Specifies the name of the frequency (C<WEIGHT>) variable when
+the data set is in frequency form.  If C<WEIGHT=> is omitted,
+the observations in the input data set are not weighted.
+
+=item SUP=
+
+Specifies the name(s) of any variables treated as supplementary.
+The categories of these variables are included in the output,
+but not otherwise used in the computations.  
+These must be included among the variables in the C<VAR=> or
+C<TABLES=> option.  
+
+=item DIM=
+
+Specifies the number of dimensions of the CA/MCA solution.
+Only two dimensions are plotted by the C<PPLOT> option,
+however.
+
+=item OPTIONS=
+
+Specifies options for PROC CORRESP.  Include C<MCA> for an
+MCA analysis, C<CROSS=ROW|COL|BOTH> for stacked analysis of
+multiway tables, C<PROFILE=BOTH|ROW|COLUMN> for various
+coordinate scalings, etc.  [Default: C<OPTIONS=SHORT>]
+
+=item OUT=
+
+Specifies the name of the output data set of coordinates.
+[Default: C<OUT=COORD>]
+
+=item ANNO=
+
+Specifies the name of the annotate data set of labels
+produced by the macro.  [Default: C<ANNO=LABEL>]
+
+=item PPLOT=
+
+Produce printer plot? [Default: C<PPLOT=NO>]
+
+=item GPLOT=
+
+Produce graphics plot? [Default: C<GPLOT=YES>]
+
+=item PLOTREQ=
+
+The dimensions to be plotted [Default: C<PLOTREQ=DIM2*DIM1>
+ when C<DIM=2>, C<PLOTREQ=DIM2*DIM1=DIM3> when C<DIM=3>]
+
+=item HTEXT=
+
+Height for row/col labels.  If not specified, the global
+HTEXT goption is used.  Otherwise, specify one or two numbers
+to be used as the height for row and column labels.
+The C<HTEXT=> option overrides the separate C<ROWHT=> and C<COLHT=>
+parameters (maintained for backward compatibility).
+
+=item ROWHT=
+
+Height for row labels
+
+=item COLHT=
+
+Height for col labels
+
+=item COLORS=
+
+Colors for row and column points, labels, and interpolations.
+[Default: C<COLORS=BLUE RED>]
+
+=item POS=
+
+Positions for row/col labels relative to the points.
+[Default: C<POS=5 5>]
+
+=item SYMBOLS=
+
+Symbols for row and column points [Default: C<SYMBOLS=NONE NONE>]
+
+=item INTERP=
+
+Interpolation options for row/column points. In addition to the
+standard interpolation options provided by the SYMBOL statement,
+the CORRESP macro also understands the option VEC to mean
+a vector from the origin to the row or column point. 
+[Default: C<INTERP=NONE NONE>, C<INTERP=VEC> for MCA]
+
+=item HAXIS=
+
+AXIS statement for horizontal axis.  If both C<HAXIS=> and
+C<VAXIS=> are omitted, the program calls the EQUATE macro to
+define suitable axis statements.  This creates the axis
+statements AXIS98 and AXIS99, whether or not a graph
+is produced.
+
+=item VAXIS=
+
+AXIS statement for vertical axis- use to equate axes
+
+=item VTOH=
+
+The vertical to horizontal aspect ratio (height of one
+character divided by the width of one character) of the
+printer device, used to equate axes for a printer plot,
+when C<PPLOT=YES>. [Default: C<VTOH=2>]
+
+=item INC=
+
+X, Y axis tick increments (for the EQUATE macro).  Ignored
+if C<HAXIS=> and C<VAXIS=> are specified. [Default: C<INC=0.1 0.1>]
+
+=item XEXTRA=
+
+The number of extra X axis tick marks at left and right.  Use to
+allow extra space for labels. [Default: C<XEXTRA=0 0>]
+
+=item YEXTRA=
+
+The number of extra Y axis tick marks [Default: C<YEXTRA=0 0>]
+
+=item M0=
+
+Length of origin marker, in data units. [Default: C<M0=0.05>]
+
+=item DIMLAB=
+
+Prefix for dimension labels [Default: C<DIMLAB=Dimension> when C<DIM=2>,
+otherwise, <DIMLAB=Dim>]
+
+=item NAME=
+
+Name of the graphics catalog entry [Default: C<NAME=corresp>]        
+
+=back 4
+
+=head1 Dependencies
+
+The CORRESP macro calls several other macros not included here.
+It is assumed these are stored in an autocall library.  If not,
+you'll have to %include them in your SAS session or batch program.
+
+LABEL macro - label points 
+EQUATE macro - equate axes
+
+These are all available by ftp://hotspur.psych.yorku.ca/pub/sas
+(though in different subdirectories).
+
+

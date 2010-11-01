@@ -1,0 +1,111 @@
+=head1 Description
+
+The SORT macro generalizes the idea of sorting the observations in
+a dataset to include:
+
+=over 4
+
+=item sorting according to the values of a user-specified format.
+With
+appropriate user-defined formats, this may be used to arrange the
+observations in a dataset in any desired order.
+
+=item reordering according to the values of a summary statistic 
+computed 
+on the values in each of serveral groups, for example, the mean or 
+median of an analysis variable. Any statistic computed by 
+PROC UNIVARIATE may be used.
+
+
+
+=back 4
+
+=head1 Usage
+
+You must specify one or more C<BY=> variables.  To sort by the value
+of a statistic, specify name the statistic with the C<BYSTAT=> parameter,
+and specify the analysis variable with C<VAR=>.  To sort by formatted
+values, specify the variable names and associated formats with
+C<BYFMT=>.  If neither the C<BYSTAT=> or C<BYFMT=> parameters are specified,
+an ordinary sort is performed.
+
+The sort macro is called with keyword parameters.  The arguments
+may be listed within parentheses in any order, separated by commas.
+For example:
+
+  %sort(by=age sex, bystat=mean, var=income);
+
+or
+
+  proc format;
+     value age   0='Child' 1='Adult';
+     %sort(by=age decending sex,  byfmt=age:age.);
+
+
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the input dataset to be sorted.  The default is the
+           most recently created data set.
+
+=item VAR=
+
+Specifies the name of the analysis variable used for BYSTAT
+           sorting.
+
+=item OUT=
+
+Name of the output dataset.  If not specified, the 
+           output dataset replaces the input dataset.
+
+=item BY=
+
+Names of one or more classification (factor, grouping)
+           variables to be used in sorting.  The C<BY=> argument may
+           contain the keyword DESCENDING before a variable name
+           for ordinary or formatted-value sorting.  For BYSTAT
+           sorting, use C<ORDER=DESCENDING.  T>he C<BY=> variables may
+           be character or numeric.
+
+=item BYFMT=
+
+A list of one or more terms, of the form, C<VAR:FMT> or
+           C<VAR=FMT>, where VAR is one of the C<BY=> variables, and FMT is
+           a SAS format.  Do not specify C<BYSTAT=> when sorting by
+           formatted values.
+
+=item VAR=
+
+Name of the analysis variable to be used in determining
+           the sorted order.
+
+=item BYSTAT=
+
+Name of the statistic, calculated for the C<VAR=> variable
+           for each level of the C<BY=> variables.  BYSTAT may be the
+           name of any statistic computed by PROC UNIVARIATE.
+
+=item FREQ=
+
+For BYSTAT sorting, specify the name of a frequency variable
+           if the input data consists of grouped frequency counts.
+
+=item ORDER=
+
+Specify C<ORDER=DESCENDING >to sort in descending order
+           when sorting by a BYSTAT.  The C<ORDER=> parameter applies
+           to all C<BY=> variables in this case.
+
+=back 4
+
+=head1 Example
+
+Given a frequency table of Faculty by Income, sort the faculties
+so they are arranged by mean income:
+
+  %sort(data=salary, by=Faculty, bystat=mean, var=income, freq=count);
+

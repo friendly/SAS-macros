@@ -1,0 +1,248 @@
+=head1 Description
+
+The BOXPLOT macro draws side-by-side boxplots for the groups
+defined by one or more grouping (CLASS) variables in a data set.
+The boxplots may be formatted horizontally or vertically,
+they may be shown with "notches", indicating approximate
+95% confidence intervals for difference in medians,
+and the groups may be ordered in a variety of ways.
+
+=head1 Usage
+
+The BOXPLOT macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %boxplot(data=auto, var=mpg, class=origin);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item WHERE=
+
+WHERE clause to subset the data
+
+=item CLASS=
+
+Grouping variable(s).  The C<CLASS=> variables
+             may be character or numeric.  If the C<CLASS=> variable
+          is a character variable, or there is more than one
+          C<CLASS=> variable, the macro automatically constructs
+          a SAS format to label the groups
+
+=item VAR=
+
+The name of the response variable to be plotted.
+          The C<VAR=> variable is plotted on the ordinate when C<ORIENT=V >and on
+          the abscissa when C<ORIENT=H.>
+
+=item ID=
+
+A character variable to identify each observation.  
+             If an C<ID=> variable is specified,
+             outside variables are labelled on the graph,
+             using the first 8 characters of the value of
+             the ID variable (to reduce overplotting).
+             Otherwise, outside points are not labelled.
+
+=item SORTBY=
+
+Specifies a variable or statistic keyword used to
+          order the levels of the C<CLASS=> variables along the class axis.
+          If C<SORTBY=> is not specified, the classes are ordered along the
+          axis in sorted order (using the format specified by C<CLASSFMT=>
+          if that has been used).
+          Otherwise, you can specify the name of a variable in the dataset,
+          or one of the statistics,
+          _MEAN_, _MEDIAN_, N (no underscores), _Q1_, or _Q3_
+          and the classes will be ordered on the axis according to the
+          values of that statistic for each group.
+
+=item OFACTOR=
+
+IQR multiplier for outside values [Default: C<OFACTOR=1.5>]
+
+=item OLABEL=
+
+Outliers to label: Either ALL or FAR. [Default: C<OLABEL=ALL>]
+
+=item IDSYMBOL=
+
+Symbols used for outside, and far-out observations.
+             [Default: C<IDSYMBOL=DIAMOND SQUARE>]
+
+=item MEANSYMBOL=
+
+Symbol to use for the mean of each group. [Default: C<MEANSYMBOL=DOT>]
+
+=item SYMHEIGHT=
+
+Symbol height for outside, and far-out [Default: C<SYMHEIGHT=2 2.5>]
+
+=item IDHEIGHT=
+
+Text height for outside, and far-out [Default: C<IDHEIGHT=1>]
+
+=item WIDTH=
+
+Box width as proportion of the maximum.
+             The default, C<WIDTH=.5>, means that the maximum
+             box width is half the spacing between boxes.
+            [Default: C<WIDTH=.5>]
+
+=item NOTCH=
+
+Specifies whether or not to draw notched
+             boxes.  1=draw notched boxes; 0=do not.  See also the
+          C<CNOTCH=> parameter for a different style of notched
+          boxplots.
+
+=item CBOX=
+
+Color of the box outline [Default: C<CBOX=BLACK>]
+
+=item CFILL=
+
+Color for filling the boxes.
+
+=item CNOTCH=
+
+Color for notch fill.  If specified, the area
+          between the upper/lower notches is filled using a solid pattern and the
+          CNOTCH color.  This is often an alternative to drawing explicit
+          notches.
+
+=item LBOX=
+
+Line style for the box outline [Default: C<LBOX=1>]
+
+=item SBOX=
+
+Line thickness for the box outline [Default: C<SBOX=1>]
+
+=item ORIENT=
+
+Box orientation: V gives vertical boxes, H gives
+          horizontal boxes.  If the labels for the C<CLASS=> variables are longish,
+          horizontal boxes are preferred, since the labels will appear on the
+          Y axis. [Default: C<ORIENT=V>]
+
+=item CONNECT=
+
+Specifies the line style used to connect
+             medians of adjacent groups.  If C<CONNECT=0>, the
+             medians of adjacent groups are not to be
+             connected.
+
+=item F=
+
+For a notched boxplot, the parameter F
+             determines the notch depth, from the center of
+             the box as a fraction of the halfwidth of each
+             box.  F must be between 0 and 1; the larger the
+             value, the less deep is the notch. [Default: C<F=0.5>]
+
+=item FN=
+
+Box width proportionality factor.  The
+             default, C<FN=1 >means all boxes are the same
+             width.  If you specify C<FN=sqrt(n)>, the boxes
+             width will be proportional to the square root
+             of the sample size of each group.  Other
+             functions of  n  are possible as well.
+             [Default: C<FN=1>]
+
+=item VARFMT=
+
+The name of a format for the C<VAR=> analysis variable.
+
+=item CLASSFMT=
+
+If the CLASS variable is a character variable, or
+          there are two or more CLASS variables, the program maps the sorted
+          values of the class variable(s) into the integers 1, 2, ... 
+          levels, where  levels is the number of distinct values
+          of the class variable(s).  A format provided for CLASSFMT should
+          therefore provide labels corresponding to the numbers 1, 2, ...
+          to the number of levels.
+
+=item VARLAB=
+
+Label for analysis variable. If not
+             specifed, the analysis axis is labelled with the
+             variable name.
+
+=item CLASSLAB=
+
+Label for class variable(s) used to label the axis.
+
+=item VAXIS=
+
+Axis statement for vertical axis.  If specified, some of the
+             axis parameters below are ignored.
+
+=item HAXIS=
+
+Axis statement for horizontal axis  If specified, some of the
+             axis parameters below are ignored.
+
+=item YORDER=
+
+Tick marks and range for the ordinate, in the
+             form YORDER = low TO  high BY tick.
+
+=item XORDER=
+
+Tick marks and range for the horizontal axis, in the
+form XORDER = low TO high BY tick.  With C<ORIENT=V>,
+the horizontal axis pertains to the C<CLASS=> variable(s);
+with C<ORIENT=H>, the horizontal axis pertains to the C<VAR=>
+analysis variable.  
+
+When there are very few (3 or less)
+levels of the C<CLASS=> variable, SAS/GRAPH often has
+problems dealing with the annotation information and
+labels.  Setting C<XORDER=> (or YORDER=, with C<ORIENT=H>) to
+include an extra value at both ends of the range usually
+helps cure this problem.  For example, if there are only
+two groups, with class values 1 and 2, set C<XORDER=0 >to
+3 by 1.
+
+=item ANNO=
+
+The name of an (optional) additional
+   ANNOTATE data set to be used in drawing the
+   plot.  This requires some knowledge of the
+contents of the ANNOTATE data set, which you can
+see by specifying C<PRINT=ANNO >in a previous call.
+
+=item PRINT=
+
+What printed output?  You may specify any one or more of
+            ANNO, OUTSIDE and STATS. [Default: C<PRINT=OUTSIDE>]
+
+=item OUT=
+
+The name of the output data set containing
+statistics used in drawing the boxplot.  There
+is one observation for each group.  The
+variables are N, _MEAN_, _MEDIAN_, _Q1_, _Q3_, _IQR_,
+LO_NOTCH, HI_NOTCH, LO_WHISK, HI_WHISK [Default: C<OUT=BOXSTAT>]
+
+=item NAME=
+
+The name of the graph in the graphic catalog [Default: C<NAME=BOXPLOT>]
+
+=item GOUT=
+
+The name of the graphics catalog [Default: C<GOUT=GSEG>]
+
+
+
+=back 4
+

@@ -1,0 +1,105 @@
+\section{Description\label{Description}\index{Description}}
+
+
+Given a character or discrete numerical variable, the DUMMY macro creates
+dummy (0/1) variables to represent the levels of the original variable
+in a regression model.  If the original variable has c levels, (c-1)
+new variables are produced (or c variables, if \texttt{FULLRANK=0})
+
+\section{Usage\label{Usage}\index{Usage}}
+
+
+The DUMMY macro takes the following named parameters.  The arguments
+may be listed within parentheses in any order, separated by commas.
+For example:
+
+\begin{verbatim}
+  %dummy(var=sex group,prefix=);
+\end{verbatim}
+\subsection*{Parameters\label{Parameters}\index{Parameters}}
+\begin{description}
+
+\item[DATA=] \mbox{}
+
+The name of the input dataset.  If not specified, the most
+ recently created dataset is used.
+
+
+\item[OUT=] \mbox{}
+
+The name of the output dataset.  If not specified, the new
+variables are appended to the input dataset.
+
+
+\item[VAR=] \mbox{}
+
+The name(s) of the input variable(s) to be dummy coded.  Must be
+specified.  The variable(s) can be character or numeric.
+
+
+\item[PREFIX=] \mbox{}
+
+Prefix(s) used to create the names of dummy variables.  The
+default is 'D\_'.
+
+
+\item[NAME=] \mbox{}
+
+If \texttt{NAME=VAL}, the dummy variables are named by appending the
+value of the \texttt{VAR=} variable to the prefix.  Otherwise, the
+dummy variables are named by appending numbers, 1, 2, ...
+to the prefix.  The resulting name must be 8 characters or
+less.
+
+
+\item[BASE=] \mbox{}
+
+Indicates the level of the baseline category, which is given
+values of 0 on all the dummy variables.  \texttt{BASE=\_FIRST\_ }
+specifies that the lowest value of the \texttt{VAR=} variable is the
+baseline group; \texttt{BASE=\_LAST\_ }specifies the highest value of
+the variable.  Otherwise, you can specify BASE=value to
+make a different value the baseline group.
+
+
+\item[FULLRANK=] \mbox{}
+
+0/1, where 1 indicates that the indicator for the BASE category
+          is eliminated.
+
+\end{description}
+\subsection*{Example\label{Example}\index{Example}}
+
+
+With the input data set,
+
+\begin{verbatim}
+ data test;
+   input y group $ @@;
+  cards;
+  10  A  12  A   13  A   18  B  19  B  16  C  21  C  19  C  
+  ;
+\end{verbatim}
+
+
+The macro statement:
+
+\begin{verbatim}
+   %dummy ( data = test, var = group) ;
+\end{verbatim}
+
+
+produces two new variables, D\_A and D\_B.  Group C is the baseline
+category (corresponding to \texttt{BASE=\_LAST\_})
+
+\begin{verbatim}
+     OBS     Y    GROUP    D_A    D_B
+        1     10      A       1      0
+        2     12      A       1      0
+        3     13      A       1      0
+        4     18      B       0      1
+        5     19      B       0      1
+        6     16      C       0      0
+        7     21      C       0      0
+        8     19      C       0      0
+\end{verbatim}

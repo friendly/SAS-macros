@@ -1,0 +1,100 @@
+=head1 Description
+
+The MOSAIC macro provides an easily used macro interface to the
+MOSAICS, MOSAICD and MOSPART SAS/IML programs.  Using the
+SAS/IML programs directly means that you must compose a PROC IML
+step and invoke the mosaic module (or mospart, for partial mosaics).
+
+The MOSAIC macro may be used with any SAS data set in frequency
+form (e.g., the output from PROC FREQ).  The macro simply creates
+the PROC IML step, reads the input data set, and runs the either
+the mosaic module, the mosaicd module, or the mospart module,
+depending on the options specified.  If your data is in case form,
+just use PROC FREQ first to construct the contingency table.
+
+Ordinarily, the program fits a model (specified by the C<FITTYPE=>
+parameter) and displays residuals from this model in the mosaic
+for each marginal subtable specified by the C<PLOTS=> parameter.
+However, if you have already fit a model and calculated residuals
+some other way (e.g., using PROC CATMOD or PROC GENMOD), specify
+a C<RESID=> variable in the macro call.  The macro will then call
+the mosaicd module.
+
+If a C<BY=> variable is specified, the macro produces one (partial)
+mosaic plot for each level of the BY variable(s).
+
+=head1 Usage
+
+The parameters for the mosaic macro are like those of the SAS/IML
+program, except:
+
+=over 4
+
+=item DATA=
+
+Specifies the name of the input dataset.  The data set
+should contain one observation per cell, the variables
+listed in C<VAR=> and COUNT=, and possibly C<RESID=> and C<BY=>.
+
+=item VAR=
+
+Specifies the names of the factor variables for the 
+contingency table. Abbreviated variable lists (e.g., C<V1-V3>) 
+are not allowed. The levels of the factor variables may be
+character or numeric, but are used `as is' in the input data.
+You may omit the C<VAR=> variables if variable names are used in
+the C<VORDER=> parameter.
+
+=item BY=
+
+Specifies the names of one (or more) By variables.  Partial
+mosaic plots are produced for each combination of the levels
+of the C<BY=> variables.  The C<BY=> variable(s) *must* be listed among
+the C<VAR=> variables.
+
+=item COUNT=
+
+Specifies the names of the frequency variable in the dataset
+
+=item CONFIG=
+
+For a user-specified model, C<CONFIG=> gives the terms in the
+model, separated by '/'.  For example, to fit the model of
+no-three-way association, specify 
+
+	config=1 2 / 1 3 / 2 3
+	
+or (using variable names) 
+
+	config = A B / A C / B C
+
+Note that the numbers refer to the variables after they
+have been reordered, either sorting the data set, or by the
+C<VORDER=> parameter.
+
+=item VORDER=
+
+Specifies either the names of the variables or their indices
+in the desired order in the mosaic.  Note that the using the
+VORDER parameter keeps the factor levels in their order in
+the input data set.
+
+=item SORT=
+
+Specifies whether and how the input data set is to be sorted
+to produce the desired order of variables in the mosaic.
+C<SORT=YES >sorts the data in the reverse order that they are
+listed in the C<VAR=> paraemter, so that the variables are 
+entered in the order given in the C<VAR=> parameter.  Otherwise,
+C<SORT=> lists the variable names, possibly with the DESENDING
+or NOTSORTED options in the reverse of the desired order.
+e.g., C<SORT=C DESCENDING B DESCENDING A>.  The default is
+C<SORT=YES>, unless C<VORDER=> has been specified.
+
+=item RESID=
+
+Specifies that a model has already been fit and that externally
+calculated residuals are contained in the variable named 
+by the C<RESID=> parameter.
+
+=back 4

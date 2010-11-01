@@ -1,0 +1,87 @@
+=head1 Description
+
+The HEMREG macro extracts hypothesis (H) and error (E) matrices for an
+overall test in a multivariate regression analysis, in a form similar to
+that provided by the C<OUTSTAT=> option with PROC GLM.  This is typically
+used with the HEPLOT macro, or the MPOWER macro for MMRA.
+
+=head2 Method
+
+For a multivariate regression analysis, using
+
+  proc glm outstat=stats;
+     model y1 y2 y3 = x1-x5;
+
+PROC GLM will produce 5 separate 3x3, 1 df SSCP matrices for the separate
+predictors X1-X5, in the C<OUTSTAT=> data set, but no SSCP matrix for
+the overall multivariate test. The HEMREG macro uses PROC REG instead,
+obtains the HypothesisSSCP and ErrorSSCP tables using ODS, and massages
+these into the same format used by PROC GLM.
+
+
+=head1 Usage
+
+The HEMREG macro is defined with keyword parameters.  The C<Y=> and
+C<X=> parameters are required.  One or more overall hypotheses involving
+subsets of the C<X=> variables may be specified with the C<MTEST=> parameter.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %hemreg(y=SAT PPVT RAVEN, x=N S NS NA SS);
+  %hemreg(y=SAT PPVT RAVEN, x=N S NS NA SS, mtest=%str(N,S,NS), hyp=N:S:NS);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of input dataset [Default: C<DATA=_LAST_>]
+
+=item Y=
+
+List of response variables.  Must be an explicit,
+blank-seaparated list of variable names, and all variables
+must be numeric.  
+
+=item X=
+
+List of predictor variables.  Must be an explicit,
+             blank-seaparated list of variable names, and all variables
+          must be numeric. 
+
+=item HYP=
+
+Name for each overall hypothesis tested, corresponding to
+the test(s) specified in the C<MTEST=> parameter (to be used as 
+the C<EFFECT=> parameter in the HEPLOT macro).  [Default: C<HYP=H1>]
+
+=item MTEST=
+
+If C<MTEST=> is not specified (the default), a multivariate test
+of all C<X=> predictors is carried out, giving an overall H matrix.
+Otherwise, C<MTEST=> can specify one or more multivariate tests of
+subsets of the predictors, separated by '/', where the variables
+within each subset are separated by ','. In this case, the embedded
+','s must be protected by surrounting the parameter value in
+C<%str()>.  For example, 
+
+            MTEST = %str(group / x1, x2, x3 / x4, x5)
+
+In this case you might specify C<HYP=Group X1:X3 X4:X5> to name
+the H matrices.
+
+=item SS=
+
+Type of SSCP matrices to compute: Either SS1 or SS2, corresponding
+to sequential and partial SS computed by PROC REG. If C<SS=SS2>,
+the _TYPE_ variable in the output data set is changed to
+C<_TYPE_='SS3' >to conform with PROC GLM. [Default: C<SS=SS2>] 
+
+=item OUT=
+
+The name of output HE dataset [Default: C<OUT=HE>]
+
+
+=back 4
+

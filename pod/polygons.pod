@@ -1,0 +1,73 @@
+=head1 Description
+
+The POLYGONS macro reads a dataset with specified C<X=> and C<Y=> vaariables
+and constructs and Annotate dataset to draw polygon(s) in a plot.
+
+=head1 Usage
+
+The POLYGONS macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %polygons();
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item X=
+
+Name of horizontal variable
+
+=item Y=
+
+Name of vertical variable
+
+=item XSYS=
+
+Annotate coordinate system for C<X=> variable [Default: C<XSYS=2>]
+
+=item YSYS=
+
+Annotate coordinate system for C<Y=> variable [Default: C<YSYS=2>]
+
+=item CLASS=
+
+Grouping variable, each a separate polygon
+
+=item COLOR=
+
+Line color(s) for the groups (repeated as necessary) [Default: C<COLOR=BLACK>]
+
+=item LINE=
+
+Line style(s) for polygon outlines [Default: C<LINE=1>]
+
+=item WIDTH=
+
+Width(s) of polygon outlines [Default: C<WIDTH=1>]
+
+=item FILLCOLOR=
+
+Fillcolor(s) for the polygon(s)
+
+=item WHEN=
+
+When to draw? B or A [Default: C<WHEN=A>]
+
+=item IN=
+
+Name of input Annotate data set, concatenated to C<OUT=>
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=POLY>]
+
+
+
+=back 4
+

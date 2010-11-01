@@ -1,0 +1,183 @@
+=head1 Description
+
+The FACES macro draws (possibly) asymmetric faces to represent multivariate
+data, mapping the values of variables into parameters that control
+the size, orientation, and location of facial features.
+
+The display is organized into one or more rectangular "blocks"
+per page; each block may have any number of rows and columns. 
+
+The related FACEKEY macro creates a legend for a faces display showing the 
+assignment of variables to facial features.
+
+=head2 Method
+
+The use of faces to display multivariate data was suggested
+by Chernoff (1973).
+Flury and Reidwyl (1981) developed the method for asymmetric
+faces, and for parameterizing each facial feature by coeficients
+of a 5-th degreee polynomial whose values could be assigned to
+data variables.
+
+=head2 Facial parameters
+
+There are 18 parameters of a face which may be assigned to
+variables in the data set.  The parameters may be assigned to the
+same variables for both the left and right sides of the face,
+giving symmetric faces, or they may be assigned to different
+variables for the left and right sides, giving asymmetric faces.
+
+Each parameter normally ranges from 0 to 1.  In the current version,
+it is the user's responsibility to scale the data appropriately before
+calling FACES.  The facial parameters are listed below:
+
+  Parameter    Facial Feature
+   1 (EYSI)   Eye size
+   2 (PUSI)   Pupil size
+   3 (POPU)   Position of pupil
+   4 (EYSL)   Eye slant
+   5 (HPEY)   Horizontal position of eye
+   6 (VPEY)   Vertical position of eye
+   7 (CUEB)   Curvature of eyebrow
+   8 (DEEB)   Density of eyebrow
+   9 (HPEB)   Horizontal position of eyebrow
+  10 (VPEB)   Vertical position of eyebrow
+  11 (UPHA)   Upper hair line
+  12 (LOHA)   Lower hair line
+  13 (FALI)   Face line
+  14 (DAHA)   Darkness of hair
+  15 (HSSL)   Hair shading slant angle
+  16 (NOSE)   Nose line
+  17 (SIMO)   Size of mouth
+  18 (CUMO)   Curvature of mouth
+
+
+=head1 Usage
+
+The FACES macro is defined with keyword parameters.
+You should specify the assignment
+of variables to facial features using either the C<LEFT=> and C<RIGHT=>
+parameters, or using the parameters L1=, L2=, ...,L18=, R1=, R2=,... R18=. 
+The individual Ln= and Rn= parameters take precedence if
+a feature appears in both sets of parameters.
+
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %faces(data=auto,
+     left=mpg mpg turn turn hroom hroom rseat rseat displa length
+          rep77 weight weight rep77 gratio length price price,
+    right=mpg mpg turn turn hroom hroom rseat rseat displa length
+          rep78 weight weight rep78 gratio length price price,
+    id=id
+  );
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set. [Default: C<DATA=_LAST_>]
+
+=item OUT=
+
+The name of the output ANNOTATE data set [Default: C<OUT=ASYM>]
+
+=item ID=
+
+The name of a character ID variable used to
+             label the plot cell for a given observation.
+
+=item IDNUM=
+
+The name of a numeric ID variable [Default: C<IDNUM=_N_>]
+
+=item BLKS=
+
+The number of blocks per page [Default: C<BLKS=1>]
+
+=item ROWS=
+
+The number of rows per block [Default: C<ROWS=4>]
+
+=item COLS=
+
+The number of rolumns per block [Default: C<COLS=4>]
+
+=item RES=
+
+Resolution: 1=high/3=low. Higher resolution means that more 
+             lines are drawn for each facial feature [Default: C<RES=3>]
+
+=item FRAME=
+
+Draw a frame around each face? [Default: C<FRAME=Y>]
+
+=item COLOR=
+
+Color of each face. Specify a variable name or a string 
+             in quotes.  If a variable name is specified, the values 
+          are assumed to be SAS color names. [Default: C<COLOR='BLACK'>]
+
+=item HCOLOR=
+
+Hair color.  Specify a variable name, or a string in quotes.
+             [Default: C<HCOLOR='BLACK'>]
+
+=item ROW=
+
+The name of an optional variable whose value indicates 
+             which row in a block an observation is drawn in.
+             The ROW=, COL=, and C<BLK=> parameters may be used to assign 
+             particular locations to faces.  If specified, each should
+          be the name of a data set variable 
+          Otherwise, the faces are drawn from the top down in the
+             order of observations in the data set
+
+=item COL=
+
+Column variable
+
+=item BLK=
+
+Block variable
+
+=item LEFT=
+
+A list of names of (up to) 18 variables to be assigned to 
+             features of the left side of the face.  Use a . in C<LEFT=>
+          (or C<RIGHT=>) to skip a parameter (leaving it unassigned).
+          Alternatively, you may use the parameters L1= through
+          L18=.
+
+=item RIGHT=
+
+A list of names of (up to) 18 variables to be assigned to 
+             features of the right side of the face.
+
+
+* item L1= ... L18=
+
+Names of individual variables assigned to the left-side features
+
+* item R1= ... R18=
+
+Names of individual variables assigned to the right-side features
+
+=item GOUT=
+
+The name of the graphics catalog [Default: C<GOUT=GSEG>]
+
+=item NAME=
+
+The name of the graph in the graphic catalog [Default: C<NAME=FACES>]
+
+
+=back 4
+
+=head2 Missing data
+
+Any missing variables for an observation are replaced by 0.5.
+
+

@@ -1,0 +1,126 @@
+=head1 Description
+
+The MIPLOT macro plots X-Y data with indicators for missing
+observations, and is useful for seeing whether the pattern of missing
+data appears systematic or random with respect to the X, Y variables.
+The C<TYPE=MARGINAL> plot simply shows observations with missing X, Y,
+or both by marginal symbols along the axes.  The C<TYPE=IMPUTED> plot
+requires an imputed data set from PROC MI, and plots error bars (when
+one of X,Y is missing) and diamonds (when both X and Y are missing)
+showing the variation of imputed values for missing data.
+
+=head1 Usage
+
+The MIPLOT macro is defined with keyword parameters.  The C<X=>, C<Y=> and
+C<DATA=> parameters must be specified. An C<ID=> variable is required for the
+C<TYPE=IMPUTED> plot.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+   proc mi data=mydata  out=mymi nimpute=10;
+       var ...;
+       run;
+  %miplot(data=mydata, imputed=mymi, ...);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the input data set
+
+=item IMPUTED=
+
+Name of data set containing imputations [Default: C<IMPUTED=_LAST_>]
+
+=item X=
+
+Name of the X variable
+
+=item Y=
+
+Name of the Y variable
+
+=item ID=
+
+Observation ID variable
+
+=item TYPE=
+
+Plot type: MARGINAL or IMPUTED.  The default is C<TYPE=IMPUTED> if
+             an C<IMPUTED=> data set is specified; otherwise MARGINAL.
+
+=item LOC=
+
+Central value used for imputed values in the C<TYPE=IMPUTED> plot:
+             MEAN or MEDIAN [Default: C<LOC=MEAN>]
+
+=item STD=
+
+Length of error bars for imputed values in the C<TYPE=IMPUTED> plot: 
+            STD or STDERR [Default: C<STD=STDERR>]
+
+=item MULT=
+
+Multiple of error bar length [Default: C<MULT=1>]
+
+=item AT=
+
+Percent location on the missing axis used to plot a point in the
+             C<TYPE=MARGINAL> plot [Default: C<AT=1>]
+
+=item JITTER=
+
+Amount to jitter the percent location for a missing point in the
+             C<TYPE=MARGINAL> plot [Default: C<JITTER=1>]
+
+=item SYMBOLS=
+
+Plot symbol for non-missing and missing observations
+             [Default: C<SYMBOLS=DOT CIRCLE>]
+
+=item COLORS=
+
+Symbol colors for non-missing and missing [Default: C<COLORS=BLACK RED>]
+
+=item SIZE=
+
+Symbol size(s) for non-missing and missing [Default: C<SIZE=1>]
+
+=item INTERP=
+
+Plot interpolation option [Default: C<INTERP=NONE>]
+
+=item COPY=
+
+Variables to copy to output data set
+
+=item VAXIS=
+
+AXIS statement for vertical axis
+
+=item HAXIS=
+
+AXIS statement for horizontal axis
+
+=item ANNO=
+
+Additional annotate data set to be added to the plot
+
+=item OUT=
+
+Name of output annotate data set [Default: C<OUT=MISSANNO>]
+
+=item OUTSTAT=
+
+Name of output statistics data set when C<TYPE=IMPUTED>
+             [Default: C<OUTSTST=_STATS_>]
+
+=item NAME=
+
+Name for graphics catalog entry [Default: C<OUT=M>iplot]
+
+
+=back 4
+

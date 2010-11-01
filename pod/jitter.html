@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Description</title>
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+
+<h1><a name="description">Description</a></h1>
+<p>The JITTER macro adds a small amount of noise to numeric variables,
+to avoid overplotting for discrete data.</p>
+<p>
+</p>
+<hr />
+<h1><a name="usage">Usage</a></h1>
+<p>The JITTER macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:</p>
+<pre>
+  %jitter(var=X1-X5);</pre>
+<p>
+</p>
+<h2><a name="parameters">Parameters</a></h2>
+<dl>
+<dt><strong><a name="item_data">DATA=</a></strong><br />
+</dt>
+<dd>
+Input data set. If not specified, the most
+           recently created dataset is used.[Default: <code>DATA=_LAST_</code>]
+</dd>
+
+<dt><strong><a name="item_out">OUT=</a></strong><br />
+</dt>
+<dd>
+Output data set (can be same as input). If not specified, the new
+           dataset is named according to the DATAn convention
+		   [Default: <code>OUT=_DATA_</code>]
+</dd>
+
+<dt><strong><a name="item_var">VAR=</a></strong><br />
+</dt>
+<dd>
+Names of variable(s) to be jittered
+</dd>
+
+<dt><strong><a name="item_new">NEW=</a></strong><br />
+</dt>
+<dd>
+Jittered result variables(s) (can be same as <a name="item_var">VAR=</a>) 
+             [Default: NEW=&amp;VAR]
+</dd>
+
+<dt><strong><a name="item_unit">UNIT=</a></strong><br />
+</dt>
+<dd>
+Unit of var, smallest distance between successive 
+             values. [Default: <code>UNIT=1</code>]
+</dd>
+
+<dt><strong><a name="item_mult">MULT=</a></strong><br />
+</dt>
+<dd>
+Multiplier for spread of jitter. [Default: <code>MULT=1</code>]
+</dd>
+
+<dt><strong><a name="item_seed">SEED=</a></strong><br />
+</dt>
+<dd>
+Seed for the random number generator.  Setting this to a
+             non-zero variable gives reproducable results. [Default: <code>SEED=0</code>]
+</dd>
+</dl>
+
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+=head1 Description
+
+The POLY macro generates a polynomial contrast for use in a CONTRAST
+statement with PROC GLM.  It assumes that the levels of the factor
+are equally spaced and the sample size for the levels of the factor
+are equal.  It returns the program text which should follow the
+CONTRAST (or ESTIMATE) keyword.
+
+=head1 Usage
+
+The poly macro is called with positional parameters.
+The arguments must be listed within parentheses, separated
+by commas. For example: 
+
+   contrast %poly(4,1,A);
+yields:
+   contrast "A-lin" A  -3  -1   1   3;
+
+   %poly(4,1);
+yields:
+   -3  -1   1   3
+
+=head2 Parameters
+
+=over 4
+
+=item LEVELS=
+
+Specifies the number of levels of the factor.  The number
+of levels must be between 2 and 10.
+
+=item DEGREE=
+
+Specifies the degree of the polynomial contrast. The degree
+must be between 1 and min(9,levels-1).
+
+=item FACTOR=
+
+Specifies the name of the factor.  If the factor name is
+not specified, the macro returns only the contrast coefficients.
+
+=back 4
+
+=head1 Description
+
+The INTER macro generates a CONTRAST statement for the interaction
+between two polynomial contrasts.
+
+=head1 Usage
+
+The INTER macro is called with positional parameters.
+The arguments must be listed within parentheses, separated
+by commas. For example: 
+
+   contrast %inter(A, 2, 1, B, 3, 1);
+yields:
+   contrast "A-lin x B-lin" A*B  -1  0  1  1  0  -1;
+
+
+=head2 Parameters
+
+=over 4
+
+=item FAC1=
+
+Specifies the name of the 1st factor.  
+
+=item LEV1=
+
+Specifies the number of levels of the 1st factor.  
+
+=item DEG1=
+
+Specifies the degree of the polynomial for factor 1. 
+
+=item FAC2=
+
+Specifies the name of the 2nd factor.  
+
+=item LEV2=
+
+Specifies the number of levels of the 2nd factor.  
+
+=item DEG2=
+
+Specifies the degree of the polynomial for factor 2. 
+
+=back 4
+

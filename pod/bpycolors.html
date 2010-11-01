@@ -1,0 +1,118 @@
+<html> 
+<head>
+	<title>bpycolors - Create n colors from Blue - Pink - Yellow palette</title>
+	<link rev=made href="mailto:friendly@yorku.ca">
+	<link rel="stylesheet" href="macdoc.css" type="text/css">
+	<!-- Author: Michael Friendly York University  -->
+<!-- BeginInsertHead -->
+<script type="text/javascript" src="/SCS/menu/JSCookMenu.js"></script>
+<link rel="stylesheet" href="/SCS/menu/ThemeMacro/theme.css" type="text/css" />
+<script type="text/javascript" src="/SCS/menu/ThemeMacro/theme.js"></script>
+<script language="javascript" src="macmenu2.js"></script>
+<!-- EndInsertHead -->
+
+</head>
+<body>
+<!-- BeginInsertBody -->
+<div id="Panel">
+<script type="text/javascript">
+cmDraw ('Panel', macmenu, 'hbr', cmThemeMacro, 'ThemeMacro');
+</script>
+</div>
+<!-- EndInsertBody -->
+
+<!-- pnuts -->
+<CENTER>
+<TABLE WIDTH="100%" BGCOLOR="#FFFF99" >
+<TR>
+<TD width="10%"><FONT SIZE=+2><tt><b> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/colors/bpycolors.sas">bpycolors</a></b></tt></FONT></TD>
+
+<TD align="center"><FONT FACE="Arial"><FONT SIZE=+1>Create n colors from Blue - Pink - Yellow palette</FONT></FONT></TD>
+
+<TD  width="10%" align="right"><FONT SIZE=+2><tt><b> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/colors/bpycolors.sas">bpycolors</a></b></tt></FONT></TD>
+</TR>
+</TABLE>
+</CENTER>
+<h1>SAS Macro Programs: <tt>bpycolors</tt></h1>
+
+$Version: 1.0 (02 Mar 2005 10:12:39)<br>
+<b>
+<a href="../friendly.html">Michael Friendly</a><br>
+York University
+</b><br>
+<script language="JavaScript">
+<!--
+	document.write("Updated " + document.lastModified);
+// -->
+</script>
+<hr>
+
+<h2>The <tt>bpycolors</tt> macro (<A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/colors/bpycolors.sas">
+<IMG  WIDTH=20 HEIGHT=20 SRC="../icons/download.gif" alt="[download]" border=0> get bpycolors.sas</A>)</h2>
+<h3>Create n colors from Blue - Pink - Yellow palette</h3>
+
+<p>The <tt>BPYCOLORS</tt> macro generates a data set containing n colors ranging
+from blue through pink to yellow, typically used to color code a
+unidimensional variable.  It has the advantage of looking nice when
+reproduced in black and white.</p>
+
+
+<H2><a name="usage">Usage</a></H2>
+<p>The <tt>BPYCOLORS</tt> macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:</p>
+<pre>
+  %bpycolors(n=15);
+   %bpycolors(n=20, colorvar=col, result=pal);
+   %put pal = &amp;pal;</pre>
+
+<H3><a name="parameters">Parameters</a></H3>
+<dl>
+<dt><a name="item_n">N=</a><br />
+</dt>
+<dd>
+Number of different colors included in the palette [Default: <code>N=10</code>]
+</dd>
+
+<dt><a name="item_trim">TRIM=</a><br />
+</dt>
+<dd>
+Tail fraction to be cut off. A value of 0 gives a palette
+             ranging from black to white.  The default, 0.1, gives a
+          color range from blue to yellow. [Default: <code>TRIM=0.1</code>]
+</dd>
+
+<dt><a name="item_out">OUT=</a><br />
+</dt>
+<dd>
+Name of output data set [Default: <code>OUT=PALETTE</code>]
+</dd>
+
+<dt><a name="item_colorvar">COLORVAR=</a><br />
+</dt>
+<dd>
+Name of the color variable in the data set [Default: <code>COLORVAR=COLOR</code>]
+</dd>
+
+<dt><a name="item_result">RESULT=</a><br />
+</dt>
+<dd>
+Name of output macro variable containing color list
+</dd>
+</dl>      
+<h3>Example</h3>
+<pre>
+%include macros(bpycolors);        *-- or include in an autocall library;
+
+%bpycolors();
+</pre>
+
+<h3>See also</h3>
+<a href="meanplot.html">meanplot</a> Plot means for factorial designs<br>
+<a href="panels.html">panels</a> Display a set of plots in rectangular panels<br>
+<a href="stat2dat.html">stat2dat</a> Convert summary dataset to raw data equivalent<br>
+<hr>
+<!-- pnuts -->
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+=head1 Description
+
+The ROOTGRAM macro produces histograms, rootograms, and hanging
+rootograms for the distribution of a discrete variable compared
+with expected frequencies according to a theoretical distribution.
+
+=head1 Usage
+
+The C<VAR=> and  C<OBS=> variables  must be specified.  The expected
+frequencies may be obtained with the GOODFIT macro.
+
+The ROOTGRAM macro is called with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %include catdata(madison);
+  %goodfit(data=madison, var=count, freq=blocks, dist=poisson);
+  %rootgram(data=fit, var=count, obs=blocks);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Specifies the name of the input data set [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Specifies the name of the analysis variable, used as the
+abscissa in the plot.
+
+=item OBS=
+
+Specifies the bserved frequency variable
+
+=item EXP=
+
+Expected/fitted frequency [Default: C<EXP=EXP>]
+
+=item FUNC=
+
+The name of the function applied to ordinate.  Use C<FUNC=NONE>
+to give a plot on the scale of observed frequency. [Default: C<FUNC=SQRT>]
+
+=item BWIDTH=
+
+Bar width [Default: C<BWIDTH=.5>]
+
+=item BCOLOR=
+
+Bar color [Default: C<BCOLOR=GRAYB0>]
+
+=item BTYPE=
+
+Bar type: One of HANG, DEV, or NEEDLE. [Default: C<BTYPE=HANG>]
+
+=item ANNO=
+
+The name of an input annotate dataset
+
+=item NAME=
+
+Name of the graphics catalog entry
+
+=back 4

@@ -1,0 +1,164 @@
+=head1 Description
+
+The CATPLOT macro is designed to plot observed and/or predicted
+values for logit models fit by the CATMOD procedure.  The macro uses
+the output data set produced with the C<OUT=> option on the RESPONSE
+statement.  This data set normally contains both logit values
+(C<_TYPE_='FUNCTION'>) and probability values (C<_TYPE_='PROB'>).  Either
+set may be plotted, as specified by the C<TYPE=> parameter.
+
+The horizontal variable may be character (C<XC=>) or numeric (C<X=>).
+A separate curve is drawn for each value of the C<CLASS=> variable,
+connecting predicted values, with optional standard error bars,
+and separate plots are drawn for each value of the C<BYVAR=> variable.
+
+=head1 Usage
+
+The catplot macro is called with keyword parameters. Either the
+C<X=> or the C<XC=> parameters are required. Use the C<CLASS=> parameter
+to give multiple curves in each plot for the levels of the CLASS
+variable. Use the C<BYVAR=> parameter to give multiple plots for the
+levels of the BYVAR variable. The arguments may be listed within
+parentheses in any order, separated by commas.  For example:
+
+  proc catmod;
+     direct husinc;
+     response / out=logits;
+     model labour = husinc children; 
+  %catplot(data=logits, x=husinc, y=_pred_, class=labor, byvar=children);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the SAS dataset to be plotted, which must be
+         an output data set from PROC CATMOD.  If C<DATA=> is not
+         specified, the most recently created data set is used.
+
+=item X=
+
+Name of a numeric factor variable to be used as the horizontal
+         variable in plots.  Use the C<XC=> parameter to specify a
+         character variable.  You must specify either the C<X=> or C<XC=>
+         variable.
+
+=item XC=
+
+Name of a character factor variable used as the horizontal
+         variable in plots.
+
+=item Y=
+
+Name of the ordinate variable.  C<Y=_PRED_> plots the predicted
+         value; C<Y=_OBS_> plots the observed value.  The default is
+         C<Y=_OBS_>, but the predicted values are also drawn, connected
+         by lines. [Default: C<Y=_OBS_>]
+
+=item CLASS=
+
+The name of a factor variable, used to define separate curves
+         which are plotted for each level of this variable.
+
+=item BYVAR=
+
+Name of one or more factor variables to be used to define 
+         multiple panels in plots.  
+
+=item BYFMT=
+
+Name of a SAS format used to format the value of BYVARs
+         for display in one panel of the plot(s). [Default: BYFMT=$16.]
+
+=item TYPE=
+
+The type of observations to be plotted.  C<TYPE=FUNCTION> (the
+         default) gives plots of the logit value; C<TYPE=PROB> gives
+         plots of the probability value. [Default: C<TYPE=FUNCTION>]
+
+=item Z=
+
+Standard error multiple for confidence intervals around
+         predicted values, e.g., C<Z=1.96> gives 95% CI. To suppress error
+         bars, use C<Z=0.>  The default is C<Z=1>, giving 67% CI.
+
+=item CLFMT=
+
+Name of a SAS format used to format the value the C<CLASS=>
+         variable for display in each panel of the plot(s).
+
+=item CLSIDE=
+
+Specifies whether the values of the C<CLASS=> variable should
+         be labelled by annotation in the plot or by a legend.  If
+         C<CLSIDE=LEFT> or C<CLSIDE=FIRST>, C<CLASS=> values are written at the
+         left side of each curve.  If C<CLSIDE=RIGHT> or C<CLSIDE=LAST>,
+         C<CLASS=> values are written at the right side of each curve.
+         If C<CLSIDE=NONE>, or if a C<LEGEND=> legend is specified, the 
+         C<CLASS=> values appear in the legend.  You should
+         then define a LEGEND statment and use the C<LEGEND=> parameter.
+         [Default: C<CLSIDE=LAST>]
+
+=item XFMT=
+
+Name of a SAS format used to format the values of the horizontal
+         variable.
+
+=item POSFMT=
+
+Format to translate the value of the CLASS variable to a 
+         SAS/GRAPH annotate position.  This will almost always be a
+         user-specified format created with PROC FORMAT.
+
+=item ANNO=
+
+Name of an additional input annotate data set
+
+=item SYMBOLS=
+
+List of SAS/GRAPH symbols for the levels of the C<CLASS=> variable.  
+         There should be as many symbols as there are distinct values of 
+         the C<CLASS=> variable. [Default: C<SYMBOLS=CIRCLE> SQUARE TRIANGLE]
+
+=item COLORS=
+
+List of SAS/GRAPH colors for the levels of the C<CLASS=> variable.
+         There should be as many colors as there are distinct values of 
+         the C<CLASS=> variable. [Default: C<COLORS=BLACK> RED BLUE GREEN]
+
+=item LINES=
+
+List of SAS/GRAPH line styles for the levels of the C<CLASS=> 
+         variable.  There should be as many lines as there are distinct
+         values of the C<CLASS=> variable. [Default: C<LINES=1> 20 41 21 7 14 33 12]
+
+=item VAXIS=
+
+Axis statement for custom response axis, e.g., C<VAXIS=AXIS1.>
+         [Default: C<VAXIS=AXIS1>]
+
+=item HAXIS=
+
+Axis statement for custom horizontal axis, e.g., C<HAXIS=AXIS2>
+         [Default: C<HAXIS=AXIS2>]
+
+=item LEGEND=
+
+Legend statement for custom CLASS legend, e.g., C<LEGEND=LEGEND1>
+
+=item PLOC=
+
+For multiple plots (with a BYVAR), PLOC defines the X,Y position
+         of the panel label, in graph percentage units. [Default: C<PLOC=5> 95]
+
+=item PRINT=
+
+Print summarized input data set? [Default: C<PRINT=NO>]
+
+=item NAME=
+
+Name of graphic catalog entry. [Default: C<NANME=CATPLOT>]
+
+
+=back 4

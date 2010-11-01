@@ -1,0 +1,66 @@
+ /*--------------------------------------------------------------*
+  *    Name: symplot.sas                                         *
+  *   Title: Plots for transformations to symmetry               *
+  *     Doc: http://www.math.yorku.ca/SCS/sssg/symplot.html      *
+  *--------------------------------------------------------------*
+  *  Author:  Michael Friendly            <friendly@yorku.ca>    *
+  * Created: 24 Apr 2005 11:11:33                                *
+  * Revised: 24 Apr 2005 11:11:33                                *
+  * Version: 1.0                                                 *
+  *                                                              *
+  *--------------------------------------------------------------*/
+ /*=
+=Description:
+ 
+ The SYMPLOT macro produces a variety of plots for diagnosing symmetry
+ of a distribution and finding a power transformation to make the
+ distribution more symmetric. 
+
+* UPLO=      Upper distance-to-median vs. Lower distance-to-median.  Plots
+             as a 45 degree line for a symmetric distribution.
+                                            
+* MIDSPR=    Mid value vs. Spread.  Plots as a horizontal line for a symmetric distribution.
+                              
+* MIDZSR=    Mid value vs. Squared normal quantile
+             
+* POWER=     Centered mid value vs. Squared spread measure. (1-slope) in this plot 
+             usually indicates a reasonable power for a tranformation to symmetry. 
+  
+
+=Usage:
+
+ The SYMPLOT macro is defined with keyword parameters.
+ The arguments may be listed within parentheses in any order, separated
+ by commas. For example: 
+ 
+	%symplot(data=auto, var=Price, plot=POWER, trim=5 pct); 
+
+ 
+==Parameters:
+
+* DATA=       The name of the input data set [Default: DATA=_LAST_]
+
+* VAR=        The name of the variable to be analyzed.
+
+* PLOT=       Type of plot(s): NONE, or any one or more of
+              UPLO, MIDSPR, MIDZSQ, or POWER.  One plot is
+              produced for each keyword included in the PLOT=
+              parameter. [Default: PLOT=MIDSPR POWER] 
+
+* TRIM=       Specifies the number or percent of extreme observations  to be 
+              trimmed.  The TRIM= optionis most useful in the POWER plot.
+              [Default: TRIM=5 PCT]
+
+* OUT=        The name of the output data set [Default: OUT=SYMPLOT]
+
+* SYMBOL=     Observation plot symbol [Default: SYMBOL=DOT]
+
+* VAXIS=      Axis statement for vertical axis
+
+* HAXIS=      Axis statement for horizontal axis
+
+* NAME=       The name of the graph in the graphic catalog [Default: NAME=SYMPLOT]
+
+* GOUT=       The name of the output graphics catalog [Default: GOUT=GSEG] 
+
+ =*/

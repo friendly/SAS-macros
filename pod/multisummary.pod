@@ -1,0 +1,64 @@
+=head1 Description
+
+The MULTISUMMARY macro produces an output data set containg any
+of the statistics calculated by PROC SUMMARY for any number of
+numeric variables.
+
+=head1 Usage
+
+The MULTISUMMARY macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %multisummary();
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+The name of the variable to be analyzed [Default: C<VAR=_NUMERIC_>]
+
+=item CLASS=
+
+Name(s) of 0 or more class variables
+
+=item STATS=
+
+List of names of the output statistics to calculate, e.g., MEAN,
+             MEDIAN, Q1, Q3, etc.  Any of the statistic keywords accepted by
+             PROC SUMMARY.
+
+=item OPTIONS=
+
+Options for PROC SUMMARY, e.g., nway, missing...
+
+=item OUT=
+
+The name of the output data set.  The observations in this
+             data set correspond to the combinations of the levels of all
+          class variables with the set of statistics specified in the
+          C<STATS=> option.
+
+
+=back 4
+
+=head1 Example
+
+ %include data(guerry);
+
+ %multisummary(data=guerry,
+   class=region,
+   var=Suicides Infants Crime_prop  Crime_pers,
+   stats=Q1 median Q3,
+   options=missing nway,
+   out=gstats);
+
+ proc print data=gstats;
+
+

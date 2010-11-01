@@ -1,0 +1,158 @@
+% LaTeX document produced by pod2latex from "panels.pod".
+% The followings need be defined in the preamble of this document:
+%\def\underscore{\leavevmode\kern.04em\vbox{\hrule width 0.4em height 0.3pt}}
+%\setlength{\parindent}{0pt}
+
+\section{PANELS}%
+
+
+\subsection*{Description}
+The \macro{PANELS} constructs a template in which to replay a series of
+graphs, assumed all the same size, in a rectangular array of R
+rows and C columns. By default, the panels are displayed
+left-to-right across rows,  starting either from the top
+(\texttt{ORDER=DOWN}) or bottom (\texttt{ORDER=UP}).  If the number of rows and
+columns are unequal, the aspect ratio of individual panels can
+be maintained by setting equate=Y.  It is assumed that all the
+plots have already been created, and stored in a graphics catalog
+(the default, WORK.GSEG is used automatically by SAS/GRAPH
+procedures).
+
+For interactive use within the SAS Session Manager you should be
+aware that all plots are stored cumulatively in the graphics
+catalog throughout your session, unless explicitly changed with
+the \texttt{GOUT=} option in graphics procedures or macros  To create multiple
+panelled plots you can use the \texttt{FIRST=} and \texttt{LAST=} parameters or a \texttt{REPLAY=}
+list to specify which plots are used in a given call.
+
+\subsection*{Usage}
+Call the \macro{PANELS} after the steps which create the graphs in the
+graphics catalog.  The \macro{GDISPLA} may be used to suppress the
+display of the original full-sized graphs.
+The \texttt{ROWS=} and \texttt{COLS=} parameters must be specified.
+\begin{listing}
+  goptions hsize=7in vsize=5in;
+  %gdispla(OFF);
+  proc gplot data=mydata;
+     plot y * x = group;
+     by sex;
+\end{listing}
+\begin{listing}
+  %gdispla(ON);
+  %panels(rows=1, cols=2);
+\end{listing}
+
+\subsubsection*{Parameters}%
+\index{Parameters}
+
+\begin{proglist}
+
+\item[ROWS=]
+\item[COLS=]
+The \texttt{ROWS=} and \texttt{COLS=} arguments are required, and specify the
+size of the array of plots to be displayed. These are the only
+required arguments.
+
+\item[PLOTS=]
+If there are fewer than \texttt{\&ROWS*\&COLS} plots, specify the number
+as the \texttt{PLOTS=} argument. Optionally, there can be an additional
+plot, which is displayed (as a GSLIDE title, for example) in
+the top nn\% of the display, as specified by the \texttt{TOP=} argument.
+
+\item[TOP=]
+If TOP=nn is specified, the top nn\% of the display is reserved
+for one additional panel (of width 100\%), to serve as the plot
+title or annotation.
+
+\item[ORDER=]
+The \texttt{ORDER=} argument specifies the order of the panels in the
+\texttt{REPLAY=} list, when \texttt{REPLAY=} is not specified. 
+Typically, the panels are displayed across the columns.
+
+\texttt{ORDER=UP} means that the panels in the bottom row are
+are drawn first, and  numbered 1, 2, ..., \texttt{\&COLS}. \texttt{ORDER=DOWN} means
+that the panels in the top row are drawn first, numbered 1, 2, ..., \texttt{\&COLS}.
+
+If you add the keyword \texttt{BYROWS} to \texttt{ORDER=}, the panels are
+displayed up or down the rows.  For example, when \texttt{ROWS=3}, \texttt{COLS=5},
+\texttt{ORDER=DOWN BYROWS} generates the \texttt{REPLAY=} list as,
+\begin{listing}
+       replay=1:1  2:4  3:7  4:10  5:13
+              6:2  7:5  8:8  9:11 10:14
+             11:3 12:6 13:9 14:12 15:15
+\end{listing}
+
+\item[EQUATE=]
+The \texttt{EQUATE=} argument determines if the size of the panels is adjusted
+so that the aspect ratio of the plots is preserved.  If \texttt{EQUATE=Y},
+the size of each plot is adjusted to the maximum of \texttt{\&ROWS} and \texttt{\&COLS}.
+This is usually desired, as long as the graphic options HSIZE and
+VSIZE are the same when the plots are replayed in the panels
+template as when they were originally generated.  The default is
+\texttt{EQUATE=Y}.
+
+\item[REPLAY=]
+The \texttt{REPLAY=} argument specifies the list of plots to be replayed
+in the constructed template, in one of the forms used with the
+\PROC{GREPLAY} REPLAY statement, for example, \texttt{REPLAY=1:1 2:3 3:2 4:4} 
+or \texttt{REPLAY=1:plot1 2:plot3 3:plot2 4:plot4}
+
+\item[TEMPLATE=]
+The name of the template constructed to display the plots. The
+default is \texttt{TEMPLATE=PANEL\&ROWS.\&COLS}.
+
+\item[TC=]
+The name of the template catalog used to store the template.
+You may use a two-part SAS data set name to save the template
+permanently.
+
+\item[FIRST=]
+By default, the \texttt{REPLAY=} argument is constructed to replay plot
+i in panel i.  If the \texttt{REPLAY=} argument is not specified, you can
+override this default assignment by specifying \texttt{FIRST=} the sequential
+number of the first graph in the graphics catalog to plot (default:
+FIRST=1), where:                       
+
+\begin{proglist}
+
+\item[$>$0]
+A positive integer means the absolute number of the first graph in the input catalog to be
+replayed.  For example, FIRST=3 starts with the third graph.
+      
+=item $<$1 
+
+An integer less than 1 means the number of first graph relative to last
+graph in the input catalog (i.e. FIRST=0 means 
+last graph only, FIRST=-1 means the first is the one before last, etc.) 
+
+\end{proglist}
+
+\item[LAST=]
+The LAST= parameter may be used to specify the number of the last graph
+in the input graphics catalog to be replayed.  The default is LAST=0,
+which refers to the last plot in the graphics catalog.  The LAST= value
+is interpreted as follows:
+
+\begin{proglist}
+
+\item[$>$0]
+A positive integer means the absolute number of last graph in the input catalog to be
+replayed.  For example, LAST=4 ends with the fourth graph.
+
+\item[$<$1]
+An integer less than 1 means the number of last graph relative to last
+graph in the input catalog (i.e. LAST=0 means 
+last graph only, LAST=-1 means to end with the one before last, etc.) 
+
+\end{proglist}
+
+\item[GIN=]
+GIN specifies the name of the input graphics catalog, from which the
+plots to be replayed are taken. The default is \texttt{GIN=WORK.GSEG}.
+
+\item[GOUT=]
+\texttt{GOUT=} specifies the name of the graphics catalog in which the panelled
+plot is stored. The default is \texttt{GOUT=WORK.GSEG}.
+
+\end{proglist}
+

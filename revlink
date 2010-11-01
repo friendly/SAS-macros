@@ -1,0 +1,71 @@
+#! /usr/bin/perl
+
+###
+# revlink - reverse links
+###
+
+use Getopt::Std;
+&getopts('id:');
+
+$interactive = $opt_i;
+#$interactive = 1;
+
+$serverbase='/home/ftp/pub/sas/macros';
+$macdir='/home/friendly/sasuser/macros';
+
+for $mac (@ARGV) {
+    $mac .= '.sas' unless $mac =~/\.sas$/;
+    if (-l $mac) {
+        $link = readlink($mac);
+#        print "$mac is a symlink to $link\n";
+        &myunlink($mac);
+        &move($link, $macdir);
+        &link("$macdir/$mac", $link);
+        print "$mac revlinked from $link\n";
+    }
+    else {
+        print "$mac is not a symlink\n";
+    }
+}
+exit;
+
+sub move {
+    $source = shift;
+    $target = shift;
+    my $cmd = "mv $source $target";
+    if ($interactive) {
+        return unless &yn("$cmd [n]? ");
+#        print "? cp -p $source $target\n";
+#        return;
+    }
+	system($cmd) && die("can't move $source\n");
+    
+}
+
+sub link {
+    $source = shift;
+    $target = shift;
+    my $cmd = "ln -s $source $target";
+    if ($interactive) {
+        return unless &yn("$cmd [n]? ");
+    }
+	system($cmd) && die("can't link $source to $target\n");
+}
+
+sub myunlink {
+    $source = shift;
+    my $cmd = "rm $source";
+    if ($interactive) {
+        return unless &yn("$cmd [n]? ");
+    }
+	system($cmd) && die("can't remove $source\n");
+}
+sub yn {
+    local($prompt) = @_;
+    local($answer);
+    local($default) = $prompt =~ m/\[([yn])\]\s*$/i;
+    print STDERR $prompt;
+    chop($answer = <STDIN>);
+    $answer = $default if $answer =~ m/^\s*$/;
+    ($answer =~ m/^[yY]/);
+}

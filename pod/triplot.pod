@@ -1,0 +1,187 @@
+=head1 Description
+
+The TRIPLOT macro plots three variables (rows of an n x 3 table)
+in an equilateral triangle, so that each point represents the
+proportions of each variable to the total for that observation.
+
+=head1 Usage
+
+The TRIPLOT macro is called with keyword parameters.
+The names of three variables must be given in the C<VAR=> parameter.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  data tridemo;
+     input A B C point $12.;
+     label point='Point';
+  cards;
+  40 30 30  (40,30,30)
+  20 60 20  (20,60,20)
+  10 10 80  (10,10,80)
+  ;
+  %triplot(var=A B C, class=Point, id=point, gridby=25,
+     symbols=dot dot dot, idht=1.6, axes=bot,
+     symht=4, gridclr=gray);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of data set to be plotted. [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+The names of three variables used as the axes in the
+plot.  The values of each observation are normally all
+non-negative.  Missing values are treated as 0.
+
+=item CLASS=
+
+The name of a class variable determining plotting symbol.
+Different values of the C<CLASS=> variable are represented
+by the values in the C<COLORS=> and C<SYMBOLS=> lists, used
+sequentially.
+
+=item ID=
+
+The name of an observation identifier (label) variable
+
+=item BY=
+
+The name of a BY variable, for separate plots
+
+=item WHERE=
+
+WHERE-clause to subset observations to be plotted.
+
+=item IDHT=
+
+Height of ID label [Default: C<IDHT=2>]
+
+=item IDCLR=
+
+Color of ID label [Default: C<IDCLR='BLACK'>]
+
+=item IDPOS=
+
+Position of ID label [Default: C<IDPOS=8>]
+
+=item IDSUBSET=
+
+A SAS expression (which may use any data set variables
+used to subset ID labels.  If an C<ID=> variable is given,
+and the C<IDSUBSET=> expression evaluates to non-zero,
+the observation is labelled in the plot.
+[Default: C<IDSUBSET=1>]
+
+=item INTERP=
+
+Interpolation between points, a SYMBOL statement option.
+If C<INTERP=JOIN>, points within the same C<CLASS=> value are
+connected by lines.  Most other SYMBOL statement
+interpolation options would give bizare results.
+[Default: C<INTERP=NONE>]
+
+=item SYMHT=
+
+Height of point symbols [Default: C<SYMHT=2>]
+
+=item SYMBOLS=
+
+A list of one or more symbols for points, corresponding
+to the levels of the C<CLASS=> variable.  The symbols are
+reused cyclically if there are more class levels than
+symbols.
+[Default: C<SYMBOLS=%STR(DOT CIRCLE SQUARE $ : TRIANGLE = X _ Y>)]
+
+=item COLORS=
+
+A list of one or more colors for points, corresponding
+to the levels of the C<CLASS=> variable.  The colors are
+also reused cyclically as required.
+[Default: C<COLORS=BLACK RED BLUE GREEN BROWN ORANGE PURPLE YELLOW>]
+
+=item BACKCLR=
+
+Background color inside the trilinear plot.
+[Default: C<BACKCLR=WHITE>]
+
+=item BACKPAT=
+
+Background fill pattern. For a plot with a light gray
+background, for example, specify C<BACKPAT=SOLID >and
+C<BACKCLR=GRAYD0. >[Default: C<BACKPAT=EMPTY>]
+
+=item GRIDBY=
+
+Grid line interval. For grid lines at 25, 50, and 75%,
+for example, specify C<GRIDBY=25. >[Default: C<GRIDBY=20>]
+
+=item GRIDCLR=
+
+Grid line color [Default: C<GRIDCLR=GRAY>]
+
+=item GRIDLINE=
+
+Style of grid lines [Default: C<GRIDLINE=34>]
+
+=item AXES=
+
+Type of axes, one of NONE, FULL, TOP, or BOT.
+C<AXES=NONE >draws no coordinate axes;  C<AXES=FULL >draws
+a line from 0 to 100% for each of the three coordinates;
+C<AXES=TOP >draws a line from the apex to the centroid only;
+C<AXES=BOT >draws a line from the centroid to the base only. 
+[Default: C<AXES=NONE>]
+
+=item AXISCLR=
+
+Color of axis lines [Default: C<AXISCLR=BLUE>]
+
+=item AXISLINE=
+
+Style of axis lines [Default: C<AXISLINE=1>]
+
+=item XOFF=
+
+X offset, in %, for adjusting the plot [Default: C<XOFF=2>]
+
+=item XSCALE=
+
+X scale factor for adjusting the plot.  Before plotting
+the X coordinates are adjusted by C<X = XOFF + XSCALE * X>.
+[Default: C<XSCALE=.96>]
+
+=item YOFF=
+
+X offset, in %, for adjusting the plot [Default: C<YOFF=2>]
+
+=item YSCALE=
+
+Y scale factor for adjusting the plot.  Before plotting
+the Y coordinates are adjusted by C<Y = YOFF + YSCALE * Y>.
+[Default: C<YSCALE=.96>]
+
+=item LEGEND=
+
+The name of legend statement or 'NONE'.  If C<LEGEND=> is
+not specified, and there is more than one group defined
+by a C<CLASS=> variable, a legend statement is constructed
+internally. If C<LEGEND=NONE>, no legend is drawn; otherwise
+the C<LEGEND=> value is used as the name of a legend statement.
+
+=item LABHT=
+
+Height of variable labels, in GUNITs [Default: C<LABHT=2>]
+
+=item LABLOC=
+
+Location of variable label: 0 or 100 [Default: C<LABLOC=100>]
+
+=item NAME=
+
+Name of the graphics catalog entry [Default: C<NAME=TRIPLT>]
+
+=back 4

@@ -1,0 +1,256 @@
+<html> 
+<head>
+	<title>hovplot - Boxplot display of homogeneity of variance tests</title>
+	<link rev=made href="mailto:friendly@yorku.ca">
+	<link rel="stylesheet" href="macdoc.css" type="text/css">
+	<!-- Author: Michael Friendly York University  -->
+<!-- BeginInsertHead -->
+<script type="text/javascript" src="/SCS/menu/JSCookMenu.js"></script>
+<link rel="stylesheet" href="/SCS/menu/ThemeMacro/theme.css" type="text/css" />
+<script type="text/javascript" src="/SCS/menu/ThemeMacro/theme.js"></script>
+<script language="javascript" src="macmenu2.js"></script>
+<!-- EndInsertHead -->
+
+</head>
+<body>
+<!-- BeginInsertBody -->
+<div id="Panel">
+<script type="text/javascript">
+cmDraw ('Panel', macmenu, 'hbr', cmThemeMacro, 'ThemeMacro');
+</script>
+</div>
+<!-- EndInsertBody -->
+
+<!-- pnuts -->
+<CENTER>
+<TABLE width="100%">
+<TR>
+<td class="linksasL"> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/hovplot.sas">hovplot</a></td>
+<td class="title">Boxplot display of homogeneity of variance tests</td>
+<td class="linksasR"> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/hovplot.sas">hovplot</a></td>
+</TR>
+</TABLE>
+</CENTER>
+<h1>SAS Macro Programs: <tt>hovplot</tt></h1>
+
+$Version: 1.0 (11 Jan 2005 13:41:52)<br>
+<b>
+<a href="../friendly.html">Michael Friendly</a><br>
+York University
+</b><br>
+<script language="JavaScript">
+<!--
+	document.write("Updated " + document.lastModified);
+// -->
+</script>
+<hr>
+
+<h2>The <tt>hovplot</tt> macro (<A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/hovplot.sas">
+<IMG  WIDTH=20 HEIGHT=20 SRC="../icons/download.gif" alt="[download]" border=0> get hovplot.sas</A>)</h2>
+<h3>Boxplot display of homogeneity of variance tests</h3>
+
+<p>The <tt>HOVPLOT</tt> macro provides a graphical display of information
+related to the Levine and Brown-Forsythe tests of homogeneity of 
+variance in factorial ANOVA designs.</p>
+<p>Of the recommended tests of homogeneity of variance, the Levine 
+test and the Brown-Forsythe test take simple forms amenable to
+graphical display.  Both of these are based on an ANOVA of simple 
+functions of a dispersion variable,</p>
+<pre>
+   Z  = abs (Y - median)      [Brown-Forsythe]
+   Z  = abs (Y - mean)        [Levine, C&lt;TYPE=ABS&gt;]
+   Z  =     (Y - mean)^2      [Levine, C&lt;TYPE=SQUARE&gt;]</pre>
+<p>O'Brien's (1979) test, is a modification of Levine's Z^2, with a more
+complex formula.  The Brown-Forsythe test appears to have the greatest
+power for detecting non-constant variance.</p>
+<p>The <tt>HOVPLOT</tt> macro displays these quantities by a set of boxplots,
+one for each cell in the design.  Lack of homogeneity of variance
+is indicated by differences in spread across cells.</p>
+
+<H3><a name="method">Method</a></H3>
+<p>Statistical tests are provided by PROC GLM using the
+<code>HOVTEST=</code> option on the MEANS statement, but only for one-way
+designs.  The HOVPLOT macro extends this test to n-way designs by
+combining multiple <a href="#item_class"><code>CLASS=</code></a> variables into a single combined variable
+(whose values should be distinct) representing all the cells in
+the design.</p>
+
+
+<H2><a name="usage">Usage</a></H2>
+<p>The <tt>HOVPLOT</tt> macro is defined with keyword parameters.  The <a href="#item_var"><code>VAR=</code></a> and
+<a href="#item_class"><code>CLASS=</code></a> parameters are required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:</p>
+<pre>
+  %hovplot(data=animals, var=time, class=Treatmt Poison, sortby=_iqr_);</pre>
+
+<H3><a name="parameters">Parameters</a></H3>
+<dl>
+<dt><a name="item_data">DATA=</a><br />
+</dt>
+<dd>
+Input dataset [Default: <code>DATA=_LAST_</code>]
+</dd>
+
+<dt><a name="item_where">WHERE=</a><br />
+</dt>
+<dd>
+WHERE clause to subset the data
+</dd>
+
+<dt><a name="item_class">CLASS=</a><br />
+</dt>
+<dd>
+Grouping <code>variable(s)</code>
+</dd>
+
+<dt><a name="item_classfmt">CLASSFMT=</a><br />
+</dt>
+<dd>
+Format used for the <a href="#item_class"><code>CLASS=</code></a> <code>variable(s)</code>
+</dd>
+
+<dt><a name="item_sep">SEP=</a><br />
+</dt>
+<dd>
+Separator character used to join the values of 2 or more CLASS vars [Default: SEP=%str()]
+</dd>
+
+<dt><a name="item_var">VAR=</a><br />
+</dt>
+<dd>
+Name of the analysis variable
+</dd>
+
+<dt><a name="item_id">ID=</a><br />
+</dt>
+<dd>
+Observation ID variable, used to label extreme observations
+             in the boxplots.
+</dd>
+
+<dt><a name="item_sortby">SORTBY=</a><br />
+</dt>
+<dd>
+How to order the classes in the boxplot.  Specify the
+             name of a dataset variable, or one of the keywords
+             _mean_, _iqr_, _median_, etc. recognized by the
+             BOXPLOT macro. [Default: SORTBY=]
+</dd>
+
+<dt><a name="item_connect">CONNECT=</a><br />
+</dt>
+<dd>
+Line style to connect medians, or 0 to suppress connecting lines [Default: <code>CONNECT=1</code>]
+</dd>
+
+<dt><a name="item_notch">NOTCH=</a><br />
+</dt>
+<dd>
+0 or 1, where 1 gives a notched boxplot
+</dd>
+
+<dt><a name="item_method">METHOD=</a><br />
+</dt>
+<dd>
+Type of HOV test: one of <code>BF</code> or <code>LEVINE</code>, <code>LEVINE(TYPE=ABS)</code>,
+ <code>LEVINE(TYPE=SQUARE)</code>, or <code>OBRIEN</code>.  Use <a href="#item_method"><code>METHOD=</code></a> (null) or 
+<code>METHOD=NONE</code> to suppress the numerical test.
+[Default: <code>METHOD=BF</code>]
+</dd>
+
+<dt><a name="item_center">CENTER=</a><br />
+</dt>
+<dd>
+Central value subtracted from Y [Default: <code>CENTER=MEDIAN</code>]
+</dd>
+
+<dt><a name="item_function">FUNCTION=</a><br />
+</dt>
+<dd>
+Function of (Y-&amp;center) plotted, either ABS or SQUARE
+             [Default: <code>FUNCTION=ABS</code>]
+</dd>
+
+<dt><a name="item_out">OUT=</a><br />
+</dt>
+<dd>
+Name of output dataset, a copy of the input dataset, 
+             containing additional variables _CLASS_, MEDIAN, MEAN, N
+</dd>
+
+<dt><a name="item_name">NAME=</a><br />
+</dt>
+<dd>
+Name for graphic catalog entry [Default: <code>NAME=HOVPLOT</code>]
+</dd>
+
+<dt><a name="item_gout">GOUT=</a><br />
+</dt>
+<dd>
+The name of the graphics catalog [Default: <code>GOUT=GSEG</code>]
+</dd>
+</dl>
+
+
+<H2><a name="dependencies">Dependencies</a></H2>
+<p>Requires:<br> 
+<a href="/SCS/sssg/boxplot.html">boxplot</a><br>
+<a href="/SCS/sasmac/combine.html">combine</a>
+</p>      
+
+<h3>Example</h3>
+The data give survival times (in 10 hour units) of animals exposed
+to one of 3 types of poison and given one of 4 treatments, in a (3 x 4)
+design, with 4 replications.  Box and Cox (1964) showed that a
+reciprocal transformation is reasonable.
+<pre>
+data animals;
+   do poison=1 to 3;
+      do rep = 1 to 4;
+         do treatmt='A', 'B', 'C', 'D';
+               group = treatmt || put(poison,1.);
+            input time @;
+            time = time*10;
+            output;
+            end;
+      end;
+   end;
+   label treatmt='Treatment' time='Survival time (hrs)'
+        poison='Poison';
+datalines;
+0.31  0.82  0.43  0.45
+0.45  1.10  0.45  0.71
+0.46  0.88  0.63  0.66
+0.43  0.72  0.76  0.62
+0.36  0.92  0.44  0.56
+0.29  0.61  0.35  1.02
+0.40  0.49  0.31  0.71
+0.23  1.24  0.40  0.38
+0.22  0.30  0.23  0.30
+0.21  0.37  0.25  0.36
+0.18  0.38  0.24  0.31
+0.23  0.29  0.22  0.33
+</pre>
+<pre>
+%include macros(hovplot);        *-- or include in an autocall library;
+
+title 'Survival times of animals: HOV plot';
+%hovplot(data=animals, var=time, class=Treatmt Poison, sortby=_iqr_);
+</pre>
+Output
+<center>
+<img src="animals-hov.gif" width="428" height="380" >
+</center>
+<h3>See also</h3>
+<a href="/SCS/sasmac/boxcox.html">boxcox</a> Power transformations by Box-Cox method<br>
+<a href="/SCS/sasmac/boxglm.html">boxglm</a> Power transformations by Box-Cox method for GLM<br>
+<a href="/SCS/sssg/boxplot.html">boxplot</a> Box-and-whisker plots<br>
+<a href="/SCS/sasmac/combine.html">combine</a> Combine the values of two or more variables<br>
+<a href="/SCS/sasmac/meanplot.html">meanplot</a> Plot means for factorial designs<br>
+<a href="/SCS/sasmac/sprdplot.html">sprdplot</a> Spread-Level plot to find transformation to equalize variances.<br>
+<hr>
+<!-- pnuts -->
+
+</body>
+</html>

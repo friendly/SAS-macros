@@ -1,0 +1,102 @@
+=head1 Description
+
+The SIEVE macro provides a more convenient macro interface to
+the SAS/IML modules for sieve diagrams, so that you can input
+a SAS data set (in frequency form), rather than constructing the
+arrays used by the IML modules. It also provides the
+means to produce multiple sieve plots for two-way tables stratified
+by other C<BY=> variables.
+
+=head1 Usage
+
+The SIEVE macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %sieveplot(data=haireye, var=Eye Hair, filltype=obsp)
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of input dataset [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Names of factor variables, including C<BY=> variables.  The first
+             two variables are used as the rows and columns of the
+          sieve diagram.
+
+=item BY=
+
+Specifies the names of one (or more) By variables.  Partial
+             sieve plots are produced for each combination of the levels
+             of the C<BY=> variables.  The C<BY=> variable(s) *must* be listed among
+             the C<VAR=> variables.
+
+
+=item COUNT=
+
+Name of the frequency variable [Default: C<COUNT=COUNT>]
+
+=item COLORS=
+
+Colors for + and - residuals [Default: C<COLORS=BLUE RED>]
+
+=item FILLTYPE=
+
+Specifies how each cell is filled, one of OBS, OBSP, DEV, 
+             EXL, EXP [Default: C<FILLTYPE=OBS>]
+             OBS: fill cells in proportion to observed frequencies
+            'OBSP: like OBS, but also write obs. freq. in cell
+            'DEV: fill in proportion to deviations from independence.
+            'EXL: no fill, write expected frequency in cell
+            'EXP: expfill, write expected frequency in cell
+
+
+=item MARGINS=
+
+Empty or TOTAL
+
+=item HTEXT=
+
+Height of text labels [Default: C<HTEXT=1.5>]
+
+=item FONT=
+
+Font for text labels
+
+=item TITLE=
+
+Title for plot(s)
+
+=item GOUT=
+
+The name of the graphics catalog
+
+=item NAME=
+
+The name of the graph in the graphic catalog
+
+
+=back 4
+
+=head2 Examples
+
+  *-- Three way table, Hair color x Eye color x Sex;
+  %include catdata(hairdat3);
+
+  *-- Separate plots for males and females;
+  %sieveplot(data=haireye, var=Eye Hair Sex, by=Sex, title=Hair-Eye data--,
+      filltype=obsp);
+
+  *-- Collapse the table over Sex;
+  %table(data=haireye, var=Eye Hair, order=data,
+       weight=count, out=haireye2);
+
+  %sieveplot(data=haireye2, var=Eye Hair, filltype=obsp);
+
+
+

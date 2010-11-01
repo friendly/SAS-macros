@@ -1,0 +1,156 @@
+<html> 
+<head>
+	<title>SAS Macro Programs: colorramp - Construct a sequential or diverging color set</title>
+	<link rev=made href="mailto:friendly@yorku.ca">
+	<link rel="stylesheet" href="macdoc.css" type="text/css">
+	<!-- Author: Michael Friendly York University  -->
+</head>
+<body>
+<!-- pnuts --> 
+<CENTER>
+<TABLE WIDTH="100%" BGCOLOR="#FFFF99" >
+<TR>
+<TD width="10%"><FONT SIZE=+2><tt><b> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/colorramp.sas">colorramp</a></b></tt></FONT></TD>
+
+<TD align="center"><FONT FACE="Arial"><FONT SIZE=+1>Construct a sequential or diverging color set</FONT></FONT></TD>
+
+<TD  width="10%" align="right"><FONT SIZE=+2><tt><b> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/colorramp.sas">colorramp</a></b></tt></FONT></TD>
+</TR>
+</TABLE>
+</CENTER>
+<h1>SAS Macro Programs: <tt>colorramp</tt></h1>
+
+$Version: <br>
+<b>
+<a href="../friendly.html">Michael Friendly</a><br>
+York University
+</b>
+<script language="JavaScript">
+<!--
+	document.write("Updated " + document.lastModified);
+// -->
+</script>
+<hr>
+
+<h2>The <tt>colorramp</tt> macro (<A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/colorramp.sas">
+<IMG  WIDTH=20 HEIGHT=20 SRC="../icons/ftp.gif" alt="[ftp]"> get colorramp.sas</A>)</h2>
+<h3>Construct a sequential or diverging color set</h3>
+
+<p>The <tt>COLORRAMP</tt> macro constructs a set of RGB colors ranging from a
+starting color to an ending color, optionally going through a middle
+color.  The result appears as the <a href="#item_colorvar"><code>COLORVAR=</code></a> variable in an <a href="#item_out"><code>OUT=</code></a>
+output data set, and optionally as a macro variable named by the
+<a href="#item_result"><code>RESULT=</code></a> parameter.</p>
+
+<p>The ends and middle of the color scale can be specified either as
+6-character RRGGBB hex strings, as 8-character HLS strings (Hhhllss),
+or as the predefined SAS/Graph color names, e.g., 'very light purple'.
+Except for RRGGBB, this requires the SAS-supplied COLORMAC macro,
+available with SAS V8+.</p>
+
+<H3><a name="method">Method</a></H3>
+<p><a href="#item_start"><code>START=</code></a>, <a href="#item_end"><code>END=</code></a> and <code>MIDDLE=</code> are each converted to decimal red, green,
+blue components, and linear interpolation is performed on each,
+from <a href="#item_start"><code>START=</code></a> to <a href="#item_end"><code>END=</code></a>, possibly through <code>MIDDLE=</code>.  This means that
+if you prefer to use HLS colors, the result will not be exactly
+linear in HLS space, though the difference will probably be small
+unless very few colors are used.</p>
+
+
+<H2><a name="usage">Usage</a></H2>
+<p>The <tt>COLORRAMP</tt> macro is defined with keyword parameters.  The <a href="#item_n"><code>N=</code></a>
+parameter is required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:</p>
+<pre>
+  %colorramp(n=10);
+  %colorramp(start=red,mid=very light gray,end=0000FF, n=8, display=Y);
+  %colorramp(start=red, end=blue, n=6, result=mycolors);
+  %put Colors: &amp;mycolors;</pre>
+
+  %colorramp(start=H00080FF, end=H07880FF, n=10, out=mycolors);
+  %genpat(n=nobs, data=mycolors);</pre>
+
+<H3><a name="parameters">Parameters</a></H3>
+<dl>
+<dt><strong><a name="item_n">N=</a></strong><br />
+</dt>
+<dd>
+Number of colors to be created
+</dd>
+
+<dt><strong><a name="item_start">START=</a></strong><br />
+</dt>
+<dd>
+Starting color.  This should be either a 6-digit hex string
+(rrggbb), or an 8-char HLS string (Hhhhllss),
+or the name of a SAS/Graph color. [Default: <code>START=FF0000</code>]
+</dd>
+
+<dt><strong><a name="item_mid">MID=</a></strong><br />
+</dt>
+<dd>
+Middle color.  If specified, the resulting colors go from
+   the <a href="#item_start"><code>START=</code></a> color to the <code>MIDDLE=</code> color, then to the <a href="#item_end"><code>END=</code></a>
+color.  When <a href="#item_n"><code>N=</code></a> is an even number, you can get a symmetric
+set of colors by specifying <code>DUPMID=1</code>;  otherwise, there is
+one fewer color in the set from <a href="#item_start"><code>START=</code></a> to <a href="#item_mid"><code>MID=</code></a> than from
+<a href="#item_mid"><code>MID=</code></a> to <a href="#item_end"><code>END=</code></a>.
+</dd>
+
+<dt><strong><a name="item_end">END=</a></strong><br />
+</dt>
+<dd>
+Ending color [Default: <code>END=0000FF</code>]
+</dd>
+
+<dt><strong><a name="item_dupmid">DUPMID=</a></strong><br />
+</dt>
+<dd>
+0 or 1: Duplicate middle color when N=even? [Default: <code>DUPMID=0</code>]
+</dd>
+
+<dt><strong><a name="item_colorvar">COLORVAR=</a></strong><br />
+</dt>
+<dd>
+Name of color the variable in the <a href="#item_out"><code>OUT=</code></a> data set.
+ This is a SAS/Graph RGB color of the form CXrrggbb. 
+[Default: <code>COLORVAR=COLOR</code>]
+</dd>
+
+<dt><strong><a name="item_out">OUT=</a></strong><br />
+</dt>
+<dd>
+The name of the output data set [Default: <code>OUT=COLORS</code>]
+</dd>
+
+<dt><strong><a name="item_display">DISPLAY=</a></strong><br />
+</dt>
+<dd>
+Show a display of the colors? [Default: <code>DISPLAY=N</code>]
+</dd>
+
+<dt><strong><a name="item_result">RESULT=</a></strong><br />
+</dt>
+<dd>
+Name of output macro variable containing color list.  If specified,
+a macro variable of that name is created with a list of all distinct
+colors in the <a href="#item_out"><code>OUT=</code></a> data set.
+</dd>
+</dl>      
+<h3>Example</h3>
+<pre>
+%include macros(colorramp);        *-- or include in an autocall library;
+
+%colorramp();
+</pre>
+
+<h3>See also</h3>
+<a href="meanplot.html">meanplot</a> Plot means for factorial designs<br>
+<a href="panels.html">panels</a> Display a set of plots in rectangular panels<br>
+<a href="stat2dat.html">stat2dat</a> Convert summary dataset to raw data equivalent<br>
+<hr>
+<!-- pnuts --> 
+
+</body>
+</html>

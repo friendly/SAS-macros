@@ -1,0 +1,162 @@
+=head1 Description
+
+The LABEL macro creates an Annotate data set used to label
+observations in a 2D (PROC GPLOT) or 3D (PROC G3D) scatterplot.
+The points which are labeled may be selected by an arbitrary
+logical expression from those in the input dataset. The macro
+offers flexible ways to position the text label relative to either
+the data point or the center of the plot. The resulting Annotate
+data set would then be used with the C<ANNO=> option of PROC GPLOT
+or PROC G3D.
+
+
+=head1 Usage
+
+Values must be supplied for the X=, C<Y=> and C<TEXT=> parameters.  For a PROC
+G3D plot, supply a value for the C<Z=> parameter as well.
+The label macro is called with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %label(x=age, y=response, text=name);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item X=
+
+The name of the X variable for the scatterplot
+
+=item Y=
+
+The name of the Y variable for the scatterplot
+
+=item Z=
+
+The name of the Z variable for a 3D scatterplot
+
+=item BY=
+
+The name(s) of any BY variable(s) to be used for multiple
+plots.
+
+=item XOFF=
+
+An X-offset for the text label. You may specify a 
+numeric constant
+(e.g., C<XOFF=-1>) in data units, or the name of a variable in the
+input data set. Positive values move the label
+towards larger X values relative to the point; negative values move it
+towards smaller X values..
+
+
+=item YOFF=
+
+A Y-offset for the text label. Positive values move the label
+towards larger Y values.
+
+=item ZOFF=
+
+A Z-offset for the text label, for a 3D plot.
+
+=item TEXT=
+
+The text used to label each point. C<TEXT=> may be
+specified as a variable in the data set or a SAS
+expression involving dataset variables (e.g.,
+C<TEXT=SCAN(MODEL,1)>) and/or string 
+constants.  If you supply an expression, use the 
+C<%str()> macro function,  e.g.,
+C<TEXT=%str(trim(name || '-' || place))> to protect special
+characters.
+
+=item LEN=
+
+Length of the TEXT variable [Default: C<LEN=16>]
+
+=item POS=
+
+Specifies the position of the label relative to the
+data point.  The C<POS=> value can be a character constant 
+(one of the characters in "123456789ABCDEF<+>", as used 
+by the Annotate POSITION variable), an expression involving 
+dataset variables which evaluates to one of these characters
+(e.g., C<POS=SCAN('9 1 3', _NUMBER_)>) or one of the special
+characters, "/", "|", or "-".  The special position values 
+cause the point label to be out-justified (moved outward 
+toward the edges of the plot relative to the data point.)
+by comparing the coordinates of the pointto the mean of 
+X and Y (/), or to the mean of X only (|), or to the
+mean of Y only (-).
+
+=item SYS=
+
+Specifies the Annotate XSYS & YSYS value [Default: C<SYS=2>]
+
+=item COLOR=
+
+Label color (the name of a dataset character variable or a
+string constant enclosed in quotes. [Default: C<COLOR='BLACK'>]
+
+=item SIZE=
+
+The size of label (in whatever units are given by the
+GUNIT goption). There is no 
+default, which means that the labels inherit the 
+global HTEXT setting.
+
+=item FONT=
+
+The name of the font used for the label.  There is no 
+default, which means that the labels inherit the 
+global FTEXT setting.
+
+=item ANGLE=
+
+Baseline angle for label.
+
+=item ROTATE=
+
+Character rotate for label
+
+=item SUBSET=
+
+An expression (which may involve any dataset variables) to
+select points.  A point will be labeled if the expression 
+evaluates to non-zero for the current observation.
+[Default: C<SUBSET=1>]
+
+=item COPY=
+
+The names of any variables to be copied to output dataset
+
+=item IN=
+
+The name of an optional input annotate data set.  If
+specified, the C<IN=> data set is concatenated with the
+C<OUT=> data set.
+
+=item OUT=
+
+The name of the annotate data set produced.  [Default: C<OUT=_LABEL_>]
+
+=back 4
+
+=head1 Example
+
+This example plots Weight against Price for American cars in the Auto data,
+labeling the most expensive cars.
+
+  %label(data=auto, x=price, y=weight,
+           color='red', size=1.2,
+           subset=origin='A' and price>10000,
+           pos=1, text=scan(model,1));
+
+  proc gplot data=auto(where=(origin='A'));
+     plot weight * price / frame anno=_label_;
+     symbol1 v='+'  i=none color=black h=1.5;

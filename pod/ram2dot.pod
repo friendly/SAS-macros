@@ -1,0 +1,140 @@
+=head1 Description
+
+The RAM2DOT macro reads a RAM-list data set of the same format produced
+by STR2RAM and other macros in the SEMPATH collection.  It uses this
+information to write an external file of specifications for drawing a
+directed graph representing a structural equation model using the 'dot' 
+program.   
+
+=head1 Usage
+
+The RAM2DOT macro takes keyword arguments.  The C<VAR=> parameter value
+must be supplied.  All others have default values, but the defaults
+may not give you what you want.  Judicious use of the C<RANK=> option
+often gives better results. Typically, the resulting .dot file requires
+some hand-editing, or use of an interactive graphviz editor (dotty) for 
+a more pleasing path diagram. 
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=_last_
+
+Input RAM-list data set.  The data set is assumed to
+contain the variables HEADS, FROM, TO (indices of
+variables in the C<VAR=> list), _FROM_, and _TO_ 
+(names of variables in the C<VAR=> list).  The names of
+these variables may be changed with the TO=, FROM=,
+C<TOVAR=> and C<FROMVAR=> parameters.  The defaults reflect
+the output of other macros, e.g., STR2RAM.
+
+=item VAR=
+
+List of manifest and latent variables in the model.
+The order of variable names in this list corresponds
+to the indices used in the TO and FROM entries in
+the RAM-list.  
+
+Alternatively, if C<VAR=> is just a
+single word, it is assumed to be the name of an
+additional data set containing a VARNAME variable.
+The values of this variable are stacked into a string
+to create the C<VAR=> list.
+
+=item FROM=from
+
+Name of the from index variable in the input data
+set.
+
+=item TO=to
+
+Name of the to index variable in the input data set.
+
+=item FROMVAR=_from_
+
+Name of the from name variable
+
+=item TOVAR=_to_
+
+Name of the to name variable
+
+=item PARM=parm
+
+Name of the parameter-name variable
+
+=item VALUE=value
+
+Name of the parmeter-value variable
+
+* EDGE=parm value    What to use as the label on an edge: the
+                    parameter name (if C<EDGE=> includes PARM), and
+                    or the parameter value (if C<EDGE=> includes VALUE)
+
+=item SIZE=%str(8,8)
+
+Maximum size of the dot path diagram, in inches.
+
+* C<NODEFONT=H>elvetica Font for nodes.  Standard PostScript fonts, e.g.,
+                    'Times-Roman', 'Helvetica', etc. are portable
+
+=item NODESIZE=16
+
+Font size for the names of nodes (manifest and
+                    latent variables), in points.
+
+=item NODESTY=
+
+Other node style parameters, e.g, 
+                    NODESTY=style=filled color=yellow
+                    will draw nodes filled in yellow.
+
+=item EDGEFONT=Symbol
+
+Font for edge labels.  The default, C<EDGEFONT=S>ymbol
+                    is useful when the parameter names are composed of
+                    single lower case roman characters optionally 
+                    followed by subscripts, e.g., b1, b2, g, r12.  In
+                    this case, the parameters appear as \beta1 ... \rho12.
+
+=item EDGESIZE=12
+
+Font size for edge labels, which represent parameters
+                    in the model.
+
+=item RANKDIR=LR
+
+Draw LR (left to right) or TB (top to bottom)?
+
+=item RANK=
+
+List of variable 'ranks' for locating nodes, in the
+form of one or more rank specifications separated by
+'/'.  For example, the following says that x1 and x2,
+y1 and y2, and F1 and F2 should have equal rank within
+set, giving x1,x2 minimum rank, and y1,y2 maximum rank.
+
+                         rank=min x1 x2/ max y1 y2/ same F1 F2
+
+=item RUN=,
+
+If non-blank, C<RUN=> specifies a system command to run
+                    dot on the output .dot file.  By creating a .bat file,
+                    or a shell script, you can pass options to dot and
+                    or arrange for the resulting path diagram to be opened
+                    in an appropriate viewer.
+
+=item OUT=&data
+
+Filename of the output .dot file (excluding the .dot
+                    extension).
+
+
+=back 4
+
+=head1 References
+
+ graphviz: L<http://www.graphviz.org>
+
+
+

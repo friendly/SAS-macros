@@ -1,0 +1,78 @@
+=head1 Description
+
+The POISPLOT macro constructs a ``Poissonness plot'' for determining
+if discrete data follows the Poisson distribution.  The plot has a
+linear relation between the count metameter n(k) and the basic
+count, k, when the distribution is Poisson.  An influence
+plot displays the effect of each observed frequency on the choice of
+the Poisson parameter, lambda.
+
+=head1 Usage
+
+The POISPLOT macro is called with keyword parameters.  The C<COUNT=>
+and C<FREQ=> parameters are required.  
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  data horskick;
+     input deaths corpsyrs;
+     label deaths='Number of Deaths'
+        corpsyrs='Number of Corps-Years';
+  cards;
+        0    109
+        1     65
+        2     22
+        3      3
+        4      1
+  ;
+  %poisplot(count=Deaths,freq=corpsyrs, plot=dist);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item COUNT=
+
+The name of the basic count variable
+
+=item FREQ=
+
+The name of the variable giving the number of occurrences
+of COUNT.
+
+=item LABEL=
+
+Label for the horizontal (C<COUNT=>) variable.  If not specified
+the variable label for the C<COUNT=> variable in the input
+data set is used.
+
+=item LAMBDA=
+
+Trial value  of the Poisson parameter lambda to level the plot.
+If C<LAMBDA=0 >(the default) the plot is not levelled.
+
+=item Z=
+
+Multiplier for error bars [Default: C<Z=1.96>]
+
+=item PLOT=
+
+What to plot: DIST and/or INFL [Default: C<PLOT=DIST INFL>]
+
+=item HTEXT=
+
+Height of text labels [Default: C<HTEXT=1.4>]
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=POISPLOT>]
+
+=item NAME=
+
+Name of the graphics catalog entry [Default: C<NAME=POISPLT>]
+
+=back 4

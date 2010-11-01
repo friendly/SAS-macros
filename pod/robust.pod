@@ -1,0 +1,88 @@
+=head1 Description
+
+The ROBUST macro uses iteratively reweighted least squares to  
+fit linear models by M-estimation.  The weights are determined  
+by the BISQUARE, HUBER, LAV or OLS function.  The fitting procedure 
+can be PROC REG, PROC GLM or PROC LOGISTIC               
+
+=head1 Usage
+
+The ROBUST macro is called with keyword parameters.
+The C<RESPONSE=> and C<MODEL=> parameters are required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %include data(icu);
+  %robust(data=icu, response=died, model=age cancer uncons admit,
+     proc=logistic, id=id, iter=3);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item RESPONSE=
+
+The name of the response variable in the model
+
+=item MODEL=
+
+The right-hand-side of the MODEL statement
+
+=item PROC=
+
+The name of the estimation procedure to be used,
+one of REG, GLM, or LOGISTIC.  
+[Default: C<PROC=LOGISTIC>]
+
+=item CLASS=
+
+The names of any CLASS variables in the MODEL (for GLM only)
+
+=item ID=
+
+The names of any observation ID variables.  These are
+simply copied to the C<OUT=> data set.
+
+=item OUT=
+
+The name of the output data set of observation statistics.
+[Default: C<OUT=RESIDS>]
+
+=item OUTPARM=
+
+The name of the output data set of parameter estimates
+on the final iteration.
+
+=item FUNCTION=
+
+Weight function, one of C<HUBER>, C<LAV> (least absolute value),
+C<BISQUARE>, or C<OLS>. [Default: C<FUNCTION=BISQUARE>]
+
+=item TUNE=
+
+Tuning constant for BISQUARE or HUBER.  The weighting
+function is applied to the value C<_RESID_ / (&TUNE * MAD)>
+where MAD is the median absolute value of the residuals.
+The default is C<TUNE=6> for the BISQUARE function, and 
+C<TUNE=2> for the HUBER function.
+
+=item ITER=
+
+The maximum number of iterations [Default: C<ITER=10>]
+
+=item CONVERGE=
+
+The maximum change in observation weights for convergence.
+The value must have a leading 0. [Default: C<CONVERGE=0.05>]
+
+=item PRINT=
+
+Controls printing of intermediate and final results
+[Default: C<PRINT=NOPRINT>].
+
+
+=back 4

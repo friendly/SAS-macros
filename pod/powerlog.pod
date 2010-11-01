@@ -1,0 +1,92 @@
+=head1 Description
+
+The POWERLOG macro calculates sample size required to achived given
+power values for a logistic regression model with one or more 
+quantitative predictors.  Results are displayed as a table of
+sample sizes required for a range of power values, and as a graph.
+
+=head1 Usage
+
+The POWERLOG macro is called with keyword parameters.  The arguments 
+may be listed within parentheses in any order, separated by commas. 
+You must supply either an input data set containing the 
+variables P1, P2, ALPHA, POWER, and RSQ (one observation for each
+combination for which power is desired), or the macro parameters
+P1= and P2=.
+For example: 
+
+  %powerlog(p1=.08, p2=%str(.16, .24));
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Specifies the name of an input data set containing the 
+variables P1, P2, ALPHA, POWER, and RSQ in all combinations
+for which power is desired.  If an input C<DATA=> data set is
+specified, the program ignores values for the P1=, P2=, ALPHA=, 
+POWER=, and C<RSQ=> parameters.
+
+=item P1=
+
+is the estimated probability of the event at the mean value
+of the quantitative predictor.
+
+=item P2=
+
+is the estimated probability of the event at an X-value equal
+to the X-mean plus one standard deviation.
+You may specify a list of values separated by commas, a
+range of the form x TO y BY z, or a combination of these.
+However, you must surround the P2= value with
+%STR() if any commas appear in it.  For example,
+
+	p2=.10 to .30 by .05
+	p2=%str(.10, .13, .20)
+
+=item ALPHA=
+
+is the desired Type I error probability for a *one-sided* test
+ of H0: beta(x) = 0
+
+=item POWER=
+
+is the desired power of the test.
+
+=item RSQ=
+
+is the squared multiple correlation of the predictor with all
+other predictors.  Use C<RSQ=0> for a 1-predictor model.
+
+=item PLOT=
+
+is a specification for plotting the results.  The default
+is C<PLOT=N * POWER=RSQ>.  No plots are produced if  C<PLOT=>  is
+blank.
+
+=item PLOTBY=
+
+is another variable in the C<OUT=> data set
+
+=item OUT=
+
+Specifies the name of the output data set
+
+=back 4
+
+=head1 Example
+
+Modelling the relation of the probability of heart disease
+on X = cholesterol.  If previous studies suggest that heart disease
+occurs with P1=0.08 at the mean level of cholesterol, what is the
+sample size required to detect a 50% increase (P2 = 1.5*.08 = .12),
+or an 87.5% increase (P2 = 1.875*.08 = .15) in the probability of
+heart disease, when cholesterol increases by one standard deviation?
+
+If age is another predictor, how does sample size vary with the RSQ
+between cholesterol and age?
+
+  %powerlog(p1=.08, p2=%str(.12, .15), rsq=%str(.2, .4) );
+

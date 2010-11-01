@@ -1,0 +1,91 @@
+=head1 Description
+
+The COPLOT macro plots a collection of XY plots, for subsets of a
+data set conditioned by a C<GIVEN=> variable.  These help to show
+how the relation between X and Y varies with the given variable.
+
+=head1 Usage
+
+The COPLOT macro is defined with keyword parameters.  The C<X=>, C<Y=>,
+and C<GIVEN=>  parameters are required.  Either or both of the C<ROWS=>
+and C<COLS=> parameters may be used to arrange the collection of
+plots in a rectangular grid.  
+
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %coplot(x=weight, y=mpg, given=Origin);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the data set to be plotted [Default: C<DATA=_LAST_>]
+
+=item X=
+
+Horizontal variable in each plot
+
+=item Y=
+
+Vertical variable in each plot
+
+=item GIVEN=
+
+The name of the slicing variable.  Must be a numeric
+variable.
+
+=item GROUP=
+
+Grouping variable (determines the plot symbol/color)
+
+=item SLICES=
+
+Number of slices of the C<GIVEN=> variable [Default: C<SLICES=4>]
+
+=item OVERLAP=
+
+Allowed overlap between slices [Default: C<OVERLAP=0.25>]
+
+=item ROWS=
+
+Number of rows in the panel plot.  If neither C<ROWS=> nor
+C<COLS=> are specified, both values are calculated from the
+C<SLICES=> value to give a square-ish display.  If only one
+of C<ROWS=> or C<COLS=> is specified, the other value is calculated.
+
+=item COLS=
+
+Number of columns in the panel plot.
+
+=item INTERP=
+
+Plot interpolation method in each panel [Default: C<INTERP=NONE>]
+
+=item HSYM=
+
+Height of plot symbols and value labels in the plots.
+
+=item GPANEL=
+
+Height of the given panel, in % of the plot size. 
+If C<GPANEL=0>, the given panel is suppressed. [Default: C<GPANEL=0>]
+
+=item SYMBOLS=
+
+List of symbols to use for for groups defined by the C<GROUP=>
+variable. [Default: SYMBOLS=%STR(CIRCLE SQUARE + : $ = X _ Y)]
+
+=item COLORS=
+
+List of colors to use for for groups.
+[Default: C<COLORS=BLACK RED GREEN BLUE BROWN YELLOW ORANGE PURPLE>]
+
+=item GOUT=
+
+Name of the output graphics catalog. [Default: C<GOUT=GSEG>]
+
+=back 4
+

@@ -1,0 +1,154 @@
+=head1 Description
+
+The STARS macro draws a star plot of the multivariate observations
+in a data set.  Each observation is depicted by a star-shaped figure
+with one ray for each variable, whose length is proportional to the
+size of that variable.  
+
+Each variable is scaled from 0 to 1.  The C<STD=> option permits the
+variables to be standardized to a given mean and standard deviation
+before this scaling.  The C<SORTBY=> option allows the observations
+to be sorted by a variable or a statistic.  The C<VORDER=> option
+allows the order of variables around the star to be rearranged
+according to their values on a given principal component.
+
+=head2 Method
+
+The macro constructs an ANNOTATE data set to draw the entire display,
+possibly with several pages.  The graphic ouotput is produced using
+PROC GSLIDE.
+
+
+=head1 Usage
+
+The STARS macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %stars(data=auto);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Data set to be displayed [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Names of variables, as ordered around the star,
+             from angle=0 (horizontal), unless the C<VORDER=> option is used. 
+          [Default: C<VAR=_NUMERIC_>]
+
+=item ID=
+
+Observation identifier (a character variable) 
+
+=item STD=
+
+Standardizes the variables first to given mean
+             and (optionally) a given standard deviation.
+          C<STD=0 >standardizes to mean=0; C<STD=0 1 >standardizes
+          to mean=0, std=1.  By default the variables are not
+          standardized, but are scaled to 0,1.
+
+
+=item SORTBY=
+
+Sorts the observations by a variable in the
+             data set, or a statistic calculated across all
+          variables in the C<VAR=> list.  If the C<SORTBY=>
+          value end in a '.', it is assumed to be the name
+          of a statistic.  For example C<SORTBY=SUM. >sorts
+          by the total of scaled values for all variables.
+
+
+=item VORDER=
+
+You can specify C<VORDER=PRINn> to request that the variables are reordered
+             according to their weights on the nth principal components of the correlation
+          matrix, where, typically n=1 or 2. C<VORDER=ANGLE >requests that the variables
+          are ordered according to the angles between variable vectors in a plot of
+          the first two principal compontents,  
+
+=item MINRAY=
+
+Minimum ray length, a number between 0 and 1 [Default: C<MINRAY=.1>]
+
+=item ACROSS=
+
+Number of stars across a page [Default: C<ACROSS=6>]
+
+=item DOWN=
+
+Number of stars down a page. If the
+             product of ACROSS and DOWN is less than the
+             number of observations, multiple graphs are
+             produced. [Default: C<DOWN=6>]
+
+=item COLOR=
+
+Specifies the color used to draw rays for individual observations, either as a 
+             quoted string constant, or the name ofa variable in the input data set 
+          (but don't use C<COLOR=COLOR >!) [Default: C<COLOR='BLACK'>]
+
+=item CFILL=
+
+Background color for the stars [Default: C<CFILL=''>]
+
+=item RAYLINE=
+
+Line style(s) of rays [Default: C<RAYLINE=1>]
+
+=item RAYTHICK=
+
+Line thickness of rays [Default: C<RAYTHICK=1>]
+
+=item HTVLABEL=
+
+Height of variable labels in the variable key [Default: C<HTVLABEL=2.5>]
+
+=item A0=
+
+Angle offset, the angle for first ray [Default: A0=0]
+
+=item CIRCLE=
+
+Draw a circle around each star at 100%?  A non-zero value specifies the
+             line style used for the circle. [Default: C<CIRCLE=0>]
+
+=item MISSING=
+
+Specifies the ray length to be used when an
+            observation has a missing value.  Specify C<MISSING = . > (a period)
+            to have observations with missing values deleted. [Default: C<MISSING=0>]
+
+=item NAME=
+
+Name for graphic catalog entry [Default: C<NAME=STARS>]
+
+=item KEYPAGE=
+
+Draw the variable key on separate page?  If KEYPAGE is a positive number,
+             a separate page for the variable key is produced.  If C<KEYPAGE=0>, the
+          variable key is suppressed.  If KEYPAGE is a negative number, the
+          variable key is drawn in the top left corner of the first page.
+             [Default: C<KEYPAGE=1>]
+
+=item OUT=
+
+The name of the output ANNOTATE data set used to draw the stars. [Default: C<OUT=STARS>]
+
+
+=back 4
+
+=head2 GOPTIONS
+
+The font used for text labels is controled by the C<FTEXT=> setting.
+The C<HSIZE=> and C<VSIZE=> options should be used to scale the graph
+so that the individual stars are approxmately the same height
+and width.
+
+
+

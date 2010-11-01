@@ -1,0 +1,100 @@
+=head1 Description
+
+The BOXTID macro finds power transformations for some or all of the
+predictors in a regression model using the Box-Tidwell method.  In
+addition, it can produce plots showing the influence of individual
+observations on the selection of powers. These are partial residual
+plots for the constructed variables X * log X.
+
+As a convenience, an output data set containing the optimally
+transformed variables is also produced. 
+
+=head1 Usage
+
+The BOXTID macro takes 14 keyword arguments.  You must specify either
+the C<RESP=> or C<YVAR=> parameter, and the names of all predictors (C<XVAR=>).
+For example:
+
+  %boxtid(data=angell, yvar=moralint,
+       xvar=hetero mobility, id=city);
+
+
+=head2 Parameters
+
+Default values are shown after the parameter name.
+
+=over 4
+
+=item DATA=_last_
+
+Name of input data set
+
+=item RESP=
+
+The name of the response variable
+
+=item YVAR=
+
+Response variable (synonym for C<RESP=>)
+
+=item XVAR=
+
+Names of the predictors in the model.  This must
+be a simple list of variable names, i.e., lists
+like C<X1-X10> are not allowed.
+
+=item XTRANS=
+
+Variables to be transformed: names or indices.
+If C<XVAR=X1 X2 X3 X7 X9>, you may specify either
+C<XTRANS=X3 X7 X9> or C<XTRANS=3 4 5> for the same effect.
+If not specified, all variables in the C<XVAR=> list
+are transformed.
+
+=item PREFIX=t_
+
+Prefix for names of transformed variables.  If the
+X variables are X1 X2 X3, the output data set will
+contain T_X1, T_X2, T_X3 when the C<PREFIX=T_>.
+
+=item ID=
+
+Name of an ID variable, used as a point label in plots.
+
+=item OUT=boxtid
+
+Name of output data set
+
+=item ROUND=0.5
+
+Round powers.  The estimated power for each predictor
+is rounded to the nearest C<ROUND=> unit in constructing
+the transformed variables.
+
+=item MAXIT=15
+
+Maximum number of iterations
+
+=item CONVERGE=0.001
+
+Convergence criterion.  The process stops when the
+largest change in an estimated power is less than
+the C<CONVERGE=> value, or when C<MAXIT> iterations would
+be exceeded.
+
+=item PPLOT=
+
+Specifies printer plots, if any to be produced.
+Either or both of the keywords TRANS and INFL.    
+
+=item GPLOT=INFL
+
+Specifies high-res influence plots.
+
+=item QUIET=N
+
+Y or N.  C<QUIET=Y> suppresses printout of the iteration
+history.
+
+=back 4
+

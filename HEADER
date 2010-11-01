@@ -1,0 +1,34 @@
+ /*--------------------------------------------------------------*
+  *    Name:                                                     *
+  *   Title:                                                     *
+  *     Doc: http://www.math.yorku.ca/SCS/sasmac/nodoc.html      *
+  *--------------------------------------------------------------*
+  *  Author:  Michael Friendly            <friendly@yorku.ca>    *
+  * Created:                                                     *
+  * Revised:                                                     *
+  * Version: 1.0                                                 *
+  *                                                              *
+  *--------------------------------------------------------------*/
+ /*=
+=Description:
+ 
+ The @name@ macro
+
+=Usage:
+
+ The @name@ macro is called with keyword parameters.
+ The arguments may be listed within parentheses in any order, separated
+ by commas. For example: 
+ 
+	%@name@();
+ 
+==Parameters:
+
+* DATA=		Specifies the name of the input data set to be analyzed.
+
+* VAR=		Specifies the name of the variable to be analyzed
+
+* OUT=		Specifies the name of the output data set
+
+ =*/
+ 

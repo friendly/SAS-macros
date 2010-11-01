@@ -1,0 +1,47 @@
+=head1 Description
+
+The INSET macro replays one graph inside another
+
+=head1 Usage
+
+The INSET macro is defined with keyword parameters.  C<MAIN=>, C<INSET=>,
+C<AT=> and C<SIZE=> are required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %inset(main=1, inset=2, at=70 5, size=30 30);
+
+=head2 Parameters
+
+=over 4
+
+=item MAIN=
+
+Name or number of the main graph in the C<GIN=> graphics catalog
+
+=item INSET=
+
+Name or number of inset graph in the C<GIN=> graphics catalog
+
+=item AT=
+
+The percentage lower left X,Y location of inset graph.  Two
+             numbers; a single value is repeated.
+
+=item SIZE=
+
+Percentage X,Y size of the inset graph.  Two
+             numbers; a single value is repeated.
+
+=item GIN=
+
+Name of input graphic catalog [Default: C<GIN=GSEG>]
+
+=item GOUT=
+
+The name of the output graphics catalog [Default: C<GOUT=GSEG>]
+
+
+
+=back 4
+

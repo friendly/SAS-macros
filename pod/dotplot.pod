@@ -1,0 +1,158 @@
+=head1 Description
+
+The DOTPLOT macro produces grouped and ungrouped dot charts, with options
+for sorting and error bars.
+
+=head1 Usage
+
+The DOTPLOT macro is defined with keyword parameters. The C<XVAR=> and
+C<YVAR=> parameters must be supplied.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %dotplot(data=auto, xvar=mpg, yvar=model, group=origin);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the input data set [Default: C<DATA=_LAST_>]
+
+=item XVAR=
+
+Horizontal variable (response)
+
+=item YVAR=
+
+Vertical variable (observation label) for
+                   the dot chart.  This should specify a character
+                   variable.  At most 16 characters of the value
+                   are used for the label.
+
+=item YSORTBY=
+
+How to sort observations.The default,
+                   YSORTBY=&XVAR, indicates that observations are
+                   sorted in ascending order of the response
+                   variable.  [Default: YSORTBY=&XVAR]
+
+=item GROUP=
+
+Vertical grouping variable
+
+=item CLASS=
+
+Synonym for C<GROUP=>
+
+=item WHERE=
+
+WHERE clause to subset the data
+
+=item BY=
+
+BY variable (not completely implemented)
+
+=item GPFMT=
+
+Format for printing group variable
+               value (include the '.' at the end)
+
+=item CONNECT=
+
+Specifies how to draw horizontal lines for
+        each observation.  Valid values are ZERO, DOT, AXIS, or
+          NONE.  The default, C<CONNECT=DOT>, draws
+         a dotted line from the Y axis to the point.
+         C<CONNECT=ZERO >draws a line from an X value of 0
+         to the point.  C<CONNECT=AXIS >draws a line from the
+         Y axis to the plot frame at the maximum X value.
+         C<CONNECT=NONE >does not draw a line for the observation.
+           [Default: C<CONNECT=DOT>]
+
+=item SYMBOL=
+
+Symbol(s) for observation [Default: C<SYMBOL=DOT CIRCLE SQUARE>]
+
+=item SYMHT=
+
+Height of observation symbols. [Default: C<SYMHT=1.5>]
+
+=item COLOR=
+
+Symbol colors [Default: C<COLOR=BLUE>]
+
+=item DLINE=
+
+Style of horizontal lines [Default: C<DLINE=34>]
+
+=item DCOLOR=
+
+Color of horizontal lines [Default: C<DCOLOR=BLACK>]
+
+=item ERRBAR=
+
+Name of an input variable giving length of error bar
+             for each observation, or names of two variables giving
+          lower/upper values.
+
+=item VAXIS=
+
+Vertical axis stmt (overrides internal choices and
+             other parameters below).
+
+=item HAXIS=
+
+Horizontal axis stmt (overrides internal choices and
+             other parameters below.)
+
+=item YLABEL=
+
+Label for y variable.  If not specified,
+                   the vertical axis is labelled with the name of
+                   the C<YVAR=> variable [Default: YLABEL=&YVAR]
+
+=item YLENGTH=
+
+Length of vertical axis 
+
+=item XORDER=
+
+Plotting range of response. Specify
+             XORDER in the form XORDER = low TO high BY step.
+
+=item XREF=
+
+Specifies the horizontal values at which
+                   reference lines are drawn for the response
+                   variable.  If not specified, no reference lines
+                   are drawn.
+
+=item XLOGBASE=
+
+Use to plot the response on log scale, e.g.,
+              C<XLOGBASE=10.>
+
+=item XLOGSTYL=
+
+Style for log scale [Default: C<XLOGSTYL=EXPAND>]
+
+=item NAME=
+
+DOTPLOT
+
+
+=back 4
+
+=head2 Usage notes
+
+DOTPLOT plots each observation in a row of the graphics output
+area.  Therefore the C<VPOS=> graphics option should specify a
+sufficient number of vertical character cells.  The value for C<VPOS=>
+should be
+
+   VPOS >= number of observations + number of groups + 8
+
+
+

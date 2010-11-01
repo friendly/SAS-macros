@@ -1,0 +1,131 @@
+=head1 Description
+
+The FFOLD macro produces fourfold displays for one or more 2 x 2
+tables.  Each 2x2 table may be standardized so that the marginal
+frequencies of either, or both variables are equated, while
+preserving the odds ratio.  The collection of fourfold displays
+may be arranged on one or more pages, each of which has C<DOWN=>
+rows, and C<ACROSS=> columns.
+
+=head1 Usage
+
+The FFOLD macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %ffold(data=toxaemia, var=Hyper Urea, by=Smoke Class);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the input dataset, which must represent a
+2 x 2 x K x ... contingency table in frequency form
+(one observation per cell, with a C<COUNT=> variable
+giving the cell frequency.  [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Names of two two-level factor variables defining the
+2 x 2 tables.  The variables may be character or
+numeric.  The order in which the C<VAR=> variables 
+(and C<BY=>, if any) are listed determines their order
+in the displays.
+
+=item BY=
+
+Name(s) of BY variables, determining the panels of the
+plot.  If there are two or more C<BY=> variables, the panels
+are produced so that the last C<BY=> variable varies most
+rapidly.
+
+=item COUNT=
+
+Name of the frequency variable in the input data set.
+[Default: C<COUNT=COUNT>]
+
+=item STD=
+
+Specifies how to standardize the 2 x 2 table(s).
+C<STD='MARG'> standardizes each 2x2 table to equal margins, 
+keeping the odds ratio fixed (see CONFIG). C<STD='MAX'> 
+standardizes each table to a maximum cell frequency of 100,
+equating the maximum frequency across all 2 x 2 tables.
+C<STD='MAXALL'> standardizes all tables to max(f[i,j,k])=100.
+C<STD='TOTAL'> standardizes to the maximum total over all tables.
+
+=item CONFIG=
+
+Specifies the margins to standardize when C<STD=MARG.>
+C<CONFIG=1 2> equates both margins. C<CONFIG=1> equates the
+margins for the first C<VAR=> variable.  C<CONFIG=2> equates
+the second C<VAR=> variable.
+
+=item DOWN=
+
+The number of rows of panels down each page.
+
+=item ACROSS=
+
+The number of columns of panels across each page.
+
+=item ORDER=
+
+Specifies whether the panels are displayed down
+the columns (C<ORDER=DOWN>) or across the rows (C<ORDER=ACROSS>)
+[Default: C<ORDER=DOWN>]
+
+=item SANGLE=
+
+Angle for labels at the left and right sides.
+[Default: C<SANGLE=90>]
+
+=item SHADE=
+
+Shading levels for residuals, determined by the
+magnitude of the Z-value corresponding to the
+log odds ratio in a given 2x2 table. [Default: C<SHADE=2 4>]
+
+=item ALPHA=
+
+Error rate for confidence rings on odds ratios;
+0 to suppress
+
+=item COLORS=
+
+Colors for + and - residuals [Default: C<COLORS=BLUE RED>]
+
+=item FILL=
+
+Fill type for + and - residuals [Default: C<FILL=HLS HLS>]
+
+=item HTEXT=
+
+Height of text labels [Default: C<HTEXT=1.5>]
+
+=item FONT=
+
+Font for text labels [Default: C<FONT=HWPSL009> for PS,
+             otherwise, SWISS]
+
+=item PTITLE=
+
+Panel title for plot(s), a character string, which may
+include &V to list the name(s) of the panel C<BY=> variables,
+and &L to list the value(s) of those variables in the
+current panel.
+
+=item FRAME=
+
+Line style for panel frame.  Use C<FRAME=0> to suppress.
+
+=item OUTSTAT=
+
+Name of an output data set, containing the odds ratio (OR),
+log odds ratio (LOGOR), std. error (SELOGOR), Z value,
+and PRZ, for each 2x2 table.  
+
+=back 4
+

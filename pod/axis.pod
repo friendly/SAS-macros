@@ -1,0 +1,75 @@
+=head1 Description
+
+The AXIS macro creates an C<ANNOTATE=> data set to draw an X or Y axis
+on a graph.  The values labeled on the axis can be expressed on any
+transformed scale which can be represented as a SAS expression. This
+is useful when you can't use a PLOT2 statement to draw a right vertical
+axis, or when you want to show the values on some transformed scale.
+
+Typically you will need to adjust the boundaries of the plot to allow for
+the additional axis, e.g., with the C<OFFSET=> parameter of an AXIS statement
+or by allowing extra space at the top or right of the plot.
+
+=head1 Usage
+
+The AXIS macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+       %axis();
+
+=head2 Parameters
+
+=over 4
+
+=item ON=
+
+X or Y: axis to be drawn.  C<ON=X >draws a horizontal axis
+             C<ON=Y >draws a vertical axis   [Default: C<ON=X>]
+
+=item AT=
+
+Location on other axis (2<=AT<=98).  [Default: C<AT=98>]
+
+=item ATUNIT=
+
+Unit in which the C<AT=> value is given. PCT means percent of the
+             graphics data region.  Any other value is treated as meaning
+             data coordinates. [Default: C<ATUNIT=PCT>]
+
+=item VALUES=
+
+List of tick mark values, in any of the forms that can be
+             used in a DO statement, e.g.,
+
+             C<VALUES=10>, 25, 50, 100
+             C<VALUES=10 >to 100 by 20
+
+=item FUNCTION=
+
+Function of VALUE giving the data value on the scale of the
+             data that is plotted. [Default: C<FUNCTION=VALUE>]
+
+=item HTICK=
+
+Height of tick marks [Default: C<HTICK=1>]
+
+=item FMT=
+
+Format for printing value labels [Default: C<FMT=BEST8.>]
+
+=item MINOR=
+
+Number of minor tick marks [Default: C<MINOR=1>]
+
+=item LABEL=
+
+Axis label.  
+
+=item OUT=
+
+Name of output annotate data set  [Default: C<OUT=AXIS>] 
+
+
+=back 4
+

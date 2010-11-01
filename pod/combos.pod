@@ -1,0 +1,106 @@
+=head1 Description
+
+The COMBOS macro generates symbolic combinations of N things taken K
+at a time.  The combinations may be specified to include any given
+subset.  The resulting combinations are returned as an output data set,
+and in global macro variables.
+
+=head2 Method
+
+The macro uses the simple trick of using PROC SUMMARY to give all
+possible combinations, using the THINGS as class variables.
+
+=head1 Usage
+
+The THINGS and SIZE parameters are positional, and required.  The rest are
+optional keyword parameters, which may be specified in any order.
+
+
+=head2 Parameters
+
+=over 4
+
+=item THINGS
+
+The N things to combine: a list of blank-separated
+words, or a variable range such as X1-X10.  These
+things become variables in the output data set.
+They need not exist before the macro is called,
+but they must be valid SAS names.  The length of
+the longest combination (including SEP characters)
+must not exceed 200.
+
+=item SIZE
+
+Size (K) of each combination, a numeric value.
+
+=item INCLUDE=
+
+Items which must be included.  If a number, then that
+number of the first items in THINGS is included in
+each combination.   
+
+=item OUT=out
+
+Name of the output data set containing the combinations,
+one observation for each.   
+
+=item SEP
+
+Separator string used within each combination.  With
+                    C<THINGS=A B C D>, the default SEP gives combinations
+                    like C<'A B C', 'A B D'>, etc. [Default: C<SEP=%str( )>]
+
+=item JOIN=
+
+Separator to join all combinations in the C<RESULT=>
+macro variable.  With C<THINGS=A B C D>, the default JOIN
+gives C<RESULT='A B C, A B D'>. [Default: C<JOIN=%str(, )>]
+
+=item SORT=Y
+
+Specifies whether the combinations are sorted in the
+output data set.
+
+=item PRINT=
+
+Whether to print the C<OUT=> data set. [Default: PRINT=Y]
+
+=item RESULT=
+
+Name of a global macro result variable containing all
+combinations.  You may not use C<RESULT=RESULT> (or any
+other local macro variable). [Default: C<RESULT=combos>]
+
+=item NCOMB=
+
+Name of macro result variable with the number of
+combinations generated.  If C<INCLUDE=> (empty), or
+C<INCLUDE=0>, this is C(N,K).   [Default: C<NCOMB=nc>]             
+
+
+=back 4
+
+=head1 Examples
+
+   %combos(a b c d e, 2, include=2);
+
+produces one combination of size 2 which includes A and B:
+
+                OBS    A    B    C    D    E    COMBO    SIZE
+
+                 1     1    1    .    .    .     A B       2
+
+   %combos(a b c d, 3, sep=-);
+
+produces all 4 combinations of 4 things, 3 at a time:
+
+                   OBS    A    B    C    D    COMBO    SIZE
+
+                    1     1    1    1    .    A-B-C      3
+                    2     1    1    .    1    A-B-D      3
+                    3     1    .    1    1    A-C-D      3
+                    4     .    1    1    1    B-C-D      3
+
+
+

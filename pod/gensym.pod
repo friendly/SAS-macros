@@ -1,0 +1,73 @@
+=head1 Description
+
+The GENSYM macro generates a series of SYMBOL statements for multiple
+group plots of the form
+
+  proc gplot;
+     plot y * x = group;
+
+Separate plot symbols, colors, line styles and interpolation options
+may be generated for each group.
+
+=head1 Usage
+
+The GENSYM macro is called with keyword parameters.  All parameters
+have default values, but the C<N=> parameter must usually be specified.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %gensym(n=4);
+
+The C<INTERP=>, C<LINE=>, C<SYMBOLS=>, and C<COLORS=> parameters are each lists
+of one or more values. If fewer than N (blank delimited) values are
+given,  the available values are reused cyclically as needed.
+
+=head2 Parameters
+
+=over 4
+
+=item N=
+
+The number of groups. C<N=> symbol statements are constructed,
+named SYMBOL1, SYMBOL2, ..., SYMBOLN.
+
+=item H=
+
+The height of the plotting symbol. The same C<H=> value is
+used for all SYMBOL statements. [Default: C<H=1.5>]
+
+=item INTERP=
+
+List of one or more interpolation options. 
+[Default: C<INTERP=NONE>]
+
+=item LINE=
+
+List of one or more numbers in the range 1..46 giving
+SAS/GRAPH line styles [Default: C<LINE=1>]
+
+=item SYMBOLS=
+
+A list of one or more names of SAS/GRAPH plotting symbols.
+[Default: C<SYMBOLS=%STR(SQUARE TRIANGLE : $ = X _ Y)>]
+
+=item COLORS=
+
+A list of one or more names of SAS/GRAPH colors.
+[Default: C<COLORS=BLACK RED GREEN BLUE BROWN YELLOW ORANGE PURPLE>]
+
+
+=back 4
+
+=head1 Example
+
+To plot the four combinations of age group (old, young) and sex, with
+separate plotting symbols (circle, dot) for old vs. young, and
+separate colors (red, blue) for females vs. males, use the macro as
+follows:
+
+  proc gplot;
+     plot y * x = agesex;
+     %gensym(n=4, symbols=circle circle dot dot, colors=red blue,
+        interp=rl);
+

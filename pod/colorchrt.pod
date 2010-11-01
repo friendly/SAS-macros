@@ -1,0 +1,47 @@
+=head1 Description
+
+The COLORCHRT macro produces a chart displaying a set of color bars
+from an input data set containing names of SAS/GRAPH colors.  This
+is useful in connection with macros that construct color palettes.
+
+=head1 Usage
+
+The COLORCHRT macro is called with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %colorchrt(color=clr, cols=8, rows=10);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item COLOR=
+
+Name of the color variable containing values of SAS/Graph
+             colors.  Because this macro uses the ANNOTATE facility,
+          this must not be one of the names COLOR, TEXT or STYLE.
+
+=item CNAME=
+
+Color name variable
+
+=item ROWS=
+
+Number of rows/page
+
+=item COLS=
+
+Number of columns/row [Default: C<COLS=10>]
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=ANNODATA>]
+
+
+=back 4
+

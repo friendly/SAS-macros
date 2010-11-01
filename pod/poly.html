@@ -1,0 +1,139 @@
+    <HTML> 
+	<HEAD> 
+	    <TITLE>Description</TITLE> 
+	</HEAD>
+
+	<BODY>
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#Description">Description</A>
+	<LI><A HREF="#Usage">Usage</A>
+	<UL>
+
+		<LI><A HREF="#Parameters">Parameters</A>
+	</UL>
+
+	<LI><A HREF="#Description">Description</A>
+	<LI><A HREF="#Usage">Usage</A>
+	<UL>
+
+		<LI><A HREF="#Parameters">Parameters</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<h2><A NAME="Description">Description</A></h2>
+
+The POLY macro generates a polynomial contrast for use in a CONTRAST
+statement with PROC GLM. It assumes that the levels of the factor are
+equally spaced and the sample size for the levels of the factor are equal.
+It returns the program text which should follow the CONTRAST (or ESTIMATE)
+keyword.
+
+
+<P>
+
+<P>
+<HR>
+<h2><A NAME="Usage">Usage</A></h2>
+
+The poly macro is called with positional parameters. The arguments must be
+listed within parentheses, separated by commas. For example: 
+
+
+<PRE>
+   contrast %poly(4,1,A);
+yields:
+   contrast &quot;A-lin&quot; A  -3  -1   1   3;
+</PRE>
+
+<P>
+
+<PRE>
+   %poly(4,1);
+yields:
+   -3  -1   1   3
+</PRE>
+
+<P>
+It is designed to be used in a PROC GLM step, following the
+MODEL statement.
+
+<P>
+<HR>
+<h3><A NAME="Parameters">Parameters</A></h3>
+
+<DL>
+<DT><STRONG><A NAME="item_LEVELS">LEVELS=</A></STRONG><DD>
+Specifies the number of levels of the factor. The number of levels must be
+between 2 and 10.
+
+<DT><STRONG><A NAME="item_DEGREE">DEGREE=</A></STRONG><DD>
+Specifies the degree of the polynomial contrast. The degree must be between
+1 and <CODE>min(9,levels-1).</CODE>
+
+<DT><STRONG><A NAME="item_FACTOR">FACTOR=</A></STRONG><DD>
+Specifies the name of the factor. If the factor name is not specified, the
+macro returns only the contrast coefficients.
+
+
+</DL>
+<P>
+<HR>
+<h2><A NAME="Description">Description</A></h2>
+
+The INTER macro generates a CONTRAST statement for the interaction between
+two polynomial contrasts.
+
+
+<P>
+
+<P>
+<HR>
+<h2><A NAME="Usage">Usage</A></h2>
+The INTER macro is called with positional parameters. The arguments must be
+listed within parentheses, separated by commas. For example: 
+
+
+<P>
+
+<PRE>   contrast %inter(A, 2, 1, B, 3, 1);
+yields:
+   contrast &quot;A-lin x B-lin&quot; A*B  -1  0  1  1  0  -1;
+</PRE>
+
+<h3><A NAME="Parameters">Parameters</A></h3>
+
+<DL>
+<DT><STRONG><A NAME="item_FAC1">FAC1=</A></STRONG><DD>
+Specifies the name of the 1st factor.  
+
+<DT><STRONG><A NAME="item_LEV1">LEV1=</A></STRONG><DD>
+Specifies the number of levels of the 1st factor.  
+
+
+<DT><STRONG><A NAME="item_DEG1">DEG1=</A></STRONG><DD>
+Specifies the degree of the polynomial for factor 1. 
+
+<DT><STRONG><A NAME="item_FAC2">FAC2=</A></STRONG><DD>
+Specifies the name of the 2nd factor.  
+
+<DT><STRONG><A NAME="item_LEV2">LEV2=</A></STRONG><DD>
+Specifies the number of levels of the 2nd factor.  
+
+<DT><STRONG><A NAME="item_DEG2">DEG2=</A></STRONG><DD>
+Specifies the degree of the polynomial for factor 2. 
+
+
+<P>
+
+</DL>
+</BODY>
+
+</HTML>

@@ -1,0 +1,171 @@
+<html> 
+<head>
+	<title>mvnormal - Generate multivariate normal samples</title>
+	<link rev=made href="mailto:friendly@yorku.ca">
+	<link rel="stylesheet" href="macdoc.css" type="text/css">
+	<!-- Author: Michael Friendly York University  -->
+<!-- BeginInsertHead -->
+<script type="text/javascript" src="/SCS/menu/JSCookMenu.js"></script>
+<link rel="stylesheet" href="/SCS/menu/ThemeMacro/theme.css" type="text/css" />
+<script type="text/javascript" src="/SCS/menu/ThemeMacro/theme.js"></script>
+<script language="javascript" src="macmenu2.js"></script>
+<!-- EndInsertHead -->
+
+</head>
+<body>
+<!-- BeginInsertBody -->
+<div id="Panel">
+<script type="text/javascript">
+cmDraw ('Panel', macmenu, 'hbr', cmThemeMacro, 'ThemeMacro');
+</script>
+</div>
+<!-- EndInsertBody -->
+
+<!-- pnuts -->
+<CENTER>
+<TABLE width="100%">
+<TR>
+<td class="linksasL"> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/mvnormal.sas">mvnormal</a></td>
+<td class="title">Generate multivariate normal samples</td>
+<td class="linksasR"> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/mvnormal.sas">mvnormal</a></td>
+</TR>
+</TABLE>
+</CENTER>
+<h1>SAS Macro Programs: <tt>mvnormal</tt></h1>
+
+$Version: 0.5 (21 Sep 2006 15:25:44)<br>
+<b>
+<a href="../friendly.html">Michael Friendly</a><br>
+York University
+</b><br>
+<script language="JavaScript">
+<!--
+	document.write("Updated " + document.lastModified);
+// -->
+</script>
+<hr>
+
+<h2>The <tt>mvnormal</tt> macro (<A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/mvnormal.sas">
+<IMG  WIDTH=20 HEIGHT=20 SRC="../icons/download.gif" alt="[download]" border=0> get mvnormal.sas</A>)</h2>
+<h3>Generate multivariate normal samples</h3>
+
+<p>The <tt>MVNORMAL</tt> macro generates random samples from multivariate normal
+distributions with a specified covariance matrix and one or more
+specified mean vectors.</p>
+
+<H3><a name="method">Method</a></H3>
+<p>The macro uses the CALL VNORMAL routine in SAS/IML to generate the
+samples.</p>
+
+
+<H2><a name="usage">Usage</a></H2>
+<p>The <tt>MVNORMAL</tt> macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:</p>
+<pre>
+  %mvnormal(data=mycorr, var=X1 X2 X3 X4);</pre>
+
+<H3><a name="parameters">Parameters</a></H3>
+<dl>
+<dt><a name="item_data">DATA=</a><br />
+</dt>
+<dd>
+The name of the input data set containing either correlations
+             (and standard deviations)  or variances and covariances, as
+             specified by the <a href="#item_type"><code>TYPE=</code></a> parameter.  This must be in a form
+             similar to that produced by PROC CORR with the <code>OUTP=</code> 
+             option, and possibly the COV option as well.  For a correlation
+              matrix, this will contain correlations
+             (<code>_TYPE_='CORR'</code>) and standard deviations (<code>_TYPE_='STD'</code>);
+             a covariance matrix will contain observations of <code>_TYPE_='COV'.</code>
+</dd>
+
+<dt><a name="item_var">VAR=</a><br />
+</dt>
+<dd>
+A list of names of variables to be generated.  Mut be an explicit
+             list of blank-separated names, rather than an abbreviated list
+             like X1-X5.
+</dd>
+
+<dt><a name="item_type">TYPE=</a><br />
+</dt>
+<dd>
+Type of input data set: CORR or COV. [Default: <code>TYPE=COV</code>]
+</dd>
+
+<dt><a name="item_means">MEANS=</a><br />
+</dt>
+<dd>
+Name of an input dataset containing mean <code>vector(s)</code> for the
+             <a href="#item_var"><code>VAR=</code></a> variables.  One group of N obsrvations is generated for
+             each observation in the <a href="#item_means"><code>MEANS=</code></a> dataset.
+</dd>
+
+<dt><a name="item_class">CLASS=</a><br />
+</dt>
+<dd>
+Name of class/group variable in means data set.  The <a href="#item_means"><code>MEANS=</code></a>
+             dataset should contain one observation for each group.
+</dd>
+
+<dt><a name="item_n">N=</a><br />
+</dt>
+<dd>
+Sample size (for each group). [Default: <code>N=10</code>]
+</dd>
+
+<dt><a name="item_seed">SEED=</a><br />
+</dt>
+<dd>
+Seed for random number generator.  If not specified, the
+             time of day is used as the seed.
+</dd>
+
+<dt><a name="item_out">OUT=</a><br />
+</dt>
+<dd>
+The name of the output data set [Default: <code>OUT=SAMPLE</code>]
+</dd>
+</dl>
+
+
+<H2><a name="example">Example</a></H2>
+<pre>
+ *-- common correlation matrix for all groups;
+ data corr;
+  _typeC&lt;_ = 'CORR'&gt;;
+  input _type_ _name_ $ X1 X2 X3;
+ cards;
+ CORR  X1    1    .5   .3
+ CORR  X2   .5     1   .2
+ CORR  X3   .3    .2    1
+ STD    .   10     5    7
+ ;
+ data means;
+  input gp group $  _type_ $  X1 X2 X3;
+ cards;
+ 1  A  MEAN   10  10  10
+ 2  B  MEAN   20  20  20
+ 3  C  MEAN   30  30  30</pre>
+<pre>
+ %mvnormal(data=corr, type=CORR, var=X1 X2 X3
+  ,means=means
+  ,class=group
+  );</pre>      
+<h3>Example</h3>
+<pre>
+%include macros(mvnormal);        *-- or include in an autocall library;
+
+%mvnormal();
+</pre>
+<center>
+<img src="mvnormalt.gif">
+</center>
+
+<h3>See also</h3>
+<hr>
+<!-- pnuts -->
+
+</body>
+</html>

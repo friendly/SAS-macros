@@ -1,0 +1,50 @@
+=head1 Description
+
+The INTERACT macro creates interaction variables, formed as the product
+of each of the variables given in one set (C<V1=>) with each of the
+variables given in a second set (C<V2=>).
+
+=head1 Usage
+
+The INTERACT macro is called with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %interact(v1=age sex, v2=I1 I2 I3);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input dataset.  If not specified, the most
+recently created dataset is used.
+
+=item V1=
+
+Specifies the name(s) of the first set of variable(s).
+
+=item V2=
+
+Specifies the name(s) of the second set of variable(s).
+
+=item OUT=
+
+The name of the output dataset.  If not specified, the new
+variables are appended to the input dataset.
+
+=item PREFIX=
+
+Prefix(s) used to create the names of interaction variables.
+The default is 'I_'. The names are of the form C<I_11 I_12 ...>
+C<I_1m I_21 I_22 ... I_nm>, where there are n variables in V1
+and m variables in V2.
+
+=item CENTER=
+
+If non-blank, the V1 and V2 variables are mean-centered
+prior to forming their interaction products.
+
+=back 4
+

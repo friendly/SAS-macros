@@ -1,0 +1,3013 @@
+* language *
+SAS
+
+* comment *
+sascalltips
+
+addvar
+%macro addvar(
+   data=_last_,       /* Name of input data set                  */
+   y=,                /* Name of response variable               */
+   trials=,           /* Name of trials variable for event/trial  */
+   x=,                /* Names of predictors                     */
+   z=,                /* Name of the added variable              */
+   id=,               /* Name of observation ID variable (char)  */
+   loptions=noprint,  /* options for PROC LOGISTIC               */
+   smooth=0.5,        /* lowess smoothing parameter              */
+   subset=abs(studres)>2,   /* subset of points to label         */
+   out=_res_,         /* output data set                         */
+   symbol=dot,        /* plotting symbol for points              */
+   interp=rl ci=red,  /* interpolation options for points        */
+   type=AVP,          /* Type of plot: AVP or CVP                */
+   name=addvar,       /* Name of graph in graphic catalog        */
+   gout=
+   );
+
+alleff
+%macro alleff(
+   data=_last_,     /* name of the input data set                   */
+   response=,       /* name of response variable                    */
+   model=,          /* terms in model statement                     */
+   print=,          /* things to print                              */
+   scale=,          /* scale the effects to MS?                     */
+   haxis=,          /* AXIS statement for horizontal axis           */
+   vaxis=,          /* AXIS statement for vertical axis             */
+   htext=,          /* Height of text labels for effects            */
+   symbols=dot triangle,  /* symbols for main effects, interactions */
+   resids=boxaxis,  /* Use %boxaxis for residuals                   */
+   outfit=outfit,   /* output data set of fitted effects            */
+   outeff=_effect_, /* output data set of plotting effects          */
+   name=alleff      /* name for graphics catalog entry              */
+   );
+
+andrews
+%macro andrews(
+   data=_last_,              /* name of input data set           */
+   var=_numeric_,            /* list of variables to plot        */
+   id=,                      /* name of ID variable              */
+   type=orig,                /* type: ORIGinal or MODified       */
+   numpts=80,                /* number of function points (-1)   */
+   anno=,                    /* input annotate data set          */   
+   out=andrews,              /* output data set                  */
+   plot=Y,                   /* Draw the plot?                   */
+   vaxis=,                   /* Custom vertical axis statement   */
+   haxis=,                   /* Custom horizontal axis statement */
+   symbols=none,             /* plotting symbols                 */
+   colors=black red green blue brown yellow orange purple,
+   lines=1 20 41 21 7 14 33 12 5,     /* line styles for obs     */
+   legend=,                  /* Name of a LEGEND statement       */
+   idloc=,                   /* label ID in plot?                */
+   ylabel=z(t),              /* Y-axis label                     */
+   xlabel=t,                 /* X-axis label                     */             
+   name=andrews,             /* Name of graphics catalog entry   */
+   gout=                     /* Name of graphics catalog         */
+   );
+
+arc
+%macro arc( cx, 		/* X-coordinate of center		   */
+   cy, 		/* Y-coordinate of center		   */
+   ang,		/* Starting angle (degrees) of arc */
+   rot,		/* Degrees of rotation of arc	   */
+   radius, 	/* Radius of arc (>0)			   */
+   color,  	/* Color of line				   */
+   pattern,	/* Line pattern (1..32) 		   */
+   width	);  /* Width of line  (1..5)		   */
+
+arrow
+%macro arrow(
+   x1, y1,            /* start point                                 */
+   x2, y2,            /* end point, with arrow head                  */
+   vechead=2.0 0.5,   /* head length and perpendicular offset        */
+   vtoh=1             /* plot aspect ratio in XSYS,YSYS coordinates  */
+   );
+
+axis
+%macro axis(out=AXIS,         /* output annotate= data set           */
+   on=X,             /* X or Y: axis to be drawn            */
+   at=98,            /* location on other axis (2<=at<=98)  */
+   atunit=PCT,
+   values=,          /* tick mark values                    */
+   function=value,   /* function of VALUE giving data value */
+   htick=1,          /* height of tick marks                */
+   fmt=BEST8.,       /* format for printing value labels    */
+   minor=1,          /* number of minor tick marks          */
+   label=);          /* axis label  ** NOT IMPLEMENTED **   */
+
+bars
+%macro bars(
+   data=_LAST_,   /* name of input data set                       */
+   var=,          /* name of response variable                    */
+   class=,        /* name of independent variable                 */
+   cvar=,         /* name of a curve variable                     */
+   by=,           /* name of a BY variable, for multiple curves   */
+   baxis=y,       /* axis along which error bars are drawn        */
+   barlen=,       /* variable or constant giving error bar length */
+   z=1,           /* barlen multiplier                            */
+   lower=,        /* or, var or constant giving lower bar value   */
+   upper=,        /* + var or constant giving upperr bar value    */
+   type=both,	   /* type of bars: UPPER, LOWER, BOTH, ALT, ALTBY */
+   subset=1,      /* if-expression to subset the error bars       */
+   symbol=,       /* plotting symbol, placed at (&class, &var)    */
+   color='black', /* color for lines and symbols, 'const' or var  */
+   line=1,        /* line style for error bars                    */
+   size=1,        /* thickness of lines, size of symbols          */
+   barwidth=.5,   /* width of bar tops                            */
+   out=_bars_     /* name of output data set                      */
+   );
+
+biplot
+%macro biplot(                                                                  
+   data=_LAST_,       /* Data set for biplot                       */         
+   var=_NUM_,         /* Variables for biplot                      */         
+   id=,               /* Observation ID variable (obs x var input) */
+   response=,         /* Name of response variable (glm input)     */    
+   dim=2,             /* Number of biplot dimensions               */         
+   factype=SYM,       /* Biplot factor type: GH, SYM, JK or COV    */
+   vardef=DF,         /* Variance def for factype=COV: DF | N      */
+   scale=1,           /* Scale factor for variable vectors         */
+   power=1,           /* Power transform of response               */
+   out=BIPLOT,        /* Output dataset: biplot coordinates        */         
+   anno=BIANNO,       /* Output dataset: annotate labels           */
+   copy=,             /* Variables to copy to the output dataset   */         
+   std=MEAN,          /* How to standardize columns: NONE|MEAN|STD */
+   colors=BLUE RED,   /* Colors for OBS and VARS                   */
+   symbols=none none, /* Symbols for OBS and VARS                  */
+   interp=none vec,   /* Markers/interpolation for OBS and VARS    */          
+   lines=33 20,       /* Lines for OBS and VARS interpolation      */
+   pplot=NO,          /* Produce printer plot?                     */
+   vtoh=2,            /* PPLOT cell aspect ratio                   */
+   gplot=YES,         /* Produce hi-res plot?                      */
+   plotreq=,          /* dimensions to be plotted                  */
+   haxis=,            /* AXIS statement for horizontal axis        */
+   vaxis=,            /* and for vertical axis- use to equate axes */
+   inc=0.5 0.5,       /* x, y axis tick increments                 */
+   xextra=0 0,        /* # of extra x axis tick marks              */
+   yextra=0 0,        /* # of extra y axis tick marks              */
+   m0=0.5,            /* Length of origin marker                   */
+   dimlab=,           /* Dimension label                           */
+   print=,
+   htext=1.5,         /* Height of labels for OBS and VAR          */
+   name=biplot        /* Name for graphics catalog entry           */
+   );        
+
+bisquare
+%macro bisquare(
+   data=_LAST_, 
+   response=,        /* response variable                         */
+   model=,           /* RHS of model statement                    */
+   proc=GLM,         /* estimation procedure: GLM, REG, LOGISTIC  */ 
+   class=,           /* class variables (GLM only)                */
+   id=,              /* id variables                              */
+   out=resids,       /* output data set                           */
+   tune=6,           /* tuning constant for bisquare              */
+   iter=10,          /* max number of iterations                  */ 
+   converge=0.05, 	/* max change in weight for convergence.     */
+   print=noprint);
+
+boxaxis
+%macro BOXAXIS(
+   data=_LAST_,          /* Input dataset                     */
+   out=_DATA_,           /* Output ANNOTATE dataset           */
+   var=,                 /* Variable to be plotted            */
+   baxis=x,              /* Axis on which it goes- X, Y, or Z */
+   oaxis=y,              /* The other axis in the plot        */
+   paxis=z,              /* The 3rd axis (ignored in GPLOT)   */
+   boxwidth=4,           /* width of box in data percent      */
+   cbox=BLACK,           /* color of box outline              */
+   hsym=,                /* Height for outside symbols        */
+   bsys=1,               /* SAS/GRAPH sys coord for BAXIS     */
+   symbols=star circle dot, /* symbols for mean, outside, far */
+   pos=98);              /* position of box on OAXIS 0<POS<100*/
+
+boxcox
+%macro boxcox(
+   resp=,                   /* name of response variable            */
+   model=,                  /* independent variables in regression  */
+   id=,                     /* ID variable for observations         */
+   data=_last_,             /* input dataset                        */
+   out=_data_,              /* output dataset with transformed resp */
+   outplot=_plot_,          /* output dataset for plot of powers    */
+   pplot=NONE,              /* printer plots: RMSE, LOGL, EFFECT, INFL*/
+   gplot=RMSE EFFECT INFL,  /* graphic plots: RMSE, LOGL, EFFECT, INFL*/
+   add=0,                   /* additive constant for response       */
+   fold=0,                  /* upper bound on response (FOLD>0)     */
+   lopower=-2,              /* low value for power                  */
+   hipower=2,               /* high value for power                 */
+   npower=21,               /* number of power values in interval   */
+   conf=.95);               /* confidence coefficient of CI on power*/
+
+boxglm
+%macro boxglm(
+   resp=,                   /* name of response variable            */
+   model=,                  /* independent variables in regression  */
+   class=,                  /* CLASS variables in model             */
+   id=,                     /* ID variable for observations         */
+   data=_last_,             /* input dataset                        */
+   out=_data_,              /* output dataset with transformed resp */
+   outplot=_plot_,          /* output dataset for plot of powers    */
+   pplot=NONE,              /* printer plots: RMSE, EFFECT, INFL    */
+   gplot=RMSE EFFECT INFL,  /* graphic plots: RMSE, EFFECT, INFL    */
+   add=,                    /* additive constant for response */
+   fold=0,                  /* upper bound on response (FOLD>0)     */
+   lopower=-2,              /* low value for power                  */
+   hipower=2,               /* high value for power                 */
+   bypower=,                /* step size for power                  */
+   npower=21,               /* number of power values in interval   */
+   conf=.95);               /* confidence coefficient of CI on power*/
+
+boxinfl
+%macro boxinfl(
+   resp=,                   /* name of response variable            */
+   model=,                  /* independent variables in regression  */
+   data=_last_,             /* input dataset                        */
+   id=,                     /* ID variable for observations         */
+   class=,                  /* names of class variables if any      */
+   gplot=INFL,              /* Graphic plot?                        */
+   pplot=INFL);             /* Printer plot?                        */
+
+boxplot
+%macro BOXPLOT(            /* -------------------------          */
+   data=_LAST_,            /* Input dataset                      */
+   where=,                 /* WHERE clause to subset data        */
+   class=,                 /* Grouping variable(s)               */
+   var=,                   /* Analysis variable                  */
+   id=,                    /* Observation ID variable            */
+   sortby=,                /* Order classes by var, _mean_,...   */
+   ofactor=1.5,            /* IQR multiplier for outside values  */
+   olabel=ALL,             /* Outliers to label: ALL | FAR       */
+   idsymbol=diamond square, /* Symbols for out, far-out          */
+   meansymbol=dot,
+   symheight=2 2.5,        /* Symbol height for out, far-out     */
+   idheight=1,             /* Text height for out, far-out       */
+   width=.5,               /* Box width as proportion of maximum */
+   notch=0,                /* =0|1, 1=draw notched boxes         */
+   cbox=BLACK,             /* color of box outline               */
+   cfill=,                 /* color for box fill                 */
+   cnotch=,                /* color for notch fill               */
+   lbox=1,                 /* line style for box outline         */
+   sbox=1,                 /* line thickness for box outline     */
+   orient=V,               /* box orientation: H or V            */
+   connect=0,              /* =0 or line style to connect medians*/
+   f=0.5,                  /* Notch depth, fraction of halfwidth */
+   fn=1,                   /* Box width proportional to &FN      */
+   varfmt=,                /* Format for analysis variable       */
+   classfmt=,              /* Format for class variable(s)       */
+   varlab=,                /* Label for analysis variable        */
+   classlab=,              /* Label for class variable(s)        */
+   vaxis=,                 /* Axis statement for vertical axis   */
+   haxis=,                 /* Axis statement for horizontal axis */
+   yorder=,                /* Tick marks, range for ordinate     */
+   xorder=,                /* Tick marks, range for abscissa     */
+   anno=,                  /* Addition to ANNOTATE set           */
+   print=outside,          /* What printed output?               */
+   out=boxstat,            /* Output data set: quartiles, etc.   */
+   name=BOXPLOT,           /* Name for graphic catalog entry     */
+   gout=
+   );
+
+boxtid
+%macro boxtid(
+   data=_last_,     /* name of input data set */
+   resp=,           /* response variable */
+   yvar=,           /* response variable */
+   xvar=,           /* predictors */
+   xtrans=,         /* variables to be transformed: names or indices */
+   prefix=t_,       /* prefix for names of transformed variables */
+   id=,             /* name of ID variable */
+   out=boxtid,      /* name of output data set */
+   round=0.5,       /* round powers */
+   maxit=15,        /* maximum number of iterations */
+   converge=0.005,  /* convergence criterion */
+   pplot=,          /* printer plots? */
+   gplot=TRANS INFL, /* high-res plots? */
+   symbol=square,   /* plotting symbol in INFL plots */
+   quiet=N
+   );
+
+brewerpal
+%macro brewerpal(
+   n=3,          /* number of different colors included in the palette */
+   palette=,     /* Palette name */
+   lib=colors,   /* Library name for the brewer data set */ 
+   category=,    /* Palette category: DIV, QUAL or SEQ */
+   out=palette,  /* name of output data set */
+   result=       /* name of output macro variable containing color list */
+   );
+
+caliscmp
+%macro caliscmp(
+   ram=,      /* list of RAM data sets from CALIS runs */
+   models=,   /* list of model descriptions */
+   stats=nparm df chisquar p_chisq rmr gfi agfi aic caic sbc centrali parsimon cnhoelt,    /* list of statistics to be printed for each model */
+   compare=,   /* list of pairs of models to be compared */
+   out=ramstats
+   );
+
+calisgfi
+%macro calisgfi(
+   ram=,     /* name of the OUTRAM= data set from PROC CALIS */
+   nv=,      /* number of observed variables in the model */
+   verbose=0
+   );
+
+calisram
+%macro calisram(
+   data=_last_,    /* OUTRAM= data set from PROC CALIS */
+   out=ram,        /* Output data set in RAM-list format */
+   varout=ramvar,  /* Output data set containing variable info */
+   );
+
+canplot
+%macro canplot(
+   data=_last_,  /* name of data set to analyze               */
+   class=,       /* name of class variable                    */
+   var=,         /* list of classification variables          */
+   id=,          /* observation ID variable                   */
+   varlab=_NAME_,
+   dim=2,        /* number of canonical dimensions            */
+   scale=4,      /* scale factor for variable vectors in plot */
+   conf=.99,     /* confidence probability for canonical means*/
+   out=_dscore_, /* output data set containing discrim scores */
+   outvar=_coef_,
+   anno=_danno_, /* output data set containing annotations    */
+   annoadd=MEAN, /* additional annotations                    */
+   plot=YES,     /* or NO to suppress plot                    */
+   haxis=,       /* AXIS statement for horizontal axis        */
+   vaxis=,       /* and for vertical axis- use to equate axes */
+   inc=1 1,      /* x, y axis tick increments                 */
+   xextra=0 0,   /* # of extra x axis tick marks              */
+   yextra=0 0,   /* # of extra y axis tick marks              */
+   legend=,      /* LEGEND statement                          */
+   hsym=1.2,     /* height of plot symbols                    */
+   hid=1.4,      /* height of ID labels                       */
+   idcolor=,     /* color of ID labels                        */
+   htext=1.5,    /* height of variable and group labels       */
+   canx=can1,    /* Horizontal axis of plot                   */
+   cany=can2,    /* Vertical axis of plot                     */
+   dimlab=Canonical Dimension,    /* Dimension label prefix   */
+   colors=RED GREEN BLUE BLACK PURPLE BROWN ORANGE YELLOW,
+   symbols=dot circle triangle square star -    :     $    =,
+   name=CANPLOT, /* name for graphic catalog entry            */
+   gout=
+   );
+
+canrotat
+%macro canrotat(
+   data=_last_,  /* name of data set to analyze               */
+   class=,       /* name of class variable                    */
+   var=,         /* list of classification variables          */
+   scale=4,      /* scale factor for variable vectors in plot */
+   conf=.99,     /* confidence probability for canonical means*/
+   out=_dscore_, /* output data set containing discrim scores */
+   anno=_danno_, /* output data set containing annotations    */
+   plot=YES,     /* or NO to suppress plot                    */
+   rotate=YES,   /* or NO to supress rotation                 */
+   haxis=,       /* AXIS statement for horizontal axis        */
+   vaxis=,       /* and for vertical axis- use to equate axes */
+   legend=,      /* LEGEND statement                          */
+   hsym=1.2,     /* height of plot symbols                    */
+   canx=can1,
+   cany=can2,
+   name=CANPLOT, /* name for graphic catalog entry            */
+   colors=RED GREEN BLUE BLACK PURPLE YELLOW BROWN ORANGE,
+   symbols=+ square star -     plus   :      $     = );
+
+cat
+%macro cat(
+   data=_last_,   /* input dataset */
+   var=,          /* list of variables to be concatenated */
+   catvar=,       /* output result variable */
+   sep=:,         /* separator string */
+   length=,       /* length of result variable */
+   out=&data      /* name of output dataset */
+   );
+
+catplot
+%macro catplot(
+   data=_last_,  /* OUT= data set from PROC CATMOD                 */
+   x=,           /* horizontal value for plot (NUMERIC)            */
+   xc=,          /* horizontal value for plot (CHAR)               */
+   y=_obs_,      /* ordinate for plotted points (_PRED_ or _OBS_)  */
+   ylab=,        /* ordinate label                                 */
+   class=,       /* variable for curves within each plot           */
+   byvar=,       /* one plot for each level of by variable(s)      */
+   byfmt=$16.,   /* format for by variable                         */
+   type=FUNCTION,/* type of obs. plotted: FUNCTION or PROB         */
+   z=1,          /* std. error multiple for confidence intervals   */
+   anno=,        /* additional input annotate data set             */
+   clfmt=,       /* how to format values of class variable         */
+   clside=last,  /* side for labels of class var (FIRST|LAST|NONE) */
+   xfmt=,        /* format for X variable                          */
+   posfmt=,      /* format to translate class var to position      */
+   vaxis=axis1,  /* axis statement for logit axis                  */
+   haxis=axis2,  /* axis statement for horizontal axis             */
+   legend=,      /* legend statement for custom CLASS legend       */
+   colors=BLACK RED BLUE GREEN,   /* colors for class levels       */
+   symbols=circle square triangle,  /* symbols for class levels    */
+   lines=1 20 41 21 7 14 33 12,     /* line styles for class levels */
+   ploc=5 95,  /* location of panel variable label               */
+   print=NO,     /* print summarized input data set?               */
+   name=catplot
+   );
+
+cell
+%macro CELL( data=_LAST,     /* input data set */
+   out=_DATA_,
+   x = X, y = Y,   /* input X, Y variables */
+   xc=xc, yc=yc,   /* output X, Y variables */
+   nx=15, ny=15);  /* number of bins in X & Y directions */
+
+cellipse
+%macro cellipse(
+   data=_LAST_,
+   out=ellipse,
+   x=,
+   y=,
+   group=,
+   by=,
+   about=data,
+   conf=.95,
+   line=1,
+   colors=RED BLUE GREEN BLACK PURPLE YELLOW BROWN ORANGE,
+   name=ellipse
+   );
+
+centroid
+%macro centroid(
+   map,       /* name of map data set            */
+   type,      /* name of region ID variable      */ 
+   copy=,     /* map variables to copy to output */
+   xc=xc,     /* name for X centroid variable    */
+   yc=yc,     /* name for Y centroid variable    */ 
+   minmax=0,  /* include XMIN, XMAX, YMIN, YMAX? */
+   out=centers
+   );
+
+cgm
+%macro cgm(
+   fn,
+   device=, 
+   hsize=, 
+   vsize=,
+   ftext=hwcgm001
+   );
+
+classify
+%macro classify(
+      data=_last_, /* Name of LOGISTIC or PROBIT OUT= data set.  If not    */
+   response=, /* Name of response variable used in LOGISTIC or PROBIT.*/
+   p=, /* Name of PREDICT= variable in OUT= data set.          */
+      threshld=0, /* Minimum predicted probability which must be attained */
+   predname=_predlvl, 
+   out=classout   /* Name of final data set containing individual level   */
+   );
+
+clipdraw
+%macro clipdraw(
+   data=_last_,
+   x0=x0, y0=y0,
+   x1=x1, y1=y1,
+   xmin=xmin, xmax=xmax,
+   ymin=ymin, ymax=ymax,
+   line=,
+   color=,
+   out=clipped
+   );
+
+codebook
+%macro codebook(data=, library=work, maxfmts=0, def_othr=yes,
+   w_label=20, w_format=20, w_raw=9, addvalue=yes,
+   out=codebook ) ;
+
+collin
+%macro collin(cov=, parminfo=);
+
+colors
+%macro colors(
+   data=_last_,      /* input data set */
+   color=,           /* color variable */
+   cname=,           /* color name variable */
+   rows=,            /* number of rows/page  */
+   cols=10,          /* number of columns/page */
+   out=annodata      /* output annotate data set */
+   );
+
+colorscale
+%macro colorscale(top,middle,bottom,n,dsn,swatch);
+
+combine
+%macro combine(
+   data=_last_,    /* name of input dataset                       */
+   var=,           /* list of variables to be combined            */
+   where=,         /* WHERE clause to subset the data             */
+   result=_id_,    /* result variable                             */
+   sep=:,          /* separator character                         */
+   abbrev=,        /* abbreviated length of each char variable    */
+   length=,        /* max total length of RESULT                  */
+   usefmt=0,       /* use formats for numeric variables?          */
+   ignmiss=0,      /* ignore missing values?                      */
+   out=&data       /* name of output dataset                      */
+   );
+
+combos
+%macro combos(
+   things,         /* the N things to combine                       */
+   size,           /* size (K) of each combination                  */
+   include=,       /* items which must be included                  */
+   out=out,        /* output data set containing combos             */
+   sep=%str( ),    /* separator within each combo                   */
+   join=%str(, ),  /* separator to join all combos                  */
+   sort=Y,         /* specifies whether the combinations are sorted */
+   print=Y,        /* whether to print the OUT= data set            */
+   result=combos,  /* name of macro result variable with all
+   combinations */
+   ncomb=nc        /* name of macro result variable with C(N,K)     */
+   );
+
+compmix
+%macro compmix(data=,
+   models=,
+   labels=,
+   method=ml,
+   procopt=,
+   ic=AICC,
+   options=);
+
+condmat
+%macro condmat(
+   data=_last_,
+   var=,
+   names=,                /* Alternative variable names         */
+   group=,                /* grouping variable (plot symbol)    */
+   symbols=%str(triangle plus square circle  $ X _ Y),
+   colors=BLACK RED GREEN BLUE BROWN YELLOW ORANGE PURPLE
+   );
+
+contour
+%macro contour(
+   data=_LAST_,           /* input data set                      */
+   x=,                    /* X variable                          */
+   y=,                    /* Y variable                          */
+   z=,                    /* Z variable (for G3D)                */
+   where=,                /* WHERE clause to select observations */
+   weight=,               /* numeric weight for observations     */
+   group=,                /* Group variable (optional)           */
+   class=,                /* syn for GROUP=                      */
+   gpfmt=,                /* format for group labels             */
+   pvalue=0.68,           /* Confidence coefficient (1-alpha)    */
+   line=5,                /* line style(s) for ellipse           */
+   width=1,               /* line width(s) for ellipse           */
+   annoadd=MEAN GPLABEL,  /* additional annotations              */
+   inanno=,               /* additional (input) annotations      */
+   std=STDERR,            /* error bar metric: STD or STDERR     */
+   points=40,             /* points on each contour              */
+   all=NO,                /* include contour for total sample?   */
+   out=CONTOUR,           /* output annotate data set            */
+   plot=YES,              /* plot the results?                   */
+   haxis=,                /* AXIS statement for horizontal axis  */
+   vaxis=,                /* AXIS statement for vertical axis    */
+   i=none,                /* SYMBOL statement interpolate option */
+   interp=,               /* (synonym for I=)                    */
+   name=CONTOUR,          /* Name for graphic catalog entry      */
+   gout=gseg,
+   colors=RED BLUE GREEN BLACK PURPLE BROWN ORANGE YELLOW,
+   symbols=dot square circle + star -     plus   :      $     =,
+   hsym=1.2,               /* Height of plot symbols              */
+   htext=1.5
+   );
+
+cookdout
+%macro cookdout(indata,depvar,ivarlist,nrounds=1,cookpval=.01,
+   title2=' ',b4print=1,intprint=1,prvars=' ');
+
+coplot
+%macro coplot(
+   data =_LAST_,          /* data set to be plotted                  */
+   x=,                    /* horizontal variable in each plot        */
+   y=,                    /* vertical variable in each plot          */
+   given=,                /* slicing variable                        */
+   group=,                /* grouping variable (plot symbol)         */
+   slices=4,              /* number of slices of the given var       */
+   overlap=.25,           /* allowed overlap between slices          */
+   rows=,                 /* number of rows in the panel plot        */
+   cols=,                 /* number of cols in the panel plot        */
+   interp=none,           /* plot interpolation method in each panel */
+   anno=,
+   hsym=,                 /* height of plot symbols                  */
+   gpanel=0,              /* height of given panel, in % (0=none)    */
+   symbols=%str(circle dot square triangle diamond hash + : $ = X _ Y),  
+   colors=BLACK RED GREEN BLUE BROWN YELLOW ORANGE PURPLE, /* colors */
+   gtemp=gtemp,           /* temporary graphics catalog         */
+   kill=Y,                /* delete gtemp when done?            */
+      gout=GSEG);            /* graphic catalog for plot matrix         */
+
+corder
+%macro corder(
+   data=_last_,
+   var=,           /* list of variables to be reordered */
+   copy=,          /* other variables to be copied */
+   orderby=PRIN1,  /* order by PRINn or ANGLE */
+   cov=COV,        /* reset to null to analyze correlations */
+   out=corder,     /* name of output data set */
+   );
+
+corresp
+%macro CORRESP(
+   data=_LAST_,        /* Name of input data set                */
+   var=,               /* Column variable(s)                    */
+   tables=,            /* TABLES statement variables            */
+   id=,                /* Row variable or row labels            */
+   by=,                /* BY variable                           */
+   weight=,            /* Frequency variable (obs. weight)      */
+   count=,             /* Frequency variable (obs. weight)      */
+   sup=,               /* Supplementary variable(s)             */
+   dim=2,              /* Number of CA dimensions               */
+   options=short,      /* options for PROC CORRESP              */       
+   out=COORD,          /* output data set for coordinates       */
+   anno=LABEL,         /* name of annotate data set for labels  */
+   inanno=,            /* name of an input annotate data set    */
+   pplot=NO,           /* Produce printer plot?                 */
+   gplot=YES,          /* Produce graphics plot?                */
+   plotreq=,           /* dimensions to be plotted              */
+   htext=,             /* height for row/col labels             */
+   rowht=,             /* height for row labels                 */
+   colht=,             /* height for col labels                 */
+   colors=BLUE RED BLACK,    /* Colors for rows, cols, sup      */
+   pos=5 5 5,          /* positions for row/col/sup labels      */
+   symbols=none none,  /* symbols for row and column points     */
+   interp=,            /* interpolations for row/column points  */
+   haxis=,             /* AXIS statement for horizontal axis    */
+   vaxis=,             /* and vertical axis- use to equate axes */
+   vtoh=2,             /* PPLOT cell aspect ratio               */
+   inc=0.1 0.1,        /* x, y axis tick increments             */
+   xextra=0 0,         /* # of extra x axis tick marks          */
+   yextra=0 0,         /* # of extra y axis tick marks          */
+   m0=0.05,            /* Length of origin marker               */
+   dimlab=,            /* Dimension label                       */
+   name=corresp        /* Name for graphics catalog entry       */
+   ); 
+
+corrgram
+%macro corrgram(
+   data=_last_,      /* name of input data set                          */
+   var=,             /* list of variables                               */
+   id=,              /* observation id variable                         */
+   type=,            /* Type of input data: DATA or CORR                */
+   fill=S E S,       /* how to fill the cells in lower tri, diagonal,   */
+   orderby=1 2,      /* How used to order the variables?                */
+   options=,
+   display = R R,    /* (not yet used) */
+   partial=,         /* list of variables to partial out                */
+   colors=blue red,  /* colors for positive and negative values         */
+   cgrid=gray,       /* color for grid lines                            */
+   hlabel=,          /* height of variable labels                       */
+   alabel=0 90,      /* angles for variable labels (H, V)               */
+   cmin=0,           /* minimum abs. value for correlation to be shaded */
+   diags=3,          /* number of diagonal lines in shaded cells        */
+   title=,           /* plot title                                      */
+   font=,            /* Font for text labels                            */
+   verbose=
+   );
+
+cpplot
+%macro CPPLOT(
+   yvar=,                /* name of dependent variable        */
+   xvar=,                /* list of independent variables     */
+   data=_LAST_,          /* name of input data set            */
+   plotchar=1 2 3 4 5 6 7 6 8 9 0, /* to identify variables   */
+   gplot=CP,             /* what to plot: any one or more of  */
+   plot=CP,              /* what to plot: any one or more of  */
+   pplot=NONE,           /* printer plots to do               */
+   cpmax=30,             /* max value of C(p) plotted         */
+   fmax=30,              /* max value of F plotted            */
+   htext=1.5,            /* height of text labels             */
+   options=,             /* additional REG model stmt opts    */
+   name=CPPLOT,          /* name for graphic catalog entry    */
+   gout=
+   );
+
+cqplot
+%macro cqplot (
+   data=_LAST_,    /* input data set                                 */
+   var=,           /* variables to be plotted                        */
+   id=,            /* ID variable for point labels                   */
+   nvar=,          /* number of variables in the VAR= list           */
+   dsq=,           /* Sq distance from centroid, if already computed */
+   pplot=NO,       /* Printer plots?                                 */
+   gplot=YES,      /* Hi-res plots?                                  */
+   out=cqplot,     /* output data set                                */
+   stderr=YES,     /* plot std errors around curves?                 */
+   stdmult=2,      /*  std error multiplier                          */
+   detrend=YES,    /* plot detrended version?                        */
+   label=&dsq>_upper_,   /* which observations are labeled?          */
+   anno=,          /* name of input annotate data set                */
+   annod=,         /* annotate dataset for detrended plot            */
+   name=CQPLOT,    /* name of graphic catalog entries                */
+   gout=);         /* name of graphic catalog                        */
+
+csmpower
+%macro csmpower(
+   data=,
+   id=,
+   rmsea0 = .05,
+   rmseaa = .10,
+   alpha  = .05,
+   df     =,
+   n      = %str(40 to 100 by 20, 150 to 400 by 50),
+   sortby =,
+   plot   = %str(power * n = df),
+   out    = csmpower
+   );
+
+csv
+%macro csv(
+   data=_last_, 
+   csvfile=,
+   quoteall=0,     /* put quote marks around all text values?   */
+   quote='"',
+   showname=1,     /* write variable names as column headers?   */
+   delim=','
+   );
+
+datachk
+%macro datachk(
+   data=_last_,    /* name of input data set                 */
+   var=,           /* variable(s) to be screened             */
+   class=,         /* class/grouping variable                */
+   id=,            /* name of id variable                    */
+   out=_hilo_,     /* name of the output dataset             */
+   ls=80,          /* linesize  for %splot                   */
+   lohi=4,         /* number of low/high obs printed         */
+   zout=2,         /* z-score for treating an obs as unusual */
+   nout=3,         /* number of |z|>&zout to print           */
+   splot=yes,      /* do boxplot of std scores?              */
+   idheight=1
+   );
+
+density
+%macro density(
+   data=_LAST_,        /* Name of input data set              */
+   out=DENSPLOT,       /* Name of output data set             */
+   var=X,              /* Input variable (numeric)            */
+   window=,            /* Bandwidth (H)                       */
+   xfirst=.,           /* . or any real; smallest X value     */
+   xlast=.,            /* . or any real; largest X value      */
+   xinc=.,             /* . or value>0; X-value increment     */
+   gplot=YES,
+   symbol=,
+   haxis=,       /* AXIS statement for horizontal axis        */
+   vaxis=,       /* and for vertical axis- use to equate axes */
+   plotopt=,     /* other plot options, eg %str(areas=1) to fill */
+   anno=,
+   showobs=YES,
+   name=density
+   );
+
+dfbeta
+%macro dfbeta(
+   data = _LAST_,  /* name of input data set               */
+   yvar =,         /* name of dependent variable           */
+   xvar =,         /* list of independent variables        */
+   id =,           /* ID variable (char or numeric)        */
+   label=INFL,     /* label ALL, NONE, or INFLuential obs  */
+   out =dfbeta,     /* output data set: partial residuals   */
+   htext=1.5,      /* height of text in plots              */
+   symbol=star,    /* point plotting symbol                */ 
+   plots=&xvar,    /* which partial plots to produce       */
+   gout=gseg,      /* name of graphic catalog              */
+   name=DFBETA);  /* name of graphic catalog entries      */
+
+distplot
+%macro distplot(
+   data=_last_,       /* name of input data set                   */
+   count=,            /* basic count variable                     */
+   freq=,             /* number of occurrences of count           */
+   label=,            /* Horizontal (count) label                 */
+   dist=,             /* name of distribution                     */
+   parm=,             /* trial value of parm(s) to level the plot */
+   z=1.96,            /* multiplier for error bars                */
+   plot=DIST,         /* What to plot: DIST and/or INFL           */
+   htext=1.4,         /* Height of text labels                    */
+   out=distplot,      /* name of the output data set              */
+   name=distplt       /* graphics catalog entry                   */
+   );
+
+dotplot
+%macro dotplot(
+   data=_LAST_,          /* input data set                         */
+   xvar=,                /* horizontal variable (response)         */
+   xorder=,              /* plotting range of response             */
+   xref=,                /* reference lines for response variable  */
+   yvar=,                /* vertical variable (observation label)  */
+   ysortby=&xvar,        /* how to sort observations               */
+   ylabel=&yvar,         /* label for y variable                   */
+   ylength=,
+   group=,               /* vertical grouping variable             */
+   class=,               /* synonym for group=                     */
+   where=,               /* WHERE clause to subset data            */
+   by=,
+   gpfmt=,               /* format for printing group variable     */
+   connect=DOT,          /* draw lines to ZERO, DOT, AXIS, or NONE */
+   symbol=dot circle square,   /* symbol(s) for observation */
+   symht=1.5,
+   color=black red blue,
+   dline=34,             /* style of horizontal lines              */
+   dcolor=BLACK,         /* color of horizontal lines              */
+   errbar=,              /* variable giving length of error bar    */
+   xlogbase=,
+   xlogstyl=expand,
+   name=DOTPLOT);        /* Name for graphic catalog entry         */
+
+dsquare
+%macro dsquare(
+   data=_LAST_,
+   var=,
+   id=,
+   out=dsq);
+
+dummy
+%macro dummy( 
+   data=_last_,    /* name of input dataset                  */
+   out=&data,       /* name of output dataset                 */
+   var=,           /* variable(s) to be dummied              */
+   base=_last_,     /* base category                          */
+   prefix = D_,     /* prefix for dummy variable names        */
+   format =,        /* format used to categorize variable     */
+   name  = VAL,     /* VAL: variable names are D_value        */
+   fullrank=1       /* Eliminate dummy for baseline category? */
+   );
+
+dumpsas
+%macro dumpsas( data=_LAST_,   /* Sas Data Set name            */
+   fileref=DUMP,   /* SAS Fileref/DDname           */
+   linesize=, ls=80,   /* Linesize of external file    */
+   width=9,   /* Default Field width          */
+   compare=NO,   /* Add code to compare datasets */
+   special=,   /* Vars needing wider fields    */
+   specwid=24         );  /*   Field width for above      */
+
+ell
+%macro ell(
+   cx,
+   cy,
+   sx,
+   sy,
+   r,              /* corrrelation */
+   level=0.68,
+   npoints=36,
+   color=black,    /* Color of line                   */
+   line=1,         /* Line pattern (1..32)            */
+   width=1,        /* Width of line  (1..5)           */
+   xsys=2,
+   ysys=2,
+   out=,
+   in=
+   );
+
+ellipse
+%macro ELLIPSE(
+   CX,             /* X-coordinate of center          */
+   CY,             /* Y-coordinate of center          */
+   RX,             /* length of horizontal axis       */
+   RY,             /* length of vertical axis         */
+   TILT,           /* Slant of major axis             */
+   steps=36,
+   COLOR=black,    /* Color of line                   */
+   line=1,         /* Line pattern (1..32)            */
+   WIDTH=1,        /* Width of line  (1..5)           */
+   xsys=2,
+   ysys=2,
+   out=,
+   in=
+   );
+
+eps
+%macro eps(fn,
+   defdriv=PSLEPSFC,  /* Default EPS driver (thin lines/color) */
+   ftext=hwpsl009     /* Default text font: Helvetica */
+   );
+
+equate
+%macro equate(
+   data=_last_,  /* Name of input data set             */
+   anno=&data,   /* Name of Annotate data set          */
+   x=x,          /* Name of X variable                 */
+   y=y,          /* Name of Y variable                 */
+   xmax=6.5,     /* maximum x axis inches              */
+   ymax=8.5,     /* maximum y axis inches              */
+   xinc=0.1,     /* x axis tick increment              */
+   yinc=0.1,     /* y axis tick increment              */
+   xpextra=0,    /* include extra + end x axis ticks   */
+   xmextra=0,    /* include extra - end x axis ticks   */
+   ypextra=0,    /* include extra + end y axis ticks   */
+   ymextra=0,    /* include extra - end y axis ticks   */
+   vaxis=axis98, /* AXIS statement for Y axis          */
+   haxis=axis99, /* AXIS statement for X axis          */
+   plot=NO       /* Draw the plot?                     */
+   );
+
+facekey
+%macro facekey(
+   data=_last_,  /* data set containing variables for faces  */
+   title1=,      /* main title string for slide              */
+   title2=,      /* additional titles, if desired            */
+   title3=,
+   footnote=,    /* footnote string, if desired              */
+   left=,        /* list of 18 variables - left side of face */
+   right=,       /* list of 18 variables - right side of face*/
+   label=Y,      /* Use variable labels? N-> use names       */
+   cols=1,       /* Columns in display - not implemented     */
+   hpos=80,
+   vpos=25,
+   name=facekey, /* name for graphic catalog entry           */
+   gcat=gseg     /* name of graphic catalog                  */
+   );
+
+faces
+%macro FACES(
+   data=_last_,    /* Name of input data set               */
+   out=asym,       /* Name of output anno set              */
+   id=,            /* Character ID variable                */
+   idnum=,         /* Numeric ID variable                  */
+   blks=1,         /* Blocks per page                      */
+   rows=4,         /* Rows per block                       */
+   cols=4,         /* Columns per block                    */
+   res=3,          /* resolution: 1=high/3=low             */
+   frame=Y,        /* frame around each face?              */
+   color='BLACK',  /* color of each face: variable         */
+   hcolor='BLACK', /*  name or string in quotes            */
+   row=,col=,blk=, /* use to assign particular             */
+   gout=GSEG,      /* name of graphics catalog             */
+   name=FACES,     /* name for graphic catalog entry       */
+      left=,
+   right=,
+   r1=, r2=, r3=, r4=, r5=, r6=, r7=, r8=, r9=,
+   r10=,r11=,r12=,r13=,r14=,r15=,r16=,r17=,r18=,
+   l1=, l2=, l3=, l4=, l5=, l6=, l7=, l8=, l9=,
+   l10=,l11=,l12=,l13=,l14=,l15=,l16=,l17=,l18=);
+
+factors
+%macro Factors(a,lib=work,FactorDSN=generate);
+
+ffold
+%macro ffold(
+   data=_last_,     /* Name of input dataset                */
+   var=,            /* Names of 2x2 factor variable         */
+   by=,             /* Name(s) of BY variables              */
+   count=count,     /* Name of the frequency variable       */
+   std=,            /* How to standardize tables            */
+   config=,         /* margins to standardize               */
+   down=,           /* number of panels down each page      */
+   across=,         /* number of panels across each page    */
+   order=,          /* DOWN|ACROSS - arrange multiple plots */
+   sangle=,         /* angle for side labels (0|90)         */
+   shade=2 4,       /* shading levels for residuals         */
+   alpha=,          /* error rate for confidence rings      */
+   colors=blue red, /* colors for + and - residuals         */
+   fill=HLS HLS,    /* fill type for + and - residuals      */
+   htext=1.5,       /* height of text labels                */
+   font=,           /* font for text labels                 */
+   ptitle=,         /* title for plot(s)                    */
+   frame=,          /* line style for panel frame           */
+   outstat=         /* name of output data set              */
+   );
+
+fpower
+%macro fpower(
+   A=,         /* Levels of factor for power calculation */
+   B=1,        /* Levels of crossed factor B (default=1) */
+   C=1,        /* Levels of crossed factor C (default=1) */
+   R=1,        /* Levels of repeated measure factor      */
+   ALPHA=.05,  /* Significance level of test of factor A */
+   N =%str( 2 to 10 by 1, 12 to 18 by 2,  20 to 40 by 5, 50),
+   DELTA=.50 to 2.5 by 0.25,  /* DO list of DELTA values */
+   RHO=0,      /* Intraclass correlation for repeated    */
+   PTABLE=YES, /* Print a power table?                   */
+   PLOT=NO,    /* Plot power*delta=N ?                   */
+   NTABLE=NO,  /* Print a sample-size table ?            */
+   OUT=PWRTABLE
+   );
+
+freqout
+%macro freqout(
+   data=_last_,
+   row=,
+   col=,
+   layer=,
+   count=,
+   order=internal,
+   out=freqout,
+   compute=chisq measures,
+   stats=chisq cramer gamma n,
+   scores=table,
+   ls=80,
+   options=noprint
+   );
+
+gdispla
+%macro gdispla(
+   switch,
+   iml
+   );
+
+gencorr
+%macro gencorr(
+   data=_last_,
+   var=_numeric_,
+   weight=,
+   vtype=o,
+   out=_corr,
+   type=corr
+   );
+
+genfmt
+%macro genfmt
+   (
+   data=_last_,
+   out=,
+   var=,
+   newvar=_index_,
+   assign=_n_,
+   format=,
+   library=,
+   sortby=,
+   sortout=,
+   fileref=fmt,
+   fileid=$genfmt$ sas a3
+   );
+
+genmodsum
+%Macro genmodsum(
+   data = _LAST_,
+   class=,
+   yvariable=,
+   model1=,
+   model2=,
+   model3=,
+   model4=,
+   model5=,
+   model6=,
+   model7=,
+   model8=,
+   model9 =,
+   model10=,
+   model11=,
+   model12=,
+   model13=,
+   model14=,
+   model15=,
+   model16=,
+   model17=,
+   model18=,
+   model19=,
+   model20=,
+   dist=,
+   distribution=normal,
+   link=,
+   offset=,
+   number_of_models=,
+   sortby=descending aic,
+   printvar=G2 df aic aicc daic daicc,
+   out=genmodsum
+   );
+
+genmosaic
+%macro genmosaic(
+   data=&syslast,
+   class=,
+   count=count,
+   model=,
+   order=data,
+   resid=,
+   title=
+   );
+
+genpat
+%macro genpat(
+   n=1,        /* number of PATTERN statements to generate */
+   start=1,    /* starting PATTERNn number                 */
+   colors=BLACK RED GREEN BLUE BROWN ORANGE PURPLE YELLOW,
+   fill=solid, /* fill value                               */
+   repeat=1,   /* repeat value                             */
+   data=       /* data set containing colors               */
+   );
+
+genrank
+%macro genrank(                   /* Required options:                */
+   h=,                /* horizontal axis variable         */
+   v=,                /* vertical axis variable           */
+   label=,            /* label variable                   */
+   hpos=,             /* horizontal axis positions        */
+   vpos=,             /* vertical axis positions          */
+   data=_last_,       /* SAS data set                     */
+   hsep=1,            /* horizontal axis separation param */
+   vsep=1,            /* vertical axis separation param   */
+   symbol=,           /* symbol character or variable     */
+   procopts=,         /* proc statement options           */
+   plotopts=,         /* plot statement options           */
+   hlabel=,           /* horizontal axis label            */
+   vlabel=,           /* vertical axis label              */
+   hformat=best7.,    /* horizontal axis tick format      */
+   vformat=best7.);   /* vertical axis tick format        */
+
+genscat
+%macro genscat(
+   data =_LAST_,          /* data set to be plotted             */
+   var  =_NUMERIC_,       /* variables to be plotted - can be   */
+   names=,                /* Alternative variable names         */
+   types=,                /* Variable types: list of C and N    */
+   group=,                /* grouping variable (plot symbol)    */
+   interp=none,           /* plot interpolation method          */
+   hsym=,                 /* height of plot symbols             */
+   htitle=,               /* height of variable name titles     */
+   plotopt=,              /* additional plot options            */
+   symbols=%str(circle square + : $ = X _ Y),
+   colors=BLUE RED GREEN BROWN BLACK YELLOW ORANGE PURPLE,
+   anno=NONE,             /* annotate diag or off-diag plot     */
+   gtemp=gtemp,           /* temporary graphics catalog         */
+   kill=Y,                /* delete gtemp when done             */
+   gout=GSEG);            /* graphic catalog for plot matrix    */
+
+gensym
+%macro gensym(
+   n=1,
+   start=1, 
+   h=1.5,
+   interp=none,
+   line=1,
+   symbols=%str(square triangle : $ = X _ Y),
+   colors=BLACK RED GREEN BLUE BROWN ORANGE PURPLE YELLOW,
+   ci=black,
+   font=,
+   width=1,
+   repeat=1,
+   label=
+   );
+
+gif
+%macro gif(
+   fn,
+   device=, 
+   hsize=, 
+   vsize=
+   );
+      %sasgfile(gif,&fn);
+      %if %length(&device) %then %do;
+   %let dev=&device;
+   %end;
+   %else %do;
+   %if not %defined(DRIVER) %then
+   %let driver =%SYSGET(DRIVER);
+
+gl
+%macro gl(k,n);
+
+goodfit
+%macro goodfit(
+   data=_last_,       /* name of the input data set             */
+   var=,              /* analysis variable (basic count)        */
+   freq=,             /* frequency variable                     */
+   dist=,             /* name of distribution to be fit         */
+   parm=,             /* required distribution parameters?      */
+   sumat=100000,      /* sum probs. and fitted values here      */
+   format=,           /* format for ungrouped analysis variable */
+   out=fit,           /* output fit data set                    */
+   outstat=stats);    /* output statistics data set             */
+
+graphout
+%macro graphout(
+   device=cgmof97L,
+   name=sas,
+   ext=,
+   catalog=gseg,
+   outdir=,
+   first=1,
+   last=0);
+
+grftree
+%MACRO GRFTREE(CLUSDSN=,ITEMS=,AXIS=,GROUPAT=,TRIML=,TRIMR=,ITEMLIST=N,
+   SPLIT=N,FONT=duplex, LABEL=,CTREE=BLACK,CAXIS=BLACK,
+   GOUT=,GNAME=,GDES=);
+
+grid
+%macro grid(  /* replay graphs in a rectangular grid */
+   list,      /* list of names of graphs, separated by blanks;
+   a name may be followed by an asterisk and a
+   repetition factor with no intervening blanks;
+   for example, ABC*3 is expanded to: ABC ABC1 ABC2 */
+   rows=1,    /* number of rows in the grid */
+   cols=1,    /* number of columns in the grid */
+   top=10,    /* percentage at top to reserve for titles */
+   bottom=0); /* percentage at bottom to reserve for footnotes */
+
+gscale
+%macro gscale(h=.,v=.,unit=in,verbose=1);
+
+gtree
+%macro gtree(
+   tree=_LAST_,  /* OUTTREE= data set from PROC CLUSTER or VARCLUS*/
+   out=out,      /* name of output data set                       */
+   height=,      /* Name of variable indicating height in tree    */
+   metric=DIS,   /* SIMilarity or DISsimilarity                   */
+   label=HEIGHT, /* label for similarity/dissimilarity axis       */
+   font=,        /* font for item labels (default: goptions)      */
+   hlabel=,      /* height for text labels                        */
+   orient=V,     /* orientation: H (horizontal) or V (vertical)   */
+   ctree='BLACK',/* color for tree                                */
+   citem='BLACK',/* color for item labels: quoted color or variabl*/
+   trimlo=,      /* ignore values of height less than this        */
+   trimhi=,      /* ignore height values greater than this        */
+   sym=none,     /* plotting symbol for cluster joins             */
+   print=NO,     /* NO|YES=proc output|ALL=+ tree info            */
+   name=gtree
+   );
+
+halfnorm
+%macro halfnorm(
+   data=_last_,    /* Name of input data set                     */
+   y=,             /* Name of response variable                  */
+   resp=,          /* Name of response variable                  */
+   trials=,        /* Name of trials variable (dist=bin only)    */
+   model=,         /* Model specification                        */
+   class=,         /* Names of class variables                   */
+   dist=,          /* Error distribution                         */
+   link=,          /* Link function                              */
+   offset=,        /* Offset variable(s)                         */
+   mopt=,          /* other model options (e.g., NOINT)          */
+   freq=,          /* Freq variable                              */
+   id=,            /* Name of observation ID variable (char)     */
+   out=_res_,      /* output data set                            */
+   label=top 5,    /* NONE|ALL|ABOVE|TOP n                       */
+   seed=0,         /* Seed for simulated residuals               */
+   res=stresdev,   /* Type of residual to use: streschi/stresdev */
+   nres=19,        /* Number of simulations for envelope         */
+   symbol=dot,     /* plotting symbol for residuals              */
+   interp=none,    /* interpolation for residuals                */
+   color=red,      /* color for residuals                        */
+   name=halfnorm,  /* graph name in graphics catalog             */
+   gout=
+);
+
+hemat
+%macro hemat(
+   data=_LAST_,      /* data set to be plotted                       */
+   stat=,             /* name of OUTSTAT= dataset from proc glm       */
+   effect=,           /* name of MODEL effect to be displayed         */
+   var=_NUMERIC_,   /* variables to be plotted - can be             */
+   names=,            /* Alternative variable names                   */
+   gpfmt=,         /* format for levels of the group/effect var    */
+   M1=H,              /* first matrix: either H or H+E                */
+   M2=E,              /* second matrix either E or I                  */
+   scale=,            /* scale factors for M1 and M2                  */
+   htitle=,           /* height of variable name titles               */
+   symbols=,  /* not used */
+   colors=BLACK RED,  /* colors for the H and E ellipses              */
+   anno=NONE,         /* annotate diag or off-diag plot               */
+   gtemp=gtemp,       /* temporary graphics catalog                   */
+   kill=Y,            /* delete grtemp when done                      */
+   gout=GSEG);        /* graphic catalog for plot matrix              */
+
+hemreg
+%macro hemreg(
+   data=_last_,   /* name of input dataset       */
+   y=,            /* list of response variables  */
+   x=,            /* list of predictor variables */
+   hyp=Hyp,       /* name for hypothesis _source_ */
+   out=he         /* name of output HE dataset   */
+   );
+
+heplot
+%macro heplot(
+   stat=,          /* name of OUTSTAT= dataset from proc glm       */
+   data=,          /* name of the input dataset (for means)        */
+   x=,             /* name of horizontal variable for the plot     */
+   y=,             /* name of vertical variable for the plot       */
+   var=,           /* 2 response variable names: x y               */
+   effect=,        /* name of MODEL effect to be displayed         */
+   class=&effect,  /* names of class variables(s)                  */
+   efflab=,        /* optional label for the H matrix              */
+   mplot=1 2,      /* matrices to plot                             */
+   gpfmt=,         /* format for levels of the group/effect var    */
+   alpha=0.32,     /* non-coverage proportion for the ellipses     */
+   pvalue=0.68,    /* coverage proportion, 1-alpha                 */
+   ss=ss3,         /* type of SS to extract from the STAT= dataset */
+   where=,         /* to subset both the STAT= and DATA= datasets  */
+   anno=,          /* name of an input annotate data set           */
+   m1=H,           /* first matrix: either H or H+E                */
+   m2=E,           /* second matrix either E or I                  */
+   scale=1 1,      /* scale factors for M1 and M2                  */
+   vaxis=,         /* name of an axis statement for the y variable */
+   haxis=,         /* name of an axis statement for the x variable */
+   legend=,        /* name of a LEGEND statement                   */
+   colors=BLACK RED,     /* colors for the H and E ellipses        */
+   lines=1 21,     /* line styles for the H and E ellipses         */
+   width=3 2,      /* line widths for the H and E ellipses         */
+   htext=,         /* height of text labels                        */
+   hsym=,          /* height of point symbols (means)              */
+   print=,
+   out=out,        /* name of the output dataset                   */
+   name=heplot,    /* name of the graphic catalog entry            */
+   gout=gseg       /* name of the graphic catalog                  */
+   );
+
+hovplot
+%macro hovplot(
+   data=_LAST_,       /* Input dataset  					      */	  
+   var=,              /* Analysis variable  				      */	  
+   id=,               /* Observation ID variable			      */	  
+   where=,            /* WHERE clause to subset data		      */	  
+   class=,            /* Grouping variable(s)				      */
+   classfmt=,	  
+   sep=,              /* Separator character for 2+ CLASS vars    */	  
+   sortby=,           /* Order classes by var, _mean_,...	      */
+   notch=0,	          /* =0|1, 1=draw notched boxes               */
+   connect=1,         /* =0 or line style to connect centers      */	  
+   method=bf,         /* Type of HOV test: BF or LEVINE  	      */
+   center=median,     /* MEAN (Levine) or MEDIAN (Brown-Forsythe) */
+   function=abs,      /* Function of (y-&center) plotted          */
+   out=hovout,        /* Name of output dataset                   */ 
+   name=HOVPLOT,      /* Name for graphic catalog entry 	      */	  
+   gout=              /* The name of the graphics catalog         */
+   );
+
+htmltab
+%macro htmltab(
+   data=_last_,        /* name of input dataset                   */
+   where=,             /* where clause, use where=%str(var=val)   */
+   by=,                /* separate tables for each by value       */
+   out=FILE,           /* output fileref: FILE, PRINT, STDOUT     */
+   outfile=,           /* name of output HTM[L] file              */
+   tmpfile=table,      /* name of temp file                       */
+   tabid=&data,        /* table NAME= attribute                   */
+   id=,                /* ID variable, or _NULL_                  */ 
+   vars=,              /* list of variables to be printed         */ 
+   caption=,           /* table caption text                      */ 
+   tattrib=BORDER,     /* <table > attributes                     */
+   colspec=,           /* list of column alignments and widths [not used]*/
+   ls=80,              /* output linesize                         */ 
+   htmlver=3           /* HTML table style                        */
+   );
+
+indexw
+%macro indexw(varlist, var);
+
+inflglim
+%macro inflglim(
+   data=_last_,    /* Name of input data set                  */
+   resp=,          /* Name of criterion variable              */
+   model=,         /* Model specification                     */
+   class=,         /* Names of class variables                */
+   dist=,          /* Error distribution                      */
+   link=,          /* Link function                           */
+   offset=,        /* Offset variable(s)                      */
+   mopt=,          /* other model options (e.g., NOINT)       */
+   freq=,          /* Freq variable                           */
+   weight=,        /* Observation weight variable (zeros)     */
+   id=,            /* Name of observation ID variable (char)  */
+   gy=DIFCHI STRESCHI,      /* Ordinate(s) for plot(s)        */
+   gx=HAT,         /* Abscissa(s_ for plot: PRED or HAT       */
+   out=cookd,      /* Name of output data set                 */
+   obstats=,       /* For a model already fitted              */
+   parmest=,       /*  "      "      "      "                 */
+   print=Y,        /* Print the OUT= data set?                */
+   bubble=COOKD,   /* Bubble proportional to: COOKD           */
+   label=INFL,     /* Points to label: ALL, NONE, or INFL     */
+   infl=%str(difchi > 4 or hat > &hcrit or &bubble > 1),
+   lsize=1.5,      /* obs label size.  The height of other    */
+   lcolor=BLACK,   /* obs label color                         */
+   lpos=5,         /* obs label position                      */
+   bsize=10,       /* bubble size scale factor                */
+   bscale=AREA,    /* bubble size proportional to AREA or RADIUS */
+   bcolor=RED,     /* bubble color                            */
+   refcol=BLACK,   /* color of reference lines                */
+   reflin=33,      /* line style for reference lines; 0->NONE */
+   name=INFLGLIM,  /* Name of the graph in the graphic catalog */
+   gout=
+);
+
+inflogis
+%macro inflogis(
+   data=_last_,    /* Name of input data set                  */
+   y=,             /* Name of criterion variable              */
+   trials=,        /* Name of trials variable                 */
+   x=,             /* Names of predictors                     */
+   class=,         /* Names of class variables (V8+)          */
+   id=,            /* Name of observation ID variable (char)  */
+   out=_diag_,     /* Name of the output data set             */
+   gy=DIFDEV,      /* Ordinate for plot: DIFDEV or DIFCHISQ   */
+   gx=PRED,        /* Abscissa for plot: PRED or HAT          */
+   bubble=C,       /* Bubble proportional to: C or CBAR       */
+   label=INFL,     /* Points to label: ALL, NONE, or INFL     */
+   infl=%str(difchisq > &dev or &bubble > 1 or hat>hcrit1),
+   dev=4,          /* DIFDEV/DIFCHISQ criterion for infl pts  */
+   lsize=1.5,      /* obs label size.  The height of other    */
+   lcolor=BLACK,   /* obs label color                         */
+   lpos=5,         /* obs label position                      */
+   bsize=10,       /* bubble size scale factor                */
+   bscale=AREA,    /* bubble size proportional to AREA or RADIUS */
+   bcolor=BLACK,   /* bubble color                            */
+   refcol=BLACK,   /* color of reference lines                */
+   reflin=33,      /* line style for reference lines; 0->NONE */
+   loptions=noprint,/* options for PROC LOGISTIC              */
+   name=INFLOGIS,
+   gout=
+   );
+
+inflplot
+%macro inflplot(
+   data=_last_,    /* Name of input data set                  */
+   y=,             /* Name of criterion variable              */
+   x=,             /* Names of predictors                     */
+   id=,            /* Name of observation ID variable (char)  */
+   bubble=COOKD,   /* Bubble proportional to: COOKD or DFFITS */
+   label=INFL,     /* Points to label: ALL, NONE, or INFL     */
+   infl=%str(abs(rstudent) > tcrit
+   or hatvalue > hcrit
+   or abs(&bubble)  > bcrit),
+   lsize=1.5,      /* obs label size.  The height of other    */
+   lcolor=BLACK,   /* obs label color                         */
+   lpos=5,         /* obs label position                      */
+   bsize=10,       /* bubble size scale factor                */
+   bscale=AREA,    /* bubble size proportional to AREA or RADIUS */
+   bcolor=RED,     /* bubble color                            */
+   href=&hcrit &hcrit1,
+   refcol=BLACK,   /* color of reference lines                */
+   reflin=33,      /* line style for reference lines; 0->NONE */
+   name=INFLPLOT,
+   gout=
+   );
+
+interact
+%macro interact( 
+   data=_last_,    /* name of input dataset */
+   out=&data,       /* name of output dataset */
+   v1=,            /* first variable(s) */
+   v2=,            /* second variable(s) */
+   prefix = I_,     /* prefix for interaction variable names */
+   names=,          /* or, a list of n*m names */
+   center=          /* mean center first? */
+   );
+
+intplot
+%macro INTPLOT(
+   data =_LAST_,          /* data set to be plotted             */
+   response=,             /* response variable                  */
+   var  =,                /* names of factor variables          */
+   class=,                /* names of factor variables          */
+   tvalue=2,              /* SE multiple for error bars         */
+   min=, max=, inc=,      /* min, max, incr for response scale  */
+   adjust=,               /* multiple comparison adj for lsmeans*/
+   symbols=%str(circle square dot - $ triangle + : = _),
+   colors=BLACK RED BLUE GREEN BROWN YELLOW ORANGE PURPLE,
+   ltype=1 20 41 21 7 14 33 12,
+   interp=join join join join join join join join,
+   gout=GSEG);            /* graphic catalog for plot matrix    */
+
+item
+%macro item(data=_LAST_,var=_ALL_,format=,id=,copy=,by=,
+   subtest=,subsep=/,subname=_subtest,
+   response='12345',key=_FIRST_,
+   out=_NULL_,outbin=_NULL_,outitem=_NULL_,
+   score=score,missing=missing,invalid=invalid,percent=percent,
+   prophecy=.9,uplo=.3334,options=,
+   debug=0,compat=0);
+
+jack
+%macro jack(      /* Jackknife resampling analysis */
+   data=,         /* Input data set. If the data set does not support
+   direct access via the POINT= option, do NOT use
+   the %BYSTMT macro in the %ANALYZE macro. */
+   stat=_numeric_,/* Numeric variables in the OUT= data set created
+   by the %ANALYZE macro that contain the values
+   of statistics for which you want to compute
+   jackknife distributions. */
+   id=,           /* One or more numeric or character variables that
+   uniquely identify the observations of the OUT=
+   data set within each BY group. No ID variables
+   are needed if the OUT= data set has only one
+   observation per BY group.
+   The ID variables may not be named _TYPE_, _NAME_,
+   or _STAT_. */
+   biascorr=1,    /* 1 for bias correction; 0 otherwise. */
+   alpha=.05,     /* significance (i.e., one minus confidence) level
+   for confidence intervals; blank to suppress
+   confidence intervals. */
+   print=1,       /* 1 to print the jackknife estimates;
+   0 otherwise. */
+   chart=1        /* 1 to chart the jackknife resampling distributions;
+   0 otherwise. */
+   );
+
+jitter
+%macro jitter(
+   data=_last_,     /* input data set                          */
+   out=_data_,      /* output data set (can be same as input)  */
+   var=,            /* variable(s) to be jittered              */
+   new=&var,        /* jittered result(s) (can be same as var) */
+   unit= 1,         /* unit of var, smallest distance between  */
+   mult= 1,         /* multiplier for spread of jitter         */
+   seed=0);
+
+jpg
+%macro jpg(fn);
+
+label
+%macro label(
+   data=_LAST_,
+   x=,             /* X variable for scatterplot       */
+   y=,             /* Y variable for scatterplot       */
+   z=,             /* Z variable for G3D (optional)    */
+   cvar=,         /* name of a curve variable                     */
+   by=,            /* BY variable(s) (mult plots)      */
+   xoff=0,         /* X-offset for label (constant     */
+   yoff=0,         /* Y-offset for label    or         */
+   zoff=0,         /* Z-offset for label  variable)    */
+   text=,          /* text variable or expression      */
+   len=16,         /* length of text variable          */
+   pos=,           /* position for label (/=out-just)  */
+   sys=2,          /* XSYS & YSYS value                */
+   color='BLACK',  /* label color (quote if const)     */
+   size=,          /* size of label                    */
+   font=,          /* font for label                   */
+   angle=,         /* baseline angle for label         */
+   rotate=,        /* character rotate for label       */
+   when=,          /* when to apply label              */
+   subset=1,       /* expression to select points      */
+   copy=,          /* vars copied to output dataset    */
+   in=,            /* input annotate data set          */
+   out=_label_     /* annotate data set produced       */
+   );
+
+labels
+%macro labels(
+   data=_LAST_,
+   x=,             /* X variable for scatterplot       */
+   y=,             /* Y variable for scatterplot       */
+   z=,             /* Z variable for G3D (optional)    */
+   cvar=,         /* name of a curve variable                     */
+   by=,            /* BY variable(s) (mult plots)      */
+   xoff=0,         /* X-offset for label (constant     */
+   yoff=0,         /* Y-offset for label    or         */
+   zoff=0,         /* Z-offset for label  variable)    */
+   text=,          /* text variable or expression      */
+   len=16,         /* length of text variable          */
+   pos=,           /* position for label (/=out-just)  */
+   sys=2,          /* XSYS & YSYS value                */
+   color='BLACK',  /* label color (quote if const)     */
+   size=,          /* size of label                    */
+   font=,          /* font for label                   */
+   angle=,         /* baseline angle for label         */
+   rotate=,        /* character rotate for label       */
+   when=,          /* when to apply label              */
+   subset=1,       /* expression to select points      */
+   copy=,          /* vars copied to output dataset    */
+   in=,            /* input annotate data set          */
+   out=_label_     /* annotate data set produced       */
+   );
+
+lackfit
+%macro lackfit(
+   data=_last_,   /* name of input data set               */
+   y=,            /* name of response variable            */
+   x=,            /* name(s) of independent variable(s)   */
+   covar=1,       /* number of Xs treated as linear terms */
+   out=lackfit    /* name of output ANOVA table           */
+   );
+
+lags
+%macro lags(data=_last_, 
+   outlag=_lags_,   /* output dataset containing lag variables */
+   outfreq=,        /* output dataset containing nlag-way frequencies */
+   var=,            /* variable containing codes for events */
+   varfmt=,         /* format for event variable */
+   nlag=1,          /* number of lags to compute in the outlag dataset */
+   by=,             /* by variable: separate lags for each */
+   weight=,         /* weight variable */
+   where=,          /* where clause to subset observations */
+   freqopt=norow nocol nopercent chisq,
+   complete=ALL,    /* Should the contingency table be made complete?  */
+   prefix=_lag);    /* prefix for names of lag variables */
+
+levine
+%macro levine(data=_last_, class=, response=);
+
+lines
+%macro lines(
+   data=_LAST_,
+   x=,             /* X variable for scatterplot       */
+   y=,             /* Y variable for scatterplot       */
+   z=,             /* Z variable for G3D (optional)    */
+   by=,            /* BY variable(s) (mult plots)      */
+   class=,         /* CLASS variable (mult curves)     */
+   sys=2,          /* XSYS & YSYS value                */
+   color=BLUE RED GREEN BLACK PURPLE YELLOW BROWN ORANGE,    
+   line=1 3 5 8 20 22 25 34,
+   size=1,         /* line thickness                   */
+   subset=1,       /* expression to select points      */
+   copy=,          /* vars copied to output dataset    */
+   in=,            /* input annotate data set          */
+   out=_lines_     /* annotate data set produced       */
+   );
+
+linpro
+%macro linpro(data=_last_, 
+   var=_num_,      /* list of variable names (no abbreviations) */
+   id=,            /* case identifier variable                  */
+   std=STD,        /* how to standardize (NOT IMPLEMENTED)      */
+   plot=YES, 
+   symbols=%str(triangle plus square circle  $ X _ Y),
+   colors=black red green blue brown yellow orange purple,
+   lines=1 20 41 21 7 14 33 12,     /* line styles for obs */
+   out=linplot,
+   fit=linfit,
+   anno=vlabel,   /* name of output annotate data set */
+   name=linpro    /* name of graphic catalog entry */
+   );
+
+logidiag
+%macro logidiag(
+   data=_last_,    /* Name of input data set                  */
+   y=,             /* Name of criterion variable              */
+   trials=,        /* Name of trials variable                 */
+   x=,             /* Names of predictors                     */
+   id=,            /* Name of observation ID variable (char)  */
+   loptions=noprint,/* options for PROC LOGISTIC              */
+   addvar=,
+   smooth=0.5,
+   subset=abs(studres)>2,
+   out=_res_,      /* output data set */
+   symbol=dot,
+   interp=rl ci=red,
+   name=addvar,
+   gout=
+   );
+
+logisticsummary
+%Macro logisticsummary(data =,
+   class=,
+   y_total=,
+   y_success=,
+   model1=,
+   model2=,
+   model3=,
+   model4=,
+   model5=,
+   model6=,
+   model7=,
+   model8=,
+   model9 =,
+   model10=,
+   model11=,
+   model12=,
+   model13=,
+   model14=,
+   model15=,
+   model16=,
+   model17=,
+   model18=,
+   model19=,
+   model20=,
+   link=,
+   offset=,
+   number_of_models=);
+
+logodds
+%macro logodds(
+   x=,               /* Name of the continuous independent variable */
+   y=,               /* Name of the binary response variable        */
+   event=1,          /* Value of Y for the event of interest        */
+   data=_last_,      /* Name of the input data set */
+   options=,         /* Options for PROC LOGISTIC                   */
+   ncat=10,          /* Number of categories of the X variable      */
+   plot=logit prob,  /* Scale(s) for the response                   */
+   smooth=,          /* Smoothing parameter for a lowess smooth     */
+   hsym=1.3,         /* Height of observation plot symbols          */
+   csym=red,         /* Color for observation plot symbols          */
+   show=obs,         /* Whether to plot the binary obs.             */
+   obs=stack,        /* How to plot the binary obs.                 */
+   name=logodds,     /* Name of graphics catalog entry              */
+   vaxis=,           /* Name of an AXIS statement for y-axis        */
+   vlabel=&y=&event, /* Label suffix for y-axis                     */
+   gout=gseg
+   );
+
+lowess
+%macro LOWESS(
+   data=_LAST_,        /* name of input data set               */
+   out=SMOOTH,         /* name of output data set              */
+   x = X,              /* name of independent variable         */
+   y = Y,              /* name of Y variable to be smoothed    */
+   id=,                /* optional row ID variable             */
+   freq=,              /* frequency variable                   */
+   f = .50,            /* lowess window width                  */
+   p = 1,              /* 1=linear fit, 2=quadratic            */
+   iter=2,             /* total number of iterations           */
+   robust=1,           /* do robustness step?                  */
+   step=1,             /* step for successive x values         */
+   plot=NO,            /* draw the plot => gplot & pplot       */
+   gplot=YES,          /* draw the plot?                       */
+   pplot=NO,           /* draw a printer plot?                 */
+   interp=none,        /* plot interpolation option            */
+   symbol=circle,      /* plotting symbol for points           */
+   htext=1.5,          /* text height for plot labels          */
+   hsym=1.5,           /* point symbol height                  */
+   colors=BLACK RED gray,   /* colors for points, smooth, CI   */
+   line=1,             /* line style for smooth                */
+   outanno=,           /* name of output annotate dataset      */
+   in=,                /* name of input annotate dataset       */
+   silent=NO,          /* suppress printed output              */
+   copy=,              /* vars to copy to ODS / ADS            */
+   subset=1,           /* expr. to subset input observatns     */
+   clm=,               /* alpha level for CI [V7+ only]        */
+   options=,           /* other LOESS options                  */
+   haxis=,             /* AXIS statement for horizontal axis   */
+   vaxis=,             /* and for vertical axis                */
+   proctest=&sysver>7, /* use PROCTEST=0 to revert to V6:IML   */
+   name=LOWESS,        /* name for graphic catalog entry       */
+   gout=);
+
+meanplot
+%macro meanplot(
+   data=_last_,  /* name of the input dataset                      */
+   response=,    /* name of response variable in the input dataset */
+   var=,         /* synonym for response=                          */
+   class=,       /* class (factor) variables                       */
+   freq=,        /* name of a frequency variable for finding means */
+   where=,       /* where-clause to subset observations            */
+   xvar=,        /* horizontal value for plot [NUMERIC|CHAR]       */
+   xfmt=,        /* format for horizontal variable                 */
+   cvar=,        /* variable for curves within each plot           */
+   cfmt=,        /* format for curve variable                      */
+   panels=,      /* variable defining the panels of multiple plots */
+   pfmt=,        /* format for panel variable                      */
+   cmean=NO,     /* add curve for average over the cvar?           */
+   pmean=YES,    /* add panel for average over the panels var?     */
+   z=1,          /* std. error multiple for confidence intervals   */
+   options=,     /* options for PROC SUMMARY: NWAY, etc            */
+   adjust=,      /* error bar adjustment for multiple comparisons  */
+   alpha=.05,
+   out=_means_,  /* name of output data set (means and SE)         */
+   interp=join,  /* interpolation for points along each curve      */
+   pplot=NO,
+   gplot=YES,
+   print=NO,     /* print the means?                               */
+   anno=,        /* additional input annotate data set             */
+      symbols=%str(circle square $ : triangle = X _ Y),
+   hsym=1.5,
+   colors=BLACK RED BLUE GREEN BROWN ORANGE PURPLE YELLOW,
+   lines=1 20 41 21 7 14 33 12,
+      haxis=,       /* axis statement for horizontal axis             */
+   vaxis=,       /* axis statement for response axis               */
+   legend=,      /* legend statement for custom CVAR legend        */
+   ploc = 5 95,  /* location of panel variable label               */
+   gout=,        /* name of graphic catalog                        */
+   name=mplot    /* basename of graphic catalog entries            */
+   );
+
+median
+%macro median(vprefix);
+
+meta
+%macro meta(
+   data=_last_,
+   id=,          /* Variable(s) which identify study & hypothesis */
+   n=n,          /* Sample size for the hypothesis test           */
+   stat=stat,    /* Name of test statistic (f, t, r, z, p, chisq) */
+   value=value,  /* Value of the test statistic                   */
+   df=df,        /* degrees of freedom for the test statistic     */
+   p=p,          /* p-value */
+   out=metanal
+   );
+
+mianno
+%macro mianno(
+   imputed=_last_, /* name of data set containing imputations */
+   x=,             /* name of X variable                      */
+   y=,             /* name of X variable                      */
+   id=,            /* observation ID variable                 */
+   loc=mean,       /* central value: MEAN or MEDIAN           */
+   std=stderr,     /* error bar: STD or STDERR                */
+   symbol=circle,  /* plot symbol for a missing observation   */
+   color=red,      /* symbol color                            */
+   size=1,         /* symbol size                             */
+   copy=,          /* variables to copy to output data set    */
+   out=missmi      /* name of output data set                 */
+);
+
+miplot
+%macro miplot(
+   data=,               /* name of input data set                  */
+   imputed=_last_,      /* name of data set containing imputations */
+   x=,                  /* name of X variable                      */
+   y=,                  /* name of X variable                      */
+   id=,                 /* observation ID variable                 */
+   type=,               /* plot type: MARGINAL or IMPUTED          */
+   loc=mean,            /* central value: MEAN or MEDIAN           */
+   std=stderr,          /* error bar: STD or STDERR                */
+   symbols=dot circle,  /* plot symbol for non-miss and missing    */
+   colors=black red,    /* symbol colors for non-miss and missing  */
+   size=1,              /* symbol size(s)                          */
+   interp=none,         /* plot interpolation option               */
+   copy=,               /* variables to copy to output data set    */
+   vaxis=,              /* AXIS statement for vertical axis        */
+   haxis=,              /* AXIS statement for horizontal axis      */
+   anno=,               /* additional annotate data set            */
+   out=missmi,          /* name of output annotate data set        */
+   name=miplot         /* name for graphics catalog entry         */
+);
+
+miss
+%macro miss(
+   data=_last_,
+   var=,         /* list of variables for imputation */
+   out=impute,   /* name of output data set          */
+   maxiter=20,
+   danum=3,      /* number of imputations (M)        */
+   daiter=10,    /* number of data augmentation iterations */
+   seed=0,       /* random number seed               */
+   patterns=no,  /* print missing data patterns?     */
+   sscpout=,
+   sscpin=);
+
+missanno
+%macro missanno(
+   data=_last_,    /* name of input data set                   */
+   x=,             /* name of X variable                       */
+   y=,             /* name of X variable                       */
+   at=1,           /* % location on missing axis               */
+   jitter=1,       /* amount to jitter % location              */
+   symbol=circle,  /* plot symbol for a missing observation    */
+   color=red,      /* symbol color                             */
+   size=1,         /* symbol size                              */
+   copy=,          /* variables to copy to output data set     */
+   in=,            /* input annotate data set                  */
+   out=missxy      /* name of output data set                  */
+);
+
+misscomb
+%macro misscomb(
+   DATA=_LAST_,
+   PARNAME=,
+   REGDEP=,
+   DSNAME=DSNUM);
+
+missing
+%macro missing(
+   data=_last_,
+   var=_numeric_,
+   id=,
+   checklab=,
+   drop=pmiss>95, /* drop variables with at least this % missing */
+   print=pmiss n nmiss min max mean,
+   out=nonmiss
+   );
+
+misspat
+%macro misspat(
+   data=_last_,   /* name of input dataset */
+   var=_all_,     /* allow selecting VAR=_NUMERIC_ or _CHARACTER_ */
+   BY=,           /* list of blank-separated BY variables          */
+   COLLAPSE=NO,
+   out=misspat    /* name of output dataset */
+   );
+
+missrc
+%macro missrc(
+   data=&syslast,
+   var=,
+   count=count,
+   design=design,
+   out=cells,
+   nway=,
+   verbose=0);
+
+mistress
+%macro mistress(
+   data=_LAST_,        /* name of input data set              */
+   out=IMPUTED,        /* name of output data set             */
+   var=_NUM_,          /* variable list, default: all numeric */
+   wgtvar=_NONE_,      /* row weighting variable              */
+   ndim=1,             /* dimensionality                      */
+   idle = 0,           /* code for idle entries               */
+   prt=1,              /* 0=none, 1=normal, 2=detailed        */
+   maxit1=100,         /* maximal iterations, initial         */
+   crit1=1E-6,         /* convergence criterion, initial      */
+   maxit2=100,         /* maximal iterations, final           */
+   crit2=1E-7,         /* convergence criterion, final        */
+   out1=_NONE_,        /* name of object score data set       */
+   out2=_NONE_,        /* name of cat. quant. data set        */
+   file=print);        /* file for printed output             */
+
+mixcase
+%macro mixcase ( var, dlim=' &-*+,/;' , target=, upper=II III ) ;
+
+mosaic
+%macro mosaic(
+   data=_last_,     /* Name of input dataset                        */
+   var=,            /* Names of all factor variable                 */
+   count=count,     /* Name of the frequency variable               */
+   by=,             /* Name(s) of BY variables                      */
+   fittype=joint,   /* Type of models to fit                        */
+   config=,         /* User model for fittype='USER'                */
+   devtype=gf,      /* Residual type                                */
+   shade=2 4,       /* shading levels for residuals                 */
+   plots=,          /* which plots to produce                       */
+   colors=blue red, /* colors for + and - residuals                 */
+   fill=HLS HLS,    /* fill type for + and - residuals              */
+   split=V H,       /* split directions                             */
+   vorder=,         /* order of variables in mosaic                 */
+   htext=1.5,       /* height of text labels                        */
+   font=,           /* font for text labels                         */
+   title=,          /* title for plot(s)                            */
+   space=,          /* room for spacing the tiles                   */
+   cellfill=,       /* write residual in the cell?                  */
+   vlabels=,        /* Number of variable names used as plot labels */
+   sort=,           /* Pre-sort variables?                          */
+   resid=,          /* Name of residual variable                    */
+   fuzz=,           /* Fuzz value for residuals near 0              */
+   order=,          /* Do CA on marginal tables?                    */
+   lorder=,         /* Reorder levels of one or more variables      */
+   legend=,         /* Legend for shading levels: H, V or NONE      */
+   outstat=,        /* Name of an output data set of fit statistics */
+   zeros=,          /* 0/1 variable, where 0 indicates structural 0 */
+   name=mosaic,     /* base name of graphic catalog entries         */
+   gout=            /* name of graphic catalog                      */
+   );
+
+mosaicg
+%macro mosaicg(
+   data=_last_,     /* Name of input dataset           */
+   var=,            /* Names of factor variables       */
+   count=count,     /* Name of the frequency variable  */
+   weight=,         /* Weight variable                 */
+   model=,          /* Model terms                     */
+   para=,           /* Parameterizations               */
+   print=fitall bic,
+   resid=stresdev,
+   shade=2 4,       /* shading levels for residuals    */
+   colors=blue red, /* colors for + and - residuals    */
+   fill=HLS HLS,    /* fill type for + and - residuals */
+   split=V H,       /* split directions                */
+   vorder=,         /* order of variables in mosaic    */
+   htext=1.5,       /* height of text labels           */
+   font=,           /* font for text labels            */
+   title=,          /* title for plot(s)               */
+   space=,          /* room for spacing the tiles      */
+   cellfill=,
+   vlabels=,        /* Number of variable names used as plot labels */
+   out=obstats
+   );
+
+mosmat
+%macro mosmat(
+   data=_last_,     /* Name of input dataset              */
+   var=,            /* Names of factor variables          */
+   count=count,     /* Name of the frequency variable     */
+   fittype=joint,   /* Type of models to fit              */
+   config=,         /* User model for fittype='USER'      */
+   devtype=gf,      /* Residual type                      */
+   shade=,          /* shading levels for residuals       */
+   plots=2,         /* which plots to produce             */
+   colors=blue red, /* colors for + and - residuals       */
+   fill=HLS HLS,    /* fill type for + and - residuals    */
+   split=V H,       /* split directions                   */
+   vorder=,         /* order of variables in mosaic       */
+   htext=,          /* height of text labels              */
+   font=,           /* font for text labels               */
+   title=,          /* title for plot(s)                  */
+   space=,          /* room for spacing the tiles         */
+   fuzz=,           /* smallest abs resid treated as zero */
+   abbrev=,         /* abbreviate variable names in model */
+   sort=YES,        /* Sort variables first?              */
+   );
+
+mplot
+%macro mplot(data=_last_,
+   response=,
+   factor=,
+   method=bon,
+   alpha=.05);
+
+mpower
+%macro mpower(
+   yvar=,               /* list of dependent varriables          */
+   data=_last_,         /* outstat= data set from GLM            */
+   out=_data_,          /* name of output data set with results  */
+   alpha=.05,           /* error rate for each test              */
+   tests=WILKS PILLAI LAWLEY ROY   /* tests to compute power for */
+   );
+
+mstars
+%macro MSTARS( /* Star plot of Multivariate data                           */
+   Data    =_LAST_, /* N  Input SAS Data Set                             */
+   Class   =, /* N  Observation identifier (Must uniquely id obs)  */
+   Var     =, /* Y  List of (numeric) variables                    */
+   ErrorBar=, /* N  List of error bar lengths                      */
+   Minimum =DATA, /* N  Minimum data value ('DATA' or number)          */
+   Maximum =DATA, /* N  Maximum data value ('DATA' or number)          */
+   MinRay  =.1, /* N  Offset of minimum data value from origin (>=0) */
+   NTicks  =2, /* N  Number of tick marks (0=none, >=2)             */
+   RayThick=1, /* N  Thickness of the rays, errorbars and tickmarks */
+   RayLine =1, /* N  Line style of rays, errorbars and tickmarks    */
+   LabSize =1, /* N  Character size of the variable labels          */
+   Circle  =No, /* N  Draw a circle around the plot                  */
+   Symbols =Yes, /* N  Generate SYMBOL statements                     */
+   Symbol_C=, /* N   Colors on generated SYMBOL statements         */
+   Symbol_V=DOT, /* N   Symbols on generated SYMBOL statements        */
+   Symbol_F=NONE, /* N   Symbol fonts on generated SYMBOL statements   */
+   Symbol_H=1, /* N   Symbol sizes on generated SYMBOL statements   */
+   Symbol_L=1, /* N   Line types on generated SYMBOL statements     */
+   Symbol_W=1, /* N   Line widths on generated SYMBOL statements    */
+   AdjHoriz=1.6, /* N  Adjustment of horizontal plot width (>=1)      */
+   AdjVert =1.1, /* N  Adjustment of vertical plot width (>=1)        */
+   AdjLabel=1.02, /* N  Closeness of label to ray endpoints (>=1)      */
+   AdjEBar =4, /* N  Closeness of error bar to ray (in degrees)     */
+   AdjTick =1, /* N  Width of Tick mark (in degrees)                */
+   EBarLoc = 1       /* N  Error bar location: 1=max, 0=min               */
+   );
+
+multisummary
+%macro multisummary(
+   data=_last_,    /* name of input data set */
+   var=_numeric_,  /* names of analysis variables                      */
+   class=,         /* name(s) of  0 or more class variables            */
+   stats=,         /* names of output statistics to calculate          */
+   options=,       /* options for proc summary, e.g., nway, missing... */
+   out=);
+
+multnorm
+%macro multnorm (
+   data=_last_,    /*            input data set           */
+   var=,    /* REQUIRED:  variables for test       */
+   id=,
+   pplot=no,   /*    create chi-square plot?          */
+   gplot=yes        /*    high resolution plot?            */
+   );
+
+newsas
+%macro newsas(program);
+
+normplot
+%macro normplot (
+   data=_LAST_,    /* input data set                      */
+   var=x,          /* variable to be plotted              */
+   out=normplot,   /* output data set                     */
+   mu=MEDIAN,      /* est of mean of normal distribution: */
+   sigma=HSPR,     /* est of std deviation of normal:     */
+   stderr=YES,     /* plot std errors around curves?      */
+   detrend=YES,    /* plot detrended version?             */
+   rankadj=.375,   /* adjust rank and sample size in      */
+   nadj=.5);       /*  computing quantiles e.g.,          */
+
+nqplot
+%macro nqplot (
+   data=_LAST_,    /* input data set                      */
+   var=x,          /* variable to be plotted              */
+   out=nqplot,     /* output data set                     */
+   mu=MEDIAN,      /* est of mean of normal distribution: */
+   sigma=HSPR,     /* est of std deviation of normal:     */
+   stderr=YES,     /* plot std errors around curves?      */
+   detrend=YES,    /* plot detrended version?             */
+   lh=1.5,         /* height for axis labels              */
+   anno=,          /* name(s) of input annotate data set  */
+   colors=black blue red, /* colors for pts, ref line, CI */
+   symbol=dot,
+   name=NQPLOT,    /* name of graphic catalog entries     */
+   gout=);         /* name of graphic catalog             */
+
+ordplot
+%macro ordplot(
+   data=_last_,       /* input data set                           */
+   count=,            /* basic count variable                     */
+   freq=,             /* number of occurrences of count           */
+   label=,            /* Horizontal (count) label                 */
+   legloc=3 88,       /* x,y location for interpretive legend     */
+   legclr=red,        /* legend color                             */
+   out=ordplot,       /* The name of the output data set          */
+   name=ordplot
+   );
+
+orpoly
+%macro orpoly(
+   data=_last_,
+   var=,         /* quantitative factor variable for orthog. poly */
+   deg=,         /* maximum degree of contrasts */
+   file=print,   /* fileref for contrast statements */
+   type=contrast /* type of statement */
+   );
+
+outlier
+%macro outlier(
+   data=_LAST_,      /* Data set to analyze            */
+   var=_NUMERIC_,    /* input variables                */
+   id=,              /* ID variable for observations   */
+   out=CHIPLOT,      /* Output dataset for plotting    */
+   pvalue=.05,       /* Prob < pvalue --> weight=0     */
+   passes=2,         /* Number of passes               */
+   print=YES,        /* Print OUT= data set?           */
+   pplot=NO,         /* Produce printer plot?          */
+   gplot=YES,        /* Produce graphics plot?         */
+   symbol=dot,       /* point symbol                   */
+   useCQplt=Y,       /* use the %CQPLOT macro to plot? */
+   name=outlier,     /* name for graphic catalog entry */
+   gout=gseg);
+
+outliers
+%macro outliers(
+   data=,
+   vars=,
+   id=,            /* name of id variable */
+   method=MHL,
+   opt5=-1,
+   madthrs=3.5,
+   passes=2,
+   pvalue=0.05,
+   iqrmult=1.5,
+   stdmult=3, 
+   out=_OUT_,
+   graph=, 
+   test=, 
+   debug=N, 
+   options=, 
+   qqplot=,
+   colors= red blue,  /* colors for classical and robust ellipses */
+   lines= 3 1,        /* lines for classical and robust ellipses */
+   font=,
+   htext=1.5,
+   hsym=1.5,         /* height of plot symbols */
+   title=,
+   jitter=0 );
+
+paint
+%macro paint(             /*-----------------------------------------*/
+var=,                     /* Variable to use to interpolate between  */
+data=_last_,              /* Input SAS data set.                     */
+out=colors,               /* Output SAS data set.                    */
+colors=,                  /* COLORS=optional-color-list              */
+level=interval,           /* interval - interpolate on the VAR=      */
+symbols=circle,           /* List of insight symbols from page 323   */
+format=,                  /* Paint variable format used with         */
+order=internal,           /* PROC SUMMARY ORDER= option for          */
+select=0,                 /* select state:       0 for not selected. */
+show=1,                   /* show/hide state:       0 for hide.      */
+include=1,                /* include/exclude state: 0 for exclude    */
+label=0,                  /* label/unlabel state:   0 for unlabel.   */
+rgbround=-99 1 1 1,       /* Rounding factors used for the COLORS=   */
+missing=,                 /* specifies how missing values in the     */
+debug=,                   /* vars   - print macro options and macro  */
+);                        /*-----------------------------------------*/
+
+panels
+%macro panels(
+   rows=,                 /* number of rows of plots                    */
+   cols=,                 /* number of columns of plots                 */ 
+   plots=&rows * &cols,   /* total number of plots                      */
+   top=0,                 /* percent of display for top panel           */ 
+   order=UP,              /* start at bottom (UP) or top (DOWN)?        */
+   replay=,               /* List of plots to replay                    */
+   equate=Y,              /* Adjust sizes to maintain aspect ratio?     */ 
+   template=panel&rows.&cols,   /* name of template                     */
+   tc=panels,             /* name of template catalog                   */
+   first=1,               /* number of the first catalog entry used     */
+   last=0,                /* number of the last catalog entry used      */
+   shape=rect,            /* shape of the template.  See the REPLAY macro */
+   gin=gseg,              /* name of input graphic catalog              */
+   gout=gseg              /* name of output graphic catalog             */
+   );
+
+parse
+%macro parse
+   (
+   var,                 /* input character var or string       */
+   with,                /* characters to parse on              */
+   action,              /* action for each parsed word         */
+   nextword=nextword,   /* variable to assign next word to     */
+   nwords=nwords        /* the index of the word in the string */
+   );
+
+partial
+%macro PARTIAL(
+   data = _LAST_,  /* name of input data set               */
+   yvar =,         /* name of dependent variable           */
+   xvar =,         /* list of independent variables        */
+   id =,           /* ID variable (char or numeric)        */
+   label=INFL,     /* label ALL, NONE, or INFLuential obs  */
+   out =,          /* output data set: partial residuals   */
+   htext=1.5,      /* height of text in plots              */
+   hsym=1.5,       /* height of points in plots            */
+   font=,          /* font used in plots                   */
+   symbol=dot,     /* point plotting symbol                */ 
+   plots=&xvar,    /* which partial plots to produce       */
+   type=PARTREG,   /* PARTREG or PARTRES                   */
+   conf=,
+   print=coeff infl,  /* what to print                     */
+   gout=gseg,      /* name of graphic catalog              */
+   name=PARTIAL);  /* name of graphic catalog entries      */
+
+pcavec
+%macro pcavec(
+   data=,          /* Input data set                      */
+   out=vectors,    /* Output annotate data set            */
+   x=,             /* Horizontal variable                 */
+   y=,             /* Vertical variable                   */
+   by=,            /* BY variable                         */
+   where=,         /* WHERE clause to select observations */
+   vec=prin1,      /* PC vectors to plot                  */
+   color=red,      /* Line color(s)                       */
+   line=,          /* Line style                          */
+   len=1
+   );
+
+plotit
+%macro plotit(            /*-----------------------------------------*/
+method=gplot,             /* gplot - displays a graphical            */
+   gopplot=,
+   gopprint=gsfmode=replace gaccess=gsasfile,
+   gopts2=/*reset=goptions erase*/,
+   gopts=,
+   data=_last_,              /* Input data set.  You should always      */
+out=anno,                 /* Output Annotate data set.               */
+gout=,                    /* PROC ANNO GOUT= specification.  This    */
+gname=,                   /* Name of catalogue entry,                */
+gdesc=,                   /* Name of catalogue description,          */
+plotvars=,                /* Specify the y variable then the x       */
+labelvar=,                /* Variable that contains the point        */
+symvar=_symbol_,          /* Variable that contains the plotting     */
+symlen=1,                 /* Length of symbols.  Normally, symbols   */
+datatype=,                /* Specifies the type of data analysis     */
+options=,                 /* Binary options.  Specify zero, one, or  */
+typevar=,                 /* Variable that is looked at for the      */
+types=,                   /* Observation types are usually values of */
+symbols=,                 /* Plotting symbols.  Symbols may be more  */
+symtype=,                 /* Types of symbols.  Valid values are     */
+symcol=,                  /* Colors of symbols.  The default list    */
+symsize=,                 /* Sizes of symbol.                        */
+symfont=,                 /* Symbol fonts.  The font is ignored for  */
+labcol=,                  /* Colors for the label associated with    */
+labsize=,                 /* Sizes for the label associated with the */
+labfont=,                 /* Fonts for the label associated with the */
+britypes=symbol,          /* Types to which BRIGHT= applies.         */
+rgbtypes=symbol,          /* Types to which PAINT=, RED=, GREEN=,    */
+exttypes=vector,          /* Types to always put in the EXTRAOBS=    */
+filepref=sasplot,         /* File name prefix.                       */
+post=,                    /* Graphics stream file name.  The default */
+tempdat1=tempdat1,        /* Data sets used to hold intermediate     */
+tempdat2=tempdat2,        /* results.                                */
+tempdat3=tempdat3,        /*                                         */
+tempdat4=tempdat4,        /*                                         */
+tempdat5=tempdat5,        /*                                         */
+tempdat6=tempdat6,        /*                                         */
+preproc=preproc,          /* Data set to contain the preprocessed    */
+extraobs=extraobs,        /* Data set to contain the extra           */
+regdat=regdat,            /* Data set used to contain intermediate   */
+procopts=nolegend,        /* PROC PLOT statement options.            */
+plotopts=,                /* PLOT statement options.  BOX will be    */
+href=,                    /* Horizontal reference lines.  Specify a  */
+vref=,                    /* Vertical reference lines.  Specify a    */
+hminor=,                  /* Number of horizontal axis minor tick    */
+vminor=,                  /* Number of vertical axis minor tick      */
+label=,                   /* LABEL statement.  Note that specifying  */
+place=2 search,           /* Generates a PLACEMENT= option for the   */
+ls=compute search,        /* Specifies how line sizes are generated. */
+maxiter=15,               /* Maximum number of iterations.           */
+maxokpen=0,               /* Maximum acceptable penalty sum.         */
+lsinc=15,                 /* Increment to line size in iterations    */
+font=swiss,               /* Default font.                           */
+lsizes=1 1 1 1 1,         /* Line sizes (thicknesses) for frame,     */
+tsize=1,                  /* Default text size.                      */
+ticklen=1.5,              /* Length of tick mark in horizontal       */
+tickaxes=LRTBFlb,         /* Axes to draw tick marks.  Default:      */
+extend=,                  /* This option is used to extend the X and */
+offset=0.25,              /* Move symbols for coincident points      */
+interpol=yes,             /* Specifies the interpolation method.     */
+tickfor=32.,              /* Tick format used by INTERPOL=tick.      */
+inc=,                     /* HAXIS=BY INC and VAXIS=BY INC values.   */
+color=black,               /* Default color, used when no other color */
+framecol=,                /* Color of frame, defaults to COLOR=.     */
+titlecol=,                /* Color of title, defaults to COLOR=.     */
+labelcol=,                /* Color of variable labels, defaults to   */
+tickcol=,                 /* Color of ticks, defaults to COLOR=.     */
+curvecol=,                /* Color of curve, defaults to COLOR=.     */
+cframe=,                  /* Color of background within the frame,   */
+monochro=,                /* Overrides all other specified colors.   */
+bright=,                  /* Generate random label colors for        */
+colors=blue red green cyan magenta orange gold lilac olive
+purple brown gray rose violet salmon yellow,
+excolors=,                /* Exclude observations from the annotate  */
+paint=,                   /* Used to interpolate between colors      */
+rgbround=-240 1 1 1,      /* Rounding factors used for the PAINT=    */
+red=,                     /* Specify for RED=, GREEN=, and BLUE=     */
+green=,                   /* arithmetic expressions that produce     */
+blue=,                    /* integers in the range 0 to 255.  Colors */
+hnobs=,                   /* Number of horizontal observations in    */
+vnobs=,                   /* Number of vertical observations in the  */
+adjust1=,                 /* The following variables are created in  */
+adjust2=,                 /* This option can be used to include      */
+adjust3=%str(if text = '*' and function = 'LABEL' then do;
+   style = ' '; text = 'star'; function = 'SYMBOL'; end;),
+adjust4=,                 /* ADJUST4 can add additional adjustments. */
+adjust5=,                 /* Adds extra statements to the final      */
+antiidea=,                /* Eliminate PREFMAP anti-ideal points.    */
+radii=%str(1, 2),         /* Radii of circles (data step do list).   */
+cirsegs=.1,               /* A circle smoothness parameter used in   */
+vechead=0.2 0.05,         /* How to draw vector heads.  For example, */
+outward=,                 /* String for the PLOT statement OUTWARD=  */
+regopts=,                 /* TRANSREG options for curve fitting.     */
+nknots=,                  /* TRANSREG number of knots option.        */
+regprint=noprint,         /* PROC TRANSREG PROC statement options,   */
+regfun=spline,            /* Function for curve fitting.  Possible   */
+cursegs=200,              /* Number of segments in a curve.          */
+debug=time,               /* vars   - print macro options and macro  */
+vtoh=2,                   /* PROC PLOT VTOH= option.  Do not specify */
+makefit=-0.95,            /* Proportion of graphics window to use.   */
+unit=in,                  /* HSIZE=, VSIZE=, unit: in or cm.         */
+hsize=,                   /* Horizontal graphics area size in UNIT=  */
+vsize=,                   /* Vertical graphics area size in UNIT=    */
+xmax=,                    /* Maximum horizontal size of the graphics */
+ymax=,                    /* Maximum vertical size of the graphics   */
+hpos=,                    /* Horizontal positions in graphics area.  */
+vpos=,                    /* Vertical positions in graphics area.    */
+ps=,                      /* Page size.                              */
+);                        /*-----------------------------------------*/
+
+points
+%macro points(
+   data=_LAST_,
+   x=,             /* X variable for scatterplot       */
+   y=,             /* Y variable for scatterplot       */
+   z=,             /* Z variable for G3D (optional)    */
+   by=,            /* BY variable(s) (mult plots)      */
+   class=,         /* CLASS variable (mult curves)     */
+   sys=2,          /* XSYS & YSYS value                */
+   color='BLACK',  /* symbol color (quote if const)    */
+   symbol='dot',   /* plot symbol                      */
+   size=,          /* size of symbol                   */
+   font=,          /* font for symbol                  */
+   subset=1,       /* expression to select points      */
+   copy=,          /* vars copied to output dataset    */
+   in=,            /* input annotate data set          */
+   out=_pts_       /* annotate data set produced       */
+   );
+
+poisplot
+%macro poisplot(
+   data=_last_,
+   count=,            /* basic count variable                     */
+   freq=,             /* number of occurrences of count           */
+   label=,            /* Horizontal (count) label                 */
+   lambda=0,          /* trial value of lambda to level the plot  */
+   z=1.96,            /* multiplier for error bars                */
+   plot=DIST INFL,    /* What to plot: DIST and/or INFL           */
+   htext=1.4,
+   out=poisplot,
+   name=poisplt
+   );
+
+poly
+%macro poly(levels, degree, factor);
+
+polychor
+%macro polychor(
+   data=_last_,
+   var=_numeric_,
+   weight=,
+   out=_plcorr,
+   type=corr
+   );
+
+power
+%macro power(
+   data=_LAST_,
+   out=_POWER_,
+   effect=,
+   calcs=POWER LSN ADJPOW,
+   ss=ss3,
+   alpha=0.05,
+   n=,
+   sigma=,
+   delta=,
+   verbose=
+   );
+
+powerlog
+%macro powerlog(
+   data=,
+   p1=,
+   p2=,
+   alpha=.05,
+   power=.7 to .9 by .05,
+   rsq=0 to .6 by .2,
+   plot=N * power = rsq,
+   plotby=theta,
+   out=_power_
+   );
+
+powerrxc
+%macro powerRxC(
+   data=_last_,   /* input data set                          */
+   row=,          /* the row variable - REQUIRED             */
+   col=,          /* the column variable - REQUIRED          */
+   count=,        /* the variable of frequency counts,
+   if the input data are cell counts
+   of a table                              */
+   level=.05,     /* the significance level of the test      */
+   alpha=&level,  /* synonym for level                       */
+      nrange=,       /* the sample size or range of sample
+   sizes for which power is desired. 
+   If not specified, the actual sample
+   size is used.  Examples:
+   nrange=20 to 200 by 20
+   nrange=%str(20,50,100,140)
+   nrange=%str(20, 50 to 100 by 10)
+   Note that %STR() should be used when
+   commas appear in your range 
+   specification.                      */
+   plot = powerp * n,
+   freqopt = norow nocol nopercent,
+   out=_power_  
+);
+
+ps
+%macro ps(filename,dev);
+
+pscale
+%macro pscale(
+   anno=pscale,      /* name of annotate data set     */
+   out=,             /* synonym for anno=             */
+   scale=logit,      /* linear scale: logit or probit */
+   lo=-3,            /* low scale value               */
+   hi=3,             /* high scale value              */
+   prob=%str(.05, .1 to .9 by .1, .95),
+   at=100,           /* x-axis percent for the axis   */
+   ticklen=1.3,      /* length of tick marks          */
+   size=,            /* size of value labels          */
+   font=,            /* font for value labels         */
+   byvar=,
+   byval=
+   );
+
+pscolor
+%macro pscolor;
+      %let devtyp=PS;
+   %let dev=pscolor;
+   %local gprolog gaccess;
+      %if %defined(sasfile) %then %let gsasfile = &sasfile..ps;
+   %else %do;
+   %let sasfn =%scan(%SYSGET(SASFILE),1,.); 
+
+quotelst
+%macro quotelst(str,quote=%str(%"),delim=%str( ));
+
+rainbow
+%macro rainbow(
+   n=,                    /* number of hues         */
+   start=,                /* starting hue, in [0,1] */
+   end=max(1, &n-1)/&n,   /* ending hue, in [0,1]   */
+   light=0.5,             /* lightness value(s)     */
+   sat=1,                 /* saturation value(s)    */
+   out=rainbow
+   );
+
+ransamp
+%macro ransamp(indat=, outdat=, view=NO, nout=, seed=0, weight=1);
+
+regci
+%macro regci(data=, y=, x=, by=);
+
+regline
+%macro regline(
+   data=_last_,      /* input data set                */
+   y=,               /* ordinate variable             */
+   x=,               /* abscissa variable             */
+   otherx=,          /* other predictors in the model */
+   by=,
+   xmin=,            /* override xmin in data?        */
+   xmax=,            /* override xmax in data?        */
+   z=,               /* Z value for use with proc G3D */
+   weight=,          /* weighted regression?          */
+   color=black,      /* line color                    */
+   line=1,           /* line style                    */
+   width=1,          /* line width                    */
+   in=,              /* input annotate data set       */
+   out=regline,      /* output annotate data set  */
+   notes=nonotes     /* suppress notes?           */
+   );
+
+repeat
+%macro repeat(parm, len);
+
+replay
+%macro replay(
+   data=,         /* allow a dataset containing variables PLOT and PANEL */
+   rows=,
+   cols=,
+   first=1,
+   last=,
+   plots=&rows*&cols,
+   order=,
+   shape=rect    /* RECT, LOWTRI, LOWTRID, UPTRI */
+   );
+
+resline
+%macro resline(
+   data=_LAST_,      /* data set to be analyzed             */
+   x=, y=,           /* names of X and Y variables          */
+   id=,              /* observation id variable (char)      */
+   ends = .5,        /* greatest range of either end 1/3    */
+   plot=FIT,        /* printer plots to show               */
+   gplot=FIT RESID,
+   rst=YES,          /* calculate ratio of slopes table     */
+   powers = -1 -.5 0 .5 1 2,  /* list of powers to consider */
+   trans =,
+   lohi=4,           /* Number of low/hi residuals to show  */
+   print=YES,        /* print data, fit, residuals          */
+   out=_FIT_,        /* name of output data set             */
+   copy=,            /* vars to copy to ODS                 */
+   outsum=_SUMVAL_); /* name of output summary values       */
+
+robcov
+%macro robcov(
+   data=_last_,     /* name of input data set                     */
+   var=_numeric_,   /* list of input variable names               */
+   id=,             /* name of an observation ID variable         */
+   where=,
+   method=mcd,      /* robust estimation method: MVE or MCD       */
+   opt=,            /* options for MVE or MCD                     */
+   quantile=,       /* quantile, h, as a fraction (sets opt[4])   */
+   correct=Y,       /* apply small-sample, consistency correction?*/
+   print=some,      /* control printed output: None, Some, All    */
+   out=outdata,     /* output data set, with robust distances     */
+   outr=,           /* output robust correlation matrix           */
+   outc=outcov,     /* output robust covariance matrix            */
+   plot=rdist,      /* Plot RDIST * DISTANCE?                     */
+   subset=(weight=0),/* Subset of points to label in the plot      */
+   symbol=dot
+   );
+
+robust
+%macro robust(
+   data=_LAST_, 
+   response=,        /* response variable                         */
+   model=,           /* RHS of model statement                    */
+   proc=REG,         /* estimation procedure: GLM, REG, LOGISTIC  */ 
+   class=,           /* class variables (GLM only)                */
+   id=,              /* ID variables                              */
+   out=resids,       /* output observations data set              */
+   outparm=,         /* output parameters data set                */
+   function=bisquare, /* weight function: BISQUARE, HUBER or LAV  */
+   tune=,            /* tuning constant for bisquare/huber        */
+   iter=,            /* max number of iterations                  */ 
+   converge=0.05, 	/* max change in weight for convergence.     */
+   print=no
+   );
+
+rocplot
+%macro rocplot ( outroc=, out=, p=, id=, plottype=high, font=swissb,
+   size=2, position=F, color=black, plotchar=dot,
+   roffset=4, round=1e-8 );
+
+rootgram
+%macro rootgram(
+   data=_last_,   /* input dataset                */
+   var=,          /* Analysis variable            */
+   obs=,          /* observed frequency           */
+   exp=exp,       /* expected/fitted frequency    */
+   func=Sqrt,     /* function applied to ordinate */
+   bwidth=.5,     /* bar width                    */
+   bcolor=grayb0, /* bar color                    */
+   btype=hang,    /* bar type: HANG, DEV, NEEDLE  */
+   anno=,         /* input annotate dataset       */
+   name=rootgram  /* graphics catalog entry name  */
+   );
+
+rpower
+%macro rpower(
+   data=_last_,     /* outstat= data set from GLM     */
+   alpha = .05,     /* alpha level of tests           */
+   power = .90,     /* required power                 */
+   sigma = 1,       /* alternate estimate of root MSE */
+   out=_power_      /* name of output dataset         */
+   );
+
+rsqdelta
+%macro rsqdelta(data=,yvar=,xvar=);
+
+rug
+%macro rug(
+   data=_last_,   /* name of input data set                     */
+   var=,          /* name of variable for rug plot              */
+   by=,           /* grouping variable                          */
+   class=,         /*    "         "                             */
+   on=x,          /* axis on which to display the VAR values    */
+   at=0.5,        /* location of bottom rug lines on axis  (%)  */
+   ht=2,          /* height of rug lines                        */
+   color=black blue red green,   /* colors of rug lines         */
+   jitter=0,      /* jitter applied to the VAR values           */
+   copy=,          /* vars copied to output dataset             */
+   in=,           /* input annotate data set                    */
+   out=_rug_;
+   );
+
+scale
+%macro scale (
+   data=_LAST_,     /* input data set                   */
+   var=_NUMERIC_,   /* variables to be scaled           */
+   copy=,           /* variables to be copied unchanged */
+   id=,             /* id variable                      */
+   out=_DATA_,     /* output data set                  */
+   outstat=,        /* output min/max dataset           */
+   minmax=,         /* optional dataset of min/vax values */
+   lo=0,            /* low value of new range           */
+   hi=1);           /* high value                       */
+
+scatdsgi
+%macro scatdsgi(
+   data =_LAST_,          /* data set to be plotted             */
+   var  =,                /* variables to be plotted            */
+   group=,                /* grouping variable (plot symbol)    */
+   interp=none,           /* plot interpolation method          */
+   hsym=,                 /* height of plot symbols             */
+   symbols=%str(circle square + : $ = X _ Y),
+   colors=BLACK RED GREEN BLUE BROWN YELLOW ORANGE PURPLE,
+   gout=GSEG);            /* graphic catalog for plot matrix    */
+
+scatlms
+%macro scatlms(
+   data=_last_,
+   x=,
+   y=,
+   show=LS LMS,
+   );
+
+scatmat
+%macro scatmat(
+   data =_LAST_,          /* data set to be plotted             */
+   var  =_NUMERIC_,       /* variables to be plotted - can be   */
+   names=,                /* Alternative variable names         */
+   group=,                /* grouping variable (plot symbol)    */
+   interp=none,           /* plot interpolation method          */
+   hsym=,                 /* height of plot symbols             */
+   htitle=,               /* height of variable name titles     */
+   plotopt=,              /* additional plot options            */
+   symbols=%str(circle square + : $ = X _ Y),
+   colors=BLACK RED GREEN BLUE BROWN YELLOW ORANGE PURPLE,
+   anno=NONE,             /* annotate diag or off-diag plot     */
+   gtemp=gtemp,           /* temporary graphics catalog         */
+   kill=Y,                /* delete gtemp when done?            */
+   gout=GSEG);            /* graphic catalog for plot matrix    */
+
+scatter
+%macro scatter(data=_LAST_,
+   var=_NUMERIC_,      /* variables to plot */
+   class=,             /* name of class/group variable */
+   group=,             /* name of class/group variable */
+   where=,              /* where clause to select observations */
+   id=,
+   symbols=square plus circle diamond X up down star,
+   colors=BLACK RED GREEN BLUE BROWN YELLOW ORANGE PURPLE,
+   out=_paint_
+   );
+
+seplist
+%macro seplist (
+      items
+, indlm = %str( )
+, dlm   = %str(,)
+, prefix=
+, nest=
+, suffix=
+      );
+
+showview
+%macro showview(lib=sashelp, obs=10);
+
+sieveplot
+%macro sieveplot(
+   data=_last_,     /* Name of input dataset                */
+   var=,            /* Names of factor variables            */
+   by=,             /* Name(s) of BY variables              */
+   count=count,     /* Name of the frequency variable       */
+      colors=blue red, /* colors for + and - residuals         */
+   filltype=,       /* OBS, OBPS, DEV, EXL, EXP             */
+   margins=,        /* empty or TOTAL                       */
+   htext=1.5,       /* height of text labels                */
+   font=,           /* font for text labels                 */
+   title=,          /* title for plot(s)                    */
+   gout=,           /* name of the graphics catalog         */
+   name=sieve
+   );
+
+slice
+%macro slice(
+   data=,          /* name of input data set */
+   var=,           /* name of the variable on which to slice */
+   slices=10,      /* number of slices (if VAR is numeric) */
+   overlap=.25,    /* overlap between adjacent slices (numeric) */
+   out=_expand_,   /* name of output data set */
+   outs=_slices_   /* name of output slice data set */
+   );
+
+sort
+%macro sort(
+   data=_last_,  /* data set to be sorted           */
+   out=&data,    /* output dataset                  */
+   by=,          /* name of BY/CLASS variable(s)    */
+   byfmt=,       /* variable:format list            */
+   var=,         /* name of analysis variable       */
+   freq=,        /* frequency variable, for bystat  */        
+   bystat=,      /* statistic to sort by            */
+   order=        /* DESCENDING for decreasing order */
+   );
+
+splot
+%macro splot(data=_last_,    /* name of input data set           */
+   var=,         /* dependent variable(s) for splot  */
+   class=,       /* name of grouping variable(s)     */
+   id=,          /* ID variable                      */
+   ls=80,        /* linesize for output              */
+   ps=);
+
+sprdplot
+%macro sprdplot(
+   data=_last_,    /* name of input dataset                        */
+   class=,         /* names of one or more class variables [R]     */
+   var=,           /* name of the variable to be transformed [R]   */
+   offset=0,       /* constant added to &var before transformation */
+   prefix=t_,      /* prefix for name of transformed variable      */
+   plist=-3 -2 -1 -.5 0 .5 1 2 3,   /* list of powers to consider*/
+   best=1,         /* number of best powers to transform &var      */
+   groups=,        /* number of groups, for continous CLASS=       */
+   level=Median,   /* location measure */
+   spread=Qrange,  /* spread measure */
+   pplot=N,
+   gplot=Y,
+   htext=1.7,
+   vaxis=,
+   haxis=,
+   sploc=30 10,    /* (x,y)% location for slope, power annotation  */
+   name=sprdplt,   /* name of graphics catalog entry */
+   out=&data,      /* name of output dataset                       */
+   gout=           /* graphics catalog */
+   );
+
+square
+%macro square(
+   size,
+   row = R,
+   col = C,
+   sym = S,
+   data=,
+   out=generate);
+
+stars
+%macro stars(
+   data=_LAST_,      /* Data set to be displayed                       */
+   var=_NUMERIC_,    /* Variables, as ordered around the star          */
+   id=,              /* Observation identifier  (char)                 */
+   std=,             /* Standardize first: M [SD]                      */
+   sortby=,          /* Sort obs by a variable or stat.                */
+   vorder=,          /* Order variables by PRINx ?                     */
+   minray=.1,        /* Minimum ray length, 0<=MINRAY<1                */
+   across=6,         /* Number of stars across a page                  */
+   down=6,           /* Number of stars down a page                    */
+   color='BLACK',    /* star color, quoted string or variable name     */
+   cfill='',         /* Background color                               */
+   rayline=1,        /* Line style(s) of rays                          */
+   raythick=1,       /* Line thickness of rays                         */
+   htvlabel=2.5,     /* Height of variable labels in key               */
+   a0=0,             /* Angle offset - angle for first ray             */
+   circle=0,         /* Draw circle around each star at 100%?          */
+   missing=0,        /* value assigned to missing data, or . to delete */
+   name=stars,       /* name for graphic catalog entry                 */
+   keypage=1,        /* draw variable key on separate page?            */
+   out=stars         /* name of output data set                        */         
+   );
+
+starxy
+%macro starxy(
+   data=,
+   var=,
+   x=,              /* X location for the center of the star */
+   y=,              /* Y location for the center of the star */
+   where=,          /* where clause to select observations           */
+   keyxy=,
+   minray=0.1,
+   scale=&minray 1,  /* leave empty if pre-scaled                      */
+   rayline=1,        /* Line style(s) of rays                          */
+   raythick=1,       /* Line thickness of rays                         */
+   a0=0,             /* Angle offset - angle for first ray             */
+   color='BLACK',    /* star color, quoted string or variable name     */
+   cfill='',         /* Background color                               */
+   missing=0,      /* value assigned to missing data, or . to delete */
+   radius=10,
+   keyradius=1.4*&radius,
+   out=stars         /* name of output data set                        */         
+   );
+
+stem
+%macro stem(DATA=_LAST_,VAR=,ID=,idout=,OFACTOR=2,COLS=78,idlen=6);
+
+sunplot
+%macro sunplot(
+   data=_LAST_,   /* name of the input dataset              */
+   x=,            /* name of the horizontal variable        */
+   y=,            /* name of the vertical variable          */
+   count=,        /* name of a count/freq variable          */
+   weight=,       /* name of a count/freq variable          */
+   nx=20,         /* number of slices of the horizontal var */
+   ny=20,         /* number of slices of the vertical var   */
+   color=black,   /* color for plotting symbols             */
+   sunfont=sun,   /* name of sunflower font                 */
+   hsym=1.5,      /* symbol height                          */
+   vaxis=,        /* optional name of axis statement        */
+   haxis=,        /* optional name of axis statement        */
+   plot=yes,
+   plotopt=nolegend frame,  /* additional plot options      */
+   anno=,         /* input annotate data sets */
+   out=,          /* output annotate data set */
+   name=sun,      /* name of graphics catalog entry         */
+   gout=
+   );
+
+surface
+%macro surface(
+   data=,
+   where=,     /* where clause to subset the data */
+   x=x,        /* X variable for plot */
+   y=y,        /* Y variable for plot */
+   z=z,        /* Z variable for plot */
+   nlegend=12, /* number of levels for color */
+   drop=1,     /* amount to drop contour plot beneath lowest z-value */
+   scatopt=,
+   fuzz=1e-6,
+   options=,   /* REVERSE and/or NOGRID */
+   anno=,      /* additional input annotate data set */
+   outanno=surfanno  /* output annotate data set used with G3D */
+   );
+
+symbox
+%macro symbox(
+   data=_last_,     /* name of input data set                    */
+   var=,            /* name(s) of the variable(s) to examine     */
+   id=,             /* name of ID variable                       */
+   out=symout,      /* name of output data set                   */
+   orient=V,        /* orientation of boxplots                   */
+   powers=-1 -0.5 0 .5 1,  /* list of powers to consider         */
+   name=symbox
+   );
+
+table
+%macro table (
+   data=_last_,     /* Name of input dataset                        */
+   var=,            /* Names of all factor variables                */
+   where=,          /* WHERE clause to subset observations          */
+   char=,           /* Force factor variables to character?         */
+   weight=,         /* Name of a frequency variable                 */
+   order=,          /* Specifies the order of the variable levels   */
+   format=,         /* List of var, format pairs                    */
+   orderby=,        /* An SQL 'order by' clause to reorder the table*/
+   out=table        /* Name of output dataset                       */
+   );
+
+tdef
+%macro tdef(nv, size, shift );
+
+timeline
+%macro timeline(
+   data=,        /* name of input data set                   */
+   time=year,    /* name of the time variable                */ 
+   info=item,    /* name of the info variable                */
+   from=,        /* lowest value of time variable displayed  */ 
+   to=,          /* highest value of time variable displayed */
+   by=10,        /* step size for time axis                  */
+   symbol=dot,   /* symbol for each info item                */
+   htext=0.8,    /* height of info text                      */
+   ctext=black,  /* color of info text                       */
+   fold=100,
+   title=        /* title for timeline                       */
+   );
+
+tolong
+%macro tolong(
+   data=_last_,    /* name of input data file that is in wide form         */
+   out=,           /* name of output data file that will be in long form   */
+   var=,           /* list of the base names to transpose                  */
+   id=,            /* variable that uniquely identifies the wide records   */
+   suffix=,        /* variable name for the suffix of the wide variables   */
+   suffixlo=1,     /* the lowest value of the suffix variable              */
+   suffixhi=&nvar, /* the lowest value of the suffix variable              */
+   types=N,        /* list of the types of the long variables              */
+   lengths=8       /* list of the lengths of the long variables            */
+   numprint=10,    /* Number of wide records to print                      */
+   quiet=NO        /* suppress PROC PRINT and PROC MEANS for verification? */
+   );
+
+towide
+%macro towide(
+   data=_last_,    /* name of input data file that is in long form         */
+   out=,           /* name of output data file that will be in wide form   */
+   var=,           /* list of the base names to transpose                  */
+   id=,            /* variable that uniquely identifies the wide records   */
+   suffix=,        /* variable name for the suffix of the wide variables   */
+   suffixlo=1,     /* the lowest value of the suffix variable              */
+   suffixhi=&nvar, /* the lowest value of the suffix variable              */
+   types=N,        /* list of the types of the long variables              */
+   lengths=8       /* list of the lengths of the long variables            */
+   numprint=10,    /* Number of wide records to print                      */
+   quiet=NO,       /* suppress PROC PRINT and PROC MEANS for verification? */
+   sorted=NO       /* the input (long) data file is already sorted by id?  */
+   );
+
+triplot
+%macro triplot(
+   data=_last_,    /* name of data set to be plotted           */
+   var=,           /* 3 variable names for plot axes           */
+   class=,         /* class variable defining plotting symbol  */
+   id=,            /* point identifier (label) variable        */
+   by=,            /* BY variable for separate plots           */
+   where=,         /* where-clause to subset observations      */
+      idht=2,         /* height of ID label                       */
+   idclr='BLACK',  /* color of ID label                        */
+   idpos=8,        /* position of ID label                     */
+   idsubset=1,     /* expression to subset ID labels           */
+   interp=none,    /* interpolation between points             */
+   symht=2,        /* height of point symbols                  */
+   symbols=%str(dot circle square $ : triangle = X _ Y),
+   symfont=,
+   colors=BLACK RED BLUE GREEN BROWN ORANGE PURPLE YELLOW,
+      backclr=WHITE,  /* background color                         */
+   backpat=EMPTY,  /* background fill pattern                  */
+   gridby=20,      /* grid line interval                       */
+   gridclr=gray,   /* grid line color                          */
+   gridline=34,    /* style of grid lines                      */
+   axes=none,      /* type of axes: NONE, FULL, TOP, BOT       */
+   axisclr=blue,   /* color of axis lines                      */
+   axisline=1,     /* style of axis lines                      */
+      xoff=2,         /* X offset, in %, for adjusting the plot   */
+   xscale=.96,     /* X scale factor, for adjusting the plot   */
+   yoff=2,         /* Y offset, in %, for adjusting the plot   */
+   yscale=.96,     /* Y scale factor, for adjusting the plot   */
+   legend=,        /* name of legend statement or 'NONE'       */
+   labht=2,        /* height of variable labels, in GUNITs     */
+   labloc=100,     /* location of variable label: 0 or 100     */
+   out=tridata,    /* output data set */
+   outanno=trianno,
+   plot=yes,       /* produce the plot? */
+   name=triplot    /* name of graphic output in the catalog    */
+   );
+
+twoway
+%macro twoway(
+   data=_LAST_,        /* Data set to be analyzed            */
+   var=,               /* list of variables: cols of table   */
+   id=,                /* row identifier: char variable      */
+   response=Response,  /* Label for response on 2way plot    */
+   method=MEAN,        /* MEAN | MEDIAN                      */
+   power=1,            /* Power transform of response        */
+   plot=FIT DIAGNOSE,  /* What plots to do?                  */
+   htext=1.5,          /* text height for FIT plot           */
+   ftext=,             /* text font for FIT plot             */
+   afactor=1,          /* angle factor for FIT plot labels   */
+   rfactor=,           /* plot |resids| > rfactor*sqrt(MSPE) */
+   rcolor=BLUE RED,    /* colors for + and - residuals       */
+   rline=3,            /* line style for residuals           */
+   arrow =0.03,        /* length of arrow heads              */
+   out=compare,        /* Name of output data set            */
+   print=,
+   name=twoway,        /* Name for graphic catalog plots     */
+   gout=GSEG);         /* Name for graphic catalog           */
+
+vectors
+%macro vectors(
+   data=,           /* name of input data set  	  */
+   x=,              /* name of abscissa variable	  */
+   y=,              /* name of ordinate variable	  */
+   z=,              /* name of Z variable (for G3D)  */
+   x0=0,            /* origin for x variable		  */
+   y0=0,            /* origin for y variable		  */
+   z0=0,            /* origin for z variable		  */
+   sys=2,           /* XSYS, YSYS (ZSYS) value(s)    */
+   scale=1,         /* scale factor for vectors	  */
+   line=1,          /* line style for vectors	      */
+   color=black,     /* line color for vectors	      */
+   width=1,         /* line width for vectors	      */
+   in=,             /* input annotate data set       */
+   out=_vectors_    /* output annotate data set      */
+);
+
+vexpand
+%macro vexpand(data,var);
+
+vifplot
+%macro vifplot(
+   data=_LAST_,
+   resp=,
+   pred=,
+   term=,
+   size=1,
+   plots=PARTRES PARTREG VIF
+   );
+
+words
+%macro words(string,root=);
+

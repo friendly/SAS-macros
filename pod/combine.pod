@@ -1,0 +1,84 @@
+=head1 Description
+
+The COMBINE macro combines two or more variables (character or
+numeric) into a single one.  This is useful for situations where you
+need two or more CLASS variables, but some procedure or macro
+stupidly only handles one.  Also handy for plots of the form
+
+  plot y * x = Group Sex
+
+where there are two or more curve variables.
+
+=head1 Usage
+
+The COMBINE macro is called with keyword parameters.  The C<VAR=>
+parameter is required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %combine(var=group gender, result=gp_sex);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+List of two or more variables to be combined.  *required*
+
+=item RESULT=
+
+The name of the result variable. [Default: C<RESULT=_ID_>]
+
+=item WHERE=
+
+Otional WHERE clause to subset the observations written to the
+             C<OUT=> data set.
+
+=item SEP=
+
+Separator character(s), inserted between adjacent values
+             [Default: SEP=:]
+
+=item ABBREV=
+
+If specified, each character variable in C<VAR=> is truncated to this length
+             in RESULT.  To specify different truncation lengths, use a list of numbers,
+             whose order corresponds to the C<VAR=> variables, e.g., 
+C<ABBREV=2 2 4>.
+
+=item LENGTH=
+
+If specified, the C<RESULT=> variable is truncated to this total length,
+             regardless of the C<ABBREV=> setting.
+
+=item USEFMT=
+
+If postive, numeric variables which have formats stored in the data set
+             have their formatted values combined.  [Default: C<USEFMT=0>]
+
+=item IGNMISS=
+
+Ignore missing values?
+
+=item OUT=
+
+The name of the output data set.  The default (OUT=&data) means that
+             the input data set is replaced. [Default: OUT=&data]
+
+
+=back 4
+
+=head1 Bugs
+
+The internally calculated length for the result variable is incorrect for numeric
+variables.
+
+Should provide a way to use a formatted value of a character variable.
+
+
+

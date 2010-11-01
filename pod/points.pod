@@ -1,0 +1,108 @@
+=head1 Description
+
+The points macro creates an annotate data set to draw point symbols
+in a 2D or 3D scatterplot.  This is useful when you need to plot two
+variables (e.g, observed, predicted) against a common X, with separate
+curves for the levels of a class variable.  In PROC GPLOT, for example,
+you cannot do
+
+   proc gplot;
+      plot (obs fit) * X = group;
+
+However, you can add the OBS points to a plot of fit*X:
+
+  %points(x=X, y=obs);
+   proc gplot;
+      plot fit * X = group / anno=_pts_;
+
+=head1 Usage
+
+The POINTS macro is called with keyword parameters.  The C<X=> and C<Y=>
+parameters are required.  For a plot with PROC G3D, you must also
+give the C<Z=> variable.
+The arguments may be listed within parentheses in any order, separated
+by commas. 
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item X=
+
+The name of the X variable for the scatterplot
+
+=item Y=
+
+The name of the Y variable for the scatterplot
+
+=item Z=
+
+The name of the Z variable for a 3D scatterplot
+
+=item BY=
+
+The name(s) of any BY variable(s) to be used for multiple
+plots.
+
+=item CLASS=
+
+The name of a class variable, to be used with PROC GPLOT
+in the PLOT statement for multiple curves, in the form
+
+	plot Y * X = CLASS;
+
+=item SYS=
+
+Specifies the Annotate XSYS & YSYS value [Default: C<SYS=2>]
+
+=item COLOR=
+
+Point color(s): the name of a dataset character variable,
+or an expression which evaluates to a SAS/GRAPH color, or
+string constant enclosed in quotes. [Default: C<COLOR='BLACK'>]
+
+=item SYMBOL=
+
+Point symbol(s): the name of a dataset character variable,
+or an expression which evaluates to a SAS/GRAPH color, or
+string constant enclosed in quotes.  [Default: C<SYMBOL='DOT'>]
+
+=item SIZE=
+
+The size of the symbol (in GUNIT units).  If not specified,
+the global graphics option HTEXT value is used.
+
+=item FONT=
+
+Font for symbol(s): the name of a dataset character variable,
+or an expression which evaluates to a SAS/GRAPH color, or
+string constant enclosed in quotes.  Use for special
+symbols, e.g., C<FONT='MARKER'.  I>f not specified, the
+standard symbol font is used.
+
+=item SUBSET=
+
+An expression (which may involve any dataset variables) to
+select points.  A point will be plotted if the expression 
+evaluates to non-zero for the current observation.
+[Default: C<SUBSET=1>]
+
+=item COPY=
+
+The names of any variables to be copied to output dataset
+
+=item IN=
+
+The name of an optional input annotate data set.  If
+specified, the C<IN=> data set is concatenated with the
+C<OUT=> data set.
+
+=item OUT=
+
+Name of the annotate data set produced. [Default: C<OUT=_PTS_>]
+
+=back 4

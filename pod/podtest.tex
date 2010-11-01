@@ -1,0 +1,20 @@
+\documentclass{article}
+\usepackage{alltt}
+\newenvironment{proglist}%
+ {\begin{list}{}{%
+    \settowidth{\labelwidth}{\texttt{PROGRAMSxx}}
+         \setlength{\leftmargin}{\labelwidth}
+         \addtolength{\leftmargin}{\labelsep}
+         \setlength{\parsep}{0.2ex plus0.2ex minus0.2ex}
+         \setlength{\itemsep}{0pt}
+         \renewcommand{\makelabel}[1]{\texttt{##1\hfill}}}}
+ {\end{list}}
+\newenvironment{listing}
+	{
+	\begin{alltt}\small}
+	{\end{alltt}}
+\newcommand{\proc}[1]{{\texttt{#1 procedure}\index{#1@\texttt{#1} procedure}}}
+\newcommand{\PROC}[1]{{\texttt{PROC #1}\index{#1@\texttt{#1} procedure}}}
+\begin{document}
+\input{catplot}
+\end{document}

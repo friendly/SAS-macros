@@ -1,0 +1,126 @@
+=head1 Description
+
+The SURFACE macro draws a 3D color-coded surface plot, showing a contour
+plot in the X-Y plane.  The result is most useful for smooth surfaces, e.g.,
+for functional relations, Z=f(X,Y), bivariate density estimates computed
+with PROC KDE, or with the result of PROC G3GRID.
+
+=head2 Method
+
+The surface and the contour plot are constructed using filled polygons
+in Annotate datasets.  The contour is identical to the surface, with the
+Z coordinate set to the constant 'floor'. 
+
+=head1 Usage
+
+The SURFACE macro is defined with keyword parameters.  The C<X=>, C<Y=> and
+C<Z=> parameters are required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %surface(x=temperature, y=pressure, z=yield);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item X=
+
+X variable for plot [Default: C<X=X>]
+
+=item Y=
+
+Y variable for plot [Default: C<Y=Y>]
+
+=item Z=
+
+Z variable for plot [Default: C<Z=Z>]
+
+=item WHERE=
+
+Where clause to subset the data
+
+=item COLORS=
+
+Color scheme (HLS|HLSllss) or list of colors. C<COLORS=HLS> generates 
+             C<NLEVELS=> colors varying in hue in the HLS color scheme Hhhh80FF.
+             C<COLORS=HLS>llss, where llss are hex digits, generates HLS colors
+          with lightness ll and saturations ss.  Otherwise, C<COLORS=> is taken
+          as a blank separated list of SAS colors of length C<NLEVELS=>.
+          [Default: C<COLORS=HLS>]
+
+=item NLEVELS=
+
+Number of levels for color [Default: C<NLEVELS=12>]
+
+=item TICKNUM=
+
+Number of tick marks on axes.  Specify 1-3 values, for X, Y and Z. [Default: C<TICKNUM=5>]
+
+=item DROP=
+
+Amount to drop contour plot beneath lowest z-value, in data units. [Default: C<DROP=1>]
+
+=item TILT=
+
+G3D TILT value(s): One or more numbers giving the number of degrees
+             to tilt the plot. [Default: C<TILT=75>]
+
+=item ROTATE=
+
+G3D ROTATE value(s): One or more numbers giving the number of degrees
+             to rotate the plot. [Default: C<ROTATE=40>]
+
+=item FUZZ=
+
+Fuzz value for binning X, Y [Default: C<FUZZ=1E-6>]
+
+=item OPTIONS=
+
+REVERSE and/or NOGRID.  When C<COLORS=HLS>, C<OPTIONS=REVERSE> reverses the
+             assignment of colors to heights (C<Z=> values) in the plot.
+
+=item ANNO=
+
+Additional input annotate data set
+
+=item OUTANNO=
+
+Output annotate data set used with G3D [Default: C<OUTANNO=SURFANNO>]
+
+=item GOUT=
+
+The name of the graphics catalog [Default: C<GOUT=GSEG>]
+
+=item NAME=
+
+The name of the graph in the graphic catalog [Default: C<NAME=SURFACE>]
+
+
+=back 4
+
+=head1 Example
+
+  *-- Generate bivariate normal data;
+  data bivar;
+    do i = 1 to 10000;
+      x = rannor(2140);
+      y = -x + 3* rannor(2140);
+      output;
+    end;
+  run;
+
+  *-- Do bivariate density estimation;
+  proc kde data=bivar out=kdeout;
+    var x y;
+  run;
+
+  %include macros(surface);
+  %surface(data=kdeout, x=x, y=y, z=density,
+      where=-3<x<3)
+
+

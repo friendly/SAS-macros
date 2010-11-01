@@ -1,0 +1,34 @@
+=Disclaimer:
+
+ This information is provided by Michael Friendly as a service to
+ purchasers of ``Visualizing Categorical Data''.  It is provided "as is".  
+ There are no warranties, expressed or implied, as to merchantability or 
+ fitness for a particular purpose regarding the accuracy of the materials
+ or code contained herein.
+
+=Copying:
+
+ Copyright (c) 1999,  Michael Friendly <friendly@yorku.ca>
+
+ Permission is granted to make and distribute VERBATIM copies
+ of this program provided this copyright and permission notice 
+ and the above disclaimer are preserved on all copies.
+
+ Permission is granted to copy and distribute MODIFIED versions 
+ of this program under the conditions for verbatim copying, provided 
+ that the entire resulting derived work is distributed under the terms 
+ of a permission notice identical to this one, and that the author of
+ a modified version include a line
+
+   * Modified:  <name>                     <email>                   *
+
+ beneath the line
+
+   *  Author:  Michael Friendly            <friendly@yorku.ca>       *
+
+ in the program header comment.
+
+ Permission is granted to copy and distribute TRANSLATIONS of
+ the embedded documentation into another language, under the above
+ conditions for MODIFIED versions, except that this permission notice 
+ may be included in translations instead of in the original English.

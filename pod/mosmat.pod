@@ -1,0 +1,77 @@
+=head1 Description
+
+The MOSMAT macro provides an easily used macro interface to the
+MOSAICS and MOSMAT SAS/IML programs, to create a scatterplot
+matrix of mosaic displays for all pairs of categorical variables.
+
+Each pairwise plot shows the marginal frequencies to the order specified
+by the C<PLOTS=> parameter.  When C<PLOTS=2>, these are the bivariate margins,
+and the residuals from marginal independence are shown by shading.
+When C<PLOTS E<gt>2>, the observed frequencies in a higher-order marginal
+table are displayed, and the model fit to that marginal table is
+determined by the C<FITTYPE=> parameter.
+
+=head1 Usage
+
+The parameters for the mosaic macro are like those of the SAS/IML
+programs, except:
+
+=over 4
+
+=item DATA=
+
+Specifies the name of the input dataset.  Should contain
+one observation per cell, the variables listed in C<VAR=>
+and C<COUNT=>.  [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Specifies the names of the factor variables for the 
+contingency table. Abbreviated variable lists (e.g., C<V1-V3>) 
+are not allowed. The levels of the factor variables may be
+character or numeric, but are used as is in the input data.
+Upper/lower case in the variable names is respected in the
+diagonal label panels.
+You may omit the C<VAR=> variables if variable names are used in
+the C<VORDER=> parameter.
+
+=item COUNT=
+
+Specifies the name of the frequency variable in the dataset.
+The C<COUNT=> variable must be specified.
+
+=item PLOTS=
+
+The C<PLOTS=> parameter determines the number of table variables
+displayed in each pairwise mosaic. [Default: C<PLOTS=2>]
+
+=item CONFIG=
+
+For a user-specified model, config= gives the terms in the
+model, separated by '/'.  For example, to fit the model of
+no-three-way association, specify C<CONFIG=1 2 / 1 3 / 2 3>,
+or (using variable names) C<CONFIG = A B / A C / B C>.
+Note that the numbers refer to the variables after they
+have been reordered, either sorting the data set, or by the
+C<VORDER=> parameter.
+
+=item VORDER=
+
+Specifies either the names of the variables or their indices
+in the desired order in the mosaic.  Note that the using the
+C<VORDER=> parameter keeps the factor levels in their order in
+the data.
+
+=item SORT=
+
+Specifies whether and how the input data set is to be sorted
+to produce the desired order of variables in the mosaic.
+C<SORT=YES >sorts the data in the reverse order that they are
+listed in the C<VAR=> paraemter, so that the variables are 
+entered in the order given in the C<VAR=> parameter.  Otherwise,
+C<SORT=> lists the variable names, possibly with the DESENDING
+or NOTSORTED options in the reverse of the desired order.
+e.g., C<SORT=C DESCENDING B DESCENDING A>.
+
+=back 4
+

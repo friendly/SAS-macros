@@ -1,0 +1,25 @@
+=head1 Description
+
+The GASK macro queries the current graphics size options and assigns
+their values to global macro variables.   The macro retrieves the
+following graphic options: HPOS VPOS HSIZE VSIZE XMAX YMAX
+
+=head1 Usage
+
+The GASK macro is defined with 1 keyword parameter.
+
+  %gask();
+  %gask(unit=cm);
+
+=head2 Parameters
+
+=over 4
+
+=item UNIT=
+
+Specifies the unit in which graphics size values are returned.
+           [Default: C<GUNIT=IN>]
+
+
+=back 4
+

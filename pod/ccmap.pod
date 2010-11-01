@@ -1,0 +1,172 @@
+=head1 Description
+
+The CCMAP macro produces a set of choropleth maps for one response
+variable where the geographic units are partitioned into groups
+by two conditioning variables.  Each region appears in all maps,
+but is only shaded (in relation the the C<RESPONSE=> variable) in those
+views defined by the ranges of the conditioning (C<GIVEN=>) variable.
+This makes it possible to see how the geographic distribution of the
+response changes with the conditioning variables.
+
+See: Dan Carr's CCmaps page:  http://www.galaxy.gmu.edu/~dcarr/CCmaps/
+for information on CCmaps.
+
+=head1 Usage
+
+The CCMAP macro is defined with keyword parameters.  The C<RESPONSE=>
+(or C<VAR=>) variable is required, as are two C<GIVEN=> variables. The C<ID=>
+variable must name the geographic region in the C<MAP=> and C<DATA=> data
+sets.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %ccmap();
+
+For useful results, you should also specify the C<MIDPOINTS=> values of the
+C<RESPONSE=> variable and define a corresponding set of PATTERN statements.
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set
+
+=item MAP=
+
+Name of the input map data set [Default: C<MAP=MYMAPS.USVISMAP>]
+
+=item RESPONSE=
+
+Response variable shown on maps
+
+=item VAR=
+
+Synonym for C<RESPONSE=>
+
+=item ID=
+
+The name of the map ID variable indicating geographic regions in the
+             C<MAP=> and C<DATA=> data sets.
+
+=item WEIGHT=
+
+Region weight variable (e.g. population), used for calculating weighted
+             means/medians for the levels of the conditioning variables.
+
+=item GIVEN=
+
+The names of 2 Conditioning variables, X, Y
+
+=item SLICES=
+
+Number of slices for X,Y [Default: C<SLICES=2 2>]
+
+=item OVERLAP=
+
+Allowed overlap between slices of the C<GIVEN=> variables, in percent. Ignored if
+             the given variables are character. [Default: C<OVERLAP=0.10>]
+
+=item LEVELS=
+
+Number of levels for the C<VAR=> variable in the maps [Default: C<LEVELS=7>]
+
+=item MIDPOINTS=
+
+Midpoints for the C<VAR=> variable. You should use this to
+             specify a common set of midpoints for the response variable
+          in the maps, so they all use the same midpoints.  You can
+          append PCT to a list of numeric midpoint values to have the
+          macro calculate the corresponding percentiles of the C<VAR=>
+          variable.  Specifying C<MIDPOINTS=> overrides the C<LEVELS=>
+          parameter.
+
+=item COUTLINE=
+
+Outline color for the map regions. Specify COUTLINE=, (null) to suppress
+             the region outlines. [Default: C<COUTLINE=GRAYCC>]
+
+=item LEGEND=
+
+NONE, or name of a LEGEND statement, e.g., C<LEGEND=LEGEND1.  I>f
+             you do not specify LEGEND=, you will get a default PROC GMAP
+          legend in each map, probably not what you want.
+
+=item GMAPOPTIONS=
+
+Other GMAP options
+
+=item ANNO=
+
+Name of an additional input annotate dataset. If supplied, this is
+             used in all of the maps.
+
+=item HSTRIP=
+
+Height (in %) for marginal label strip used to identify the
+             values of the C<GIVEN=> variables. [Default: C<HSTRIP=6>]
+
+=item STRIPBG=
+
+Strip background color [Default: C<STRIPBG=YELLOW>]
+
+=item STRIPFG=
+
+Strip foreground color [Default: C<STRIPFG=BLACK>]
+
+=item GTEMP=
+
+Temporary graphics catalog used to generate the individual
+             maps. [Default: C<GTEMP=GTEMP>]
+
+=item KILL=
+
+Delete gtemp when done? [Default: C<KILL=Y>]
+
+=item GOUT=
+
+The name of the graphics catalog [Default: C<GOUT=GSEG>]
+
+=item NAME=
+
+The name of the graph in the graphic catalog [Default: C<NAME=CCMAP>]
+
+
+
+=back 4
+
+=head2 Dependencies
+
+CCMAP requires the following macros:
+
+  gdispla.sas     Device-independent DISPLAY/NODISPLAY control
+  panels.sas      Display a set of plots in rectangular panels
+  slice.sas       Divide a variable into slices
+
+
+=head1 Examples
+
+ %include macros(ccmap);
+ %include data(guerry);
+
+ *-- Define a palette of 7 colors from Red to Blue thru Yellow;
+ %brewerpal(n=7, palette=RdYlBu, out=palette);
+ %genpat(data=palette, n=nobs, colors=color);
+
+ legend1
+    mode=share
+    position=(bottom inside left)
+    across=4
+    label=(position=middle j=c 'Pop/Crime' j=c '(00s)')
+    shape=bar(3,1); 
+
+ %ccmap(data=guerry, map=mymaps.gfrance(where=(density<5)),
+    var=Crime_pers, given=Literacy Wealth,
+    id=dept, weight=Pop1831,
+    midpoints = 20 30 40 50 60 70 80 PCT,
+    legend=legend1,
+    slices=2 2, overlap=0.10);
+
+
+

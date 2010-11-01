@@ -1,0 +1,32 @@
+=head1 Description
+
+The VEXPAND macro expands a variables list of the forms: 
+X1-X10, VARA--VARB, _NUMERIC_, _CHARACTER_  and returns the 
+list of individual variable names.  This is useful for procedures
+and macros that can only handle a blank-separated list of
+variable names.
+
+=head1 Usage
+
+The VEXPAND macro is called with positional parameters.
+For example 
+
+   %let var = %vexpand(dataset, &var);
+
+This macro can only be used at DATA/PROC step boundaries.
+
+=head2 Parameters
+
+=over 4
+
+=item DATA
+
+The name of the input data set
+
+=item VAR
+
+List of variables to be expanded
+
+
+=back 4
+

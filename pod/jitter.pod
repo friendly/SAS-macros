@@ -1,0 +1,51 @@
+=head1 Description
+
+The JITTER macro adds a small amount of noise to numeric variables,
+to avoid overplotting for discrete data.
+
+=head1 Usage
+
+The JITTER macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %jitter(var=X1-X5);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Input data set [Default: C<DATA=_LAST_>]
+
+=item OUT=
+
+Output data set (can be same as input) [Default: C<OUT=_DATA_>]
+
+=item VAR=
+
+Names of variable(s) to be jittered
+
+=item NEW=
+
+Jittered result variables(s) (can be same as var) 
+             [Default: NEW=&VAR]
+
+=item UNIT=
+
+Unit of var, smallest distance between successive 
+             values. [Default: C<UNIT=1>]
+
+=item MULT=
+
+Multiplier for spread of jitter. [Default: C<MULT=1>]
+
+=item SEED=
+
+Seed for the random number generator.  Setting this to a
+             non-zero variable gives reproducable results. [Default: C<SEED=0>]
+
+
+=back 4
+

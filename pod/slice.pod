@@ -1,0 +1,101 @@
+=head1 Description
+
+The SLICE macro divides the values of a variable into subranges
+or slices for use in conditioning plots (coplots or ccmaps). If the 
+variable is character, each distinct value is a slice. Otherwise, 
+the range of the variable is divided into C<SLICE=> ranges, allowing 
+each successive pair to overlap by a fraction, OVERLAP=, so a given
+observation can appear in more than one slice.  In conditioning
+plots, this helps to smooth the conditioning variable(s).
+
+The result is an output C<OUT=> data set containing an additional variable,
+C<SLICEVAR=> giving the slice value for each observation (which may
+appear 1 or 2 times).
+
+=head1 Usage
+
+The SLICE macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+   %slice(data=test, var=x, slices=5);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set
+
+=item VAR=
+
+The name of the variable to be sliced
+
+=item SLICES=
+
+Number of slices (if VAR is numeric) [Default: C<SLICES=4>]
+
+=item OVERLAP=
+
+Overlap between adjacent slices (numeric) [Default: C<OVERLAP=.25>]
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=_EXPAND_>]
+
+=item OUTS=
+
+Name of output slice data set.  This contains one observation
+             per slice, with the upper/lower values and upper/lower
+          percents of observations in each slice. [Default: C<OUTS=_SLICES_>]
+
+=item SLICEVAR=
+
+Name for slice variable [Default: C<SLICEVAR=SLICE>]
+
+
+=back 4
+
+=head2 Example
+
+  data test;
+     drop i;
+     do group='A1', 'A2';
+      do i=1 to 5;
+          x = int(50 + 25 * normal(12424241));
+          output;
+      end;
+     end;
+  run;
+
+  %slice(data=test, var=x, out=nout, slices=5);
+  proc print data=nout;
+  proc print data=_slices_;
+
+Produces:
+
+ Obs    slice    lowerx    upperx    n    group       x
+
+  1      1         -6        28     3     A2        -6
+  2      1         -6        28     3     A2        23
+  3      1         -6        28     3     A1        28
+  4      2         28        31     2     A1        28
+  5      2         28        31     2     A2        31
+  6      3         43        53     2     A1        43
+  7      3         43        53     2     A1        53
+  8      4         76        77     2     A2        76
+  9      4         76        77     2     A1        77
+  10      5         92       110     2     A1        92
+  11      5         92       110     2     A2       110
+
+and, the _slices_ data set:
+
+ Obs    slice    lowerx    upperx    n     lopct      uppct
+
+  1       1         -6        28     3     0.0000     29.310
+  2       2         28        31     2    29.3103     31.897
+  3       3         43        53     2    42.2414     50.862
+  4       4         76        77     2    70.6897     71.552
+  5       5         92       110     2    84.4828    100.000
+

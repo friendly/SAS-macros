@@ -1,0 +1,58 @@
+here is a function type macro %sqlist() that you can find in the archives of sas-l
+The original idea is from Paul Dorfman in February/March last year
+
+%macro sqlist( list );
+%nrbquote(')%sysfunc( tranwrd( %Qsysfunc( compbl( &LIST ) ), %str( ),
+ %str(', ')))%nrbquote(')
+%mend  sqlist ;
+
+use it like
+
+ %let quoted = %sqlist( osprey quail grouse loon gyrfalcon );
+or
+ %put %sqlist( &simplist );
+
+The corresponding function-type macro to provide double quotes is a little simpler
+
+%macro dqlist( list );
+ "%sysfunc(tranwrd(%sysfunc(compbl(&LIST)),%QUOTE( ),%QUOTE(", ")))"
+%mend  dqlist ;
+
+
+
+Subject: Re: SAS/Macro: adding quotes & commas to a passed list
+Date: 3 Jan 01 05:38:31 GMT
+Sender: saslmnt@LISTSERV.UGA.EDU
+Reply-To: sashole@bellsouth.net
+Lines: 58
+
+Bill,
+
+This is funny. No later than tonight I posted an unrelated piece, which,
+however, necessitated doing in part precisely what you are asking for:
+
+43 %let list = osprey  quail   grouse loon   gyrfalcon ;
+44 %let q = %str(%');
+45 %let qlist = &q%sysfunc(tranwrd(%cmpres(&list),%str( ),%str(' ')))&q;
+46 %put quoted list: %unquote(&qlist);
+quoted list: 'osprey' 'quail' 'grouse' 'loon' 'gyrfalcon'
+
+It is not necessary to %unquote() in the line 46, but make sure you have it
+if the macro variable is to be resolved in a DATA step or proc. Another
+funny thing is that at the same time, you can determine the number of
+"tokens" in the list:
+
+47   %put n_tokens: %eval((%length(&qlist)-%length(%cmpres(&list)))/2);
+n_tokens: 5
+
+Of course, using the %let q = %str(%') assignment is unnecessary if you have
+a sufficient editor line length; just stick %str(%') right in front of the
+nose and behind the butt of %sysfunc() stuff. It is just this nasty habit of
+mine to limiting code to 80 positions. Guess whence this one comes, and what
+it tells you about my age!
+
+Kind regards,
+=======================
+Paul M. Dorfman
+Jacksonville, Fl
+=======================

@@ -1,0 +1,55 @@
+=head1 Description
+
+Various graphical displays for diagnosing symmetry of a distribution
+are available in the SYMPLOT macro.  SYMBOX takes a more direct
+approach.  The variable is first transformed to each of the selected
+powers, then each transform is standardized to mean=0, std=1, and
+then displayed as side-by-side boxplots, allowing direct visual
+comparison of various transformations.
+
+Missing and non-positive observations are excluded.
+
+=head1 Usage
+
+The SYMBOX macro is defined with keyword parameters.  The C<VAR=>
+parameter must be specified.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %symbox(data=vaseball, var=salary hits);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of input data set [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+A blank-separated list of the name(s) of the variable(s) to examine.  
+
+=item ID=
+
+Name of an ID variable, used to label outside observations
+
+=item OUT=
+
+Name of the output data set [Default: C<OUT=SYMOUT>]
+
+=item ORIENT=
+
+Orientation of the boxplots [Default: C<ORIENT=V>]
+
+=item POWERS=
+
+List of powers to consider [Default: POWERS=-1 -0.5 0 .5 1]
+
+=item NAME=
+
+Name for graphics catalog entry [Default: C<NAME=SYMBOX>]
+
+
+=back 4
+

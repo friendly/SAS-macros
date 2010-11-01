@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Description</title>
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#description">Description</a></li>
+	<ul>
+
+		<li><a href="#method">Method</a></li>
+	</ul>
+
+	<li><a href="#usage">Usage</a></li>
+	<ul>
+
+		<li><a href="#parameters">Parameters</a></li>
+	</ul>
+
+	<li><a href="#examples">Examples</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="description">Description</a></h1>
+<p>The BREWERPAL macro generates a set of SAS/Graph colors for one of the
+color palettes developed by Cynthia Brewer.  These include color scales
+for sequential (quantitative) variables, discrete (qualitative) variables,
+and bipolar (diverging) variables, with varying numbers of levels.  The
+intended use is for constructing sets of color values with SAS/Graph, such
+as in SYMBOL and PATTERN statements.</p>
+<p>See: <a href="http://www.personal.psu.edu/faculty/c/a/cab38/ColorBrewerBeta2.html">http://www.personal.psu.edu/faculty/c/a/cab38/ColorBrewerBeta2.html</a>
+for an online application demonstrating these color scales.</p>
+<p>The result is returned in an output data set with a COLOR variable (RGB
+color code).  Optionally, the list of all colors may be saved to a macro
+variable as a blank-separated list.</p>
+<p>
+</p>
+<h2><a name="method">Method</a></h2>
+<p>The BREWERPAL macro is modeled on the RColorBrewer R package.  
+See: <a href="http://cran.us.r-project.org/src/contrib/Descriptions/RColorBrewer.html">http://cran.us.r-project.org/src/contrib/Descriptions/RColorBrewer.html</a></p>
+<p>It requires that the data set colors.brewer has already been created (by the file 
+brewer.sas).
+You may have to modify the libname statement in the macro, or specify the <a href="#item_lib"><code>LIB=</code></a>
+parameter for something other than 'colors'.</p>
+<p>As implemented here, it simply selects observations from the &amp;lib..brewer data set.</p>
+<p>
+</p>
+<hr />
+<h1><a name="usage">Usage</a></h1>
+<p>The BREWERPAL macro is defined with keyword parameters.  Typically, the <a href="#item_n"><code>N=</code></a>
+and <a href="#item_palette"><code>PALETTE=</code></a> arguments are specified.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:</p>
+<pre>
+  %brewerpal();</pre>
+<p>
+</p>
+<h2><a name="parameters">Parameters</a></h2>
+<dl>
+<dt><strong><a name="item_n">N=</a></strong><br />
+</dt>
+<dd>
+Number of different colors included in the palette [Default: <code>N=3</code>]
+</dd>
+
+<dt><strong><a name="item_palette">PALETTE=</a></strong><br />
+</dt>
+<dd>
+Palette name.  Must be one of the values created in the palnames lists:
+</dd>
+<dd>
+<pre>
+  Diverging:   BrBG PiYG PRGn PuOr RdBu RdGy RdYlBu RdYlGn Spectral
+  Qualitative: Accent Dark2 Paired Pastel1 Pastel2 Set1 Set2 Set3;
+  Sequential:  Blues BuGn BuPu GnBu Greens Greys Oranges OrRd
+                  PuBu PuBuGn PuRd Purples RdPu Reds YlGn YlGnBu YlOrBr YlOrRd</pre>
+</dd>
+<dd>
+<pre>
+             If C&lt;PALETTE=&gt; is not specified, all palettes are selected.</pre>
+</dd>
+
+<dt><strong><a name="item_lib">LIB=</a></strong><br />
+</dt>
+<dd>
+Library name for the brewer data set  [Default: <code>LIB=COLORS</code>]
+</dd>
+
+<dt><strong><a name="item_category">CATEGORY=</a></strong><br />
+</dt>
+<dd>
+Palette category: DIV, QUAL or SEQ.  If not specified, all palette
+             categories are selected.
+</dd>
+
+<dt><strong><a name="item_out">OUT=</a></strong><br />
+</dt>
+<dd>
+Name of the output data set. Contains the variable COLOR, as well as
+             the Red, Green, Blue (decimal) components of each color [Default: <code>OUT=PALETTE</code>]
+</dd>
+
+<dt><strong><a name="item_result">RESULT=</a></strong><br />
+</dt>
+<dd>
+Name of output macro variable containing color list.  If specified,
+             a macro variable of that name is created with a list of all distinct
+          colors in the <a href="#item_out"><code>OUT=</code></a> data set.
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="examples">Examples</a></h1>
+<pre>
+  *-- Typical usage, for a given palette;
+  %brewerpal(n=6, palette=Blues, result=blues6);
+  %put blues6 = &amp;blues6;
+  title 'Blues palette, n=6 colors';
+  proc print;
+  *-- Generate pattern statements with the blues6 list;
+  %genpat(n=6, colors=&amp;blues6);</pre>
+<pre>
+  %brewerpal(n=9, palette=YlOrRd);
+  title 'Yellow-Orange-Red palette, n=9 colors';
+  proc print;</pre>
+<pre>
+  *-- All n=4 palettes for diverging colors;
+  %brewerpal(n=4, category=div);
+  title 'Diverging palettes, n=4 colors';
+  proc print;</pre>
+
+</body>
+
+</html>

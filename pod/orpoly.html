@@ -1,0 +1,183 @@
+    <HTML> 
+	<HEAD> 
+	    <TITLE>Description</TITLE> 
+	</HEAD>
+
+	<BODY>
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#Description">Description</A>
+	<LI><A HREF="#Usage">Usage</A>
+	<UL>
+
+		<LI><A HREF="#Parameters">Parameters</A>
+	</UL>
+
+	<LI><A HREF="#Example">Example</A>
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="Description">Description
+
+</A></H1>
+For ANOVA models with quantitative factor variables, it is most useful to
+describe and analyse the factor effects using tests for linear, quadratic,
+etc. effects. These tests could be carried out with a regression model, but
+orthogonal polynomial contrasts provide a way to do the same tests, in an
+ANOVA framework with PROC GLM (or PROC MIXED). But, you need to find the
+appropriate contrast coefficients.
+
+
+<P>
+
+The ORPOLY macro finds contrast coefficients for orthogonal polynomials for
+testing a quantitative factor variable, and constructs CONTRAST (or
+ESTIMATE) statements (for use with PROC GLM or PROC MIXED) using these
+values.
+
+
+<P>
+
+This is most useful when either (a) the factor levels are unequally spaced
+(Trials=1 2 4 10), or (b) the sample sizes at the different levels are
+unequal. In these cases, the 'standard' orthogonal polynomial coefficients
+cannot be used. The ORPOLY macro uses the SAS/IML <CODE>orpoly()</CODE>
+function to find the correct values, and to construct the required CONTRAST
+(or ESTIMATE) statements.
+
+
+<P>
+
+When the factor levels are equally spaced, *and* sample sizes are equal,
+the POLY macro provides a simpler way to generate the contrast
+coefficients, and the associated INTER macro generates contrasts for
+interactions among the polynomial contrasts.
+
+
+<P>
+
+<P>
+<HR>
+<H1><A NAME="Usage">Usage
+
+</A></H1>
+The ORPOLY macro is defined with keyword parameters. The <A HREF="#item_VAR_">VAR=</A> parameter must be specified. The arguments may be listed within parentheses
+in any order, separated by commas. For example: 
+
+
+<P>
+
+<PRE>  %orpoly(var=A, file=temp);
+</PRE>
+
+<P>
+
+<P>
+<HR>
+<H2><A NAME="Parameters">Parameters
+
+</A></H2>
+<DL>
+<DT><STRONG><A NAME="item_DATA">DATA=</A></STRONG><DD>
+The name of the input data set [Default: <CODE>DATA=_LAST_</CODE>]
+
+<DT><STRONG><A NAME="item_VAR">VAR=</A></STRONG><DD>
+The <CODE>name(s)</CODE> of quantitative factor <CODE>variable(s)</CODE>
+for orthogonal polynomial contrasts.
+
+<DT><STRONG><A NAME="item_DEG">DEG=</A></STRONG><DD>
+Maximum degree of orthogonal polynomial contrasts
+
+
+<DT><STRONG><A NAME="item_FILE">FILE=</A></STRONG><DD>
+Fileref for contrast statements. The default,
+<CODE>FILE=PRINT</CODE>, simply prints the generated statements in the listing file.  
+<P>
+To use the generated contrast statements directly following a PROC GLM
+step, use the <A HREF="#item_FILE_">FILE=</A> parameter to assign a fileref and create temporary file, which may be used
+in a GLM step.
+
+
+<DT><STRONG><A NAME="item_TYPE">TYPE=</A></STRONG><DD>
+Type of statement generated: CONTRAST, ESTIMATE, or BOTH [Default: <CODE>TYPE=CONTRAST</CODE>]                
+
+</DL>
+<P>
+<HR>
+<H1><A NAME="Example">Example
+
+</A></H1>
+Generate some data, with linear &amp; quad A effects, linear B. Levels of B
+are unequally spaced;
+
+
+<P>
+
+<PRE>  data testit;
+     do a=1 to 5;
+        do b=1, 5, 9, 13;
+           do obs=1 to 2;
+              y = a + a*a + b + 5*normal(124241);
+              output;
+              end;
+           end;
+        end;
+  run;
+</PRE>
+
+<P>
+
+Generate the CONTRAST statements with ORPOLY, and <CODE>%INCLUDE</CODE> in
+the GLM step:
+
+
+<P>
+
+<PRE>  %orpoly(data=testit, var=a b, file=poly);
+</PRE>
+
+<P>
+
+<PRE>  proc glm data=testit;
+     class a b;
+     model y=a b a*b;
+     %include poly;
+</PRE>
+
+<P>
+
+The ORPOLY macro generates the following lines, which are used in the PROC
+GLM step as a result of the <CODE>%include</CODE> statement:
+
+
+<P>
+
+<PRE>  contrast &quot;A-lin&quot; A -0.22361 -0.11180 -0.00000  0.11180  0.22361;
+  contrast &quot;A-quad&quot; A  0.18898 -0.09449 -0.18898 -0.09449  0.18898;
+  contrast &quot;A-3rd&quot; A -0.11180  0.22361  0.00000 -0.22361  0.11180;
+</PRE>
+
+<P>
+
+<PRE>  contrast &quot;B-lin&quot; B -0.21213 -0.07071  0.07071  0.21213;
+  contrast &quot;B-quad&quot; B  0.15811 -0.15811 -0.15811  0.15811;
+</PRE>
+
+<H2>Bugs</H2>
+
+For some strange reason, PROC GLM considers the contrasts non-estimable. It
+does the proper tests when the sample sizes are equal, but not when they
+differ.
+
+
+<P>
+
+</DL>
+    </BODY>
+
+    </HTML>

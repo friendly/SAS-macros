@@ -1,0 +1,186 @@
+=head1 Description
+
+The INFLGLIM macro produces various influence plots for a generalized
+linear model fit by PROC GENMOD.  Each of these is a bubble plot of one
+diagnostic measure (specified by the C<GY=> parameter) against another
+(C<GX=>), with the bubble size proportional to a measure of influence
+(usually, C<BUBBLE=COOKD>).  One plot is produced for each combination
+of the C<GY=> and C<GX=> variables.
+
+=head1 Usage
+
+The macro normally takes an input data set of raw data and fits the
+GLM specified by the RESP=, and C<MODEL=> parameters, using an error
+distribution given by the C<DIST=> parameter.  It fits the model,
+obtains the OBSTATS and PARMEST data sets, and uses these to compute
+some additional influence diagnostics (HAT, COOKD, DIFCHI, DIFDEV,
+SERES), any of which may be used as the C<GY=> and C<GX=> variables.
+
+Alternatively, if you have fit a model with PROC GENMOD and saved
+the OBSTATS and PARMEST data sets, you may specify these with the
+C<OBSTATS=> and C<PARMEST=> parameters.  The same additional diagnostics
+are calculated and plotted.
+
+The INFLGLIM macro is called with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %inflglim(data=berkeley,
+     class=dept gender admit,
+     resp=freq, model=dept|gender dept|admit,
+     dist=poisson,
+     id=cell,
+     gx=hat, gy=streschi);
+
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of input (raw data) data set [Default: C<DATA=_LAST_>]
+
+=item RESP=
+
+The name of response variable.  For a loglin model, this
+is usually the frequency or cell count variable when the
+data are in grouped form (specify C<DIST=POISSON> in this
+case).
+
+=item MODEL=
+
+Gives the model specification.  You may use the '|' and
+'@' symbols to specify the model.
+
+=item CLASS=
+
+Specified the ames of any class variables used in the model.
+
+=item DIST=
+
+The name of the PROC GENMOD error distribution.  If you
+don't specify the error distribution, PROC GENMOD uses
+C<DIST=NORMAL.>
+
+=item LINK=
+
+The name of the link function.  The default is the canonical
+link function for the error distribution.
+
+=item MOPT=
+
+Other options on the MODEL statement (e.g., C<MOPT=NOINT>
+to fit a model without an intercept.
+
+=item FREQ=
+
+The name of a frequency variable when the data are in
+grouped form.
+
+=item WEIGHT=
+
+The name of an bservation weight (SCWGT) variable, used, for
+example to specify structural zeros in a loglin model.
+
+=item ID=
+
+Gives the name of a character observation ID variable
+which is used to label influential observations in the
+plots. Usually you will want to construct a character
+variable which combines the C<CLASS=> variables into a
+compact cell identifier.
+
+=item GY=
+
+The names of variables in the OBSTATS data set used as
+ordinates for in the plot(s). [Default: C<GY=DIFCHI> STRESCHI]
+
+=item GX=
+
+Abscissa(s) for plot, usually  PRED or HAT [Default: C<GX=HAT>]
+
+=item OUT=
+
+Name of output data set, containing the observation
+statistics [Default: C<OUT=COOKD>]
+
+=item OBSTATS=
+
+Specifies the name of the OBSTATS data set (containing
+residuala and other observation statistics) for a model 
+already fitted
+
+=item PARMEST=
+
+Specifies the name of the PARMEST data set (containing
+parameter estimates) for a model  already fitted
+
+=item BUBBLE=
+
+Gives the name of the variable to which the bubble size is
+proportional [Default: C<BUBBLE=COOKD>]
+
+=item LABEL=
+
+Determines which observations, if any, are labeled in the
+plots.  If C<LABEL=NONE>, no observations are labeled; if
+C<LABEL=ALL>, all are labeled; if C<LABEL=INFL>, only possibly
+influential points are labeled, as determined by the
+C<INFL=> parameter. [Default: C<LABEL=INFL>]
+
+=item INFL=
+
+Specifies the criterion used to determine which observations
+are influential (when used with C<LABEL=INFL>).
+[Default: INFL=%STR(DIFCHI > 4 OR HAT > &HCRIT OR &BUBBLE > 1)]
+
+=item LSIZE=
+
+Observation label size. [Default: C<LSIZE=1.5>]. The height of
+other text (e.g., axis labels) is controlled by the C<HTEXT=>
+goption.
+
+=item LCOLOR=
+
+Observation label color [Default: C<LCOLOR=BLACK>]
+
+=item LPOS=
+
+Observation label position [Default: C<LPOS=5>]
+
+=item BSIZE=
+
+Bubble size scale factor [Default: C<BSIZE=10>]
+
+=item BSCALE=
+
+Specifies whether the bubble size is proportional to AREA 
+or RADIUS [Default: C<BSCALE=AREA>]
+
+=item BCOLOR=
+
+The color of the bubble symbol [Default: C<BCOLOR=RED>]
+
+=item REFCOL=
+
+Color of reference lines [Default: C<REFCOL=BLACK>].  Reference
+lines are drawn at nominally 'large' values for HAT values,
+standardized residuals, and change in chi square values.
+
+=item REFLIN=
+
+Line style for reference lines. Use C<REFLIN=0> to suppress
+these reference lines[Default: C<REFLIN=33>]
+
+=item NAME=
+
+Name of the graph in the graphic catalog [Default:
+C<NAME=INFLGLIM>]
+
+=item GOUT=
+
+Name of the graphics catalog
+
+
+=back 4

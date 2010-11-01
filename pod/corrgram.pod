@@ -1,0 +1,88 @@
+=head1 Description
+
+The CORRGRAM macro produces a schematic display of a correlation matrix,
+called a correlogram.  In this display, variables are permuted so that
+``similar'' variables are positioned adjacently, and cells of a
+matrix are shaded or filled to show the correlation value.
+
+=head1 Usage
+
+The CORRGRAM macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %corrgram(data=baseball, var=_numeric_, fill=C E C);
+
+The input dataset may contain raw data (no missing values, yet),
+or a correlation matrix (type='CORR') produced by PROC CORR or
+some other SAS procedure.
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of input data set.  [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+List of variables whose correlations are to be displayed.
+You may use an explicit, blank separated list of variables
+(the case of variable names will be preserved), or any of
+the SAS abbreviations, such as C<X1-X15>, C<height--strength>,
+or C<_NUMERIC_> (variable labels will apprear in upper case).
+
+=item TYPE=
+
+Type of input data: DATA or CORR.  If not specified, the
+program tries to guess, by examining the type attribute
+of the input data set.
+
+=item FILL=
+
+How to fill the cells in the lower triangle, diagonal 
+and the upper triangle.  Should be three characters, chosen from
+C<S=> shade (with color proportional to the correlation), C<E=> empty, 
+C<N=> numeric value, C<C=> circle, or C<B=> bar [Default: C<FILL=S E S>]
+
+=item ORDERBY=
+
+PCs used to order the variables, either one or two integers
+(eigenvector numbers) or empty (C<ORDERBY=>).
+[Default: C<ORDERBY=1 2>]
+
+=item OPTIONS=
+
+One or more options: RINV displays R^{-1} rather than R.
+TRANS transposes the data set, and calculates correlations
+among observations, rather than variables.
+
+=item PARTIAL=
+
+List of one or more variables to be partialed out.
+
+=item COLORS=
+
+Colors for positive and negative values [Default: C<COLORS=BLUE RED>]
+
+=item HLABEL=
+
+Height of variable labels
+
+=item ALABEL=
+
+Angles for variable labels on the vertical and horizontal
+axes.
+
+=item CMIN=
+
+Minimum absolute value for correlation to be shaded.
+
+=item TITLE=
+
+Optional plot title, or C<NONE>, for no title.  Under V7+, the macro
+uses the C<TITLE1> unless C<TITLE=NONE> has been specified.
+
+=back 4
+

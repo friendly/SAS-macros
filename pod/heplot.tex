@@ -1,0 +1,152 @@
+
+% translated by spod2latex from heplot.pod on Mon Nov 13 09:30:54 EST 2006
+% translated by spod2latex from heplot.pod on Fri Sep 29 08:44:34 EDT 2006
+\subsection{The \macro{HEPLOT}: Plot hypothesis and error matrices for a bivariate MANOVA effect }\label{mac:heplot}
+ \index{\macro{heplot}}
+
+The \macro{HEPLOT} plots the covariance ellipses for a hypothesized (H)
+effect and for error (E) for two variables from a MANOVA.  The plot helps
+to show how the means of the groups differ on the two variables
+jointly, in relation to the within-group variation.  The test statistics
+for any MANOVA are essentially saying how 'large' the variation in
+H is, relative to the variation in E, and in how many dimensions.
+The HEPLOT shows a two-dimensional visualization of the answer to this
+question.  An alternative two-dimensional view is provided by the
+\macro{CANPLOT}, which shows the data, variables, and within-group ellipses
+projected into the space of the largest two canonical variables---
+linear combinations of the responses for which the group differences
+are largest.
+
+Typically, you perform a MANOVA analysis with \PROC{GLM}, and save the
+output statistics, including the H and E matrices, using the \texttt{OUTSTAT=}
+option.  This must be supplied to the macro as the value of the
+\texttt{STAT=} parameter.  If you also supply the raw data for the analysis
+via the \texttt{DATA=} parameter, the means for the levels of the \texttt{EFFECT=}
+parameter are also shown on the plot.
+
+Various kinds of plots are possible, determined by the \texttt{M1=} and
+\texttt{M2=} parameters.  The default is \texttt{M1=H} and \texttt{M2=E}.
+If you specify \texttt{M2=I} (identity matrix), then the \mat{H}
+and \mat{E} matrices are transformed to $\mat{H}^* = \mat{e}\mat{H}\mat{e}$ (where
+$\mat{e}=\mat{E}^{-1/2}$), and $\mat{E}^*=\mat{e}\mat{E}\mat{e}=\mat{I}$,
+so the errors become uncorrelated, and the size of $\mat{H}^*$ can be
+judged more simply in relation to a circular $\mat{E}^*=\mat{I}$. For
+multi-factor designs, is it sometimes useful to specify \texttt{M1=H+E},
+so that each factor can be examined in relation to the within-cell
+variation.
+
+\subsubsection*{Usage}
+
+The \macro{HEPLOT} is defined with keyword parameters.  The \texttt{STATS=}
+parameter and either the \texttt{VAR=} or the \texttt{X=} and \texttt{Y=} parameters are required.
+You must also specify the \texttt{EFFECT=} parameter, indicating the H matrix
+to be extracted from the \texttt{STATS=} data set.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:
+
+\begin{listing}
+ proc glm data=dataset outstat=HEstats;
+    model y1 y2  = A B A*B / ss3;
+    manova;
+ %heplot(data=dataset, stat=HEstats, var=y1 y2, effect=A );
+ %heplot(data=dataset, stat=HEstats, var=y1 y2, effect=A*B );
+\end{listing}
+
+\subsubsection*{Parameters}
+\begin{proglist}
+
+\item[STAT=] Name of the \texttt{OUTSTAT=} dataset from \PROC{GLM} containing the
+SSCP matrices for model effects and ERROR, as indicated by
+the \verb|_SOURCE_| variable.
+
+\item[DATA=] Name of the input, raw data dataset (for means)
+
+\item[X=] Name of horizontal variable for the plot
+
+\item[Y=] Name of vertical variable for the plot
+
+\item[VAR=] 2 response variable names: x y.  Instead of specifying \texttt{X=}
+and \texttt{Y=} separately, you can specify the names of two response
+variables with the \texttt{VAR=} parameter.
+
+\item[EFFECT=] Name of the MODEL effect to be displayed for the H matrix.
+This must be one of
+the terms on the right hand side of the MODEL statement used
+in the \PROC{GLM} or \PROC{REG} step, in the same format that this
+efffect is labeled in the \texttt{STAT=} dataset. This must be one of
+the values of the \verb|_SOURCE_| variable contained in the \texttt{STAT=} 
+dataset.
+
+\item[CLASS=] Names of class variables(s), used to find the means for groups
+to be displayed in the plot.  The default value is the value
+specified for EFFECT=, except that '*' characters are changed
+to spaces. Set \texttt{CLASS=} (null) for a quantitative regressor or to
+suppress plotting the means.
+
+\item[EFFLAB=] Optional label (up to 16 characters) for the H effect, annotated near the upper
+corner of the H ellipse
+
+\item[MPLOT=] Matrices to plot. \texttt{MPLOT=1} plots only the H ellipse. \default{MPLOT=1 2}
+
+\item[GPFMT=] The name of a SAS format for levels of the group/effect variable used in labeling
+group means.
+
+\item[ALPHA=] Non-coverage proportion for the ellipses. \default{ALPHA=0.32}
+
+\item[PVALUE=] Coverage proportion, 1-alpha. \default{PVALUE=0.68}
+
+\item[SS=] Type of SS to extract from the \texttt{STAT=} dataset. The possibilities
+are SS1-SS4, or CONTRAST (but the SSn option on the MODEL statement in
+\PROC{GLM} will limit the types of SSCP matrices produced).
+This is the value of the \verb|_TYPE_| variable in the \texttt{STAT=} dataset.
+\default{SS=SS3}
+
+\item[WHERE=] To subset both the \texttt{STAT=} and \texttt{DATA=} datasets
+
+\item[ANNO=] Name of an input annotate data set, used to add additional
+information to the plot of y * x.
+
+\item[ADD=] Specify \texttt{ADD=CANVEC }to add canonical vectors to the plot. The
+\PROC{GLM} step must have included the option CANONICAL on the
+MANOVA statement.
+
+\item[M1=] First matrix: either H or H+E. \default{M1=H}
+
+\item[M2=] Second matrix either E or I. \default{M2=E}
+
+\item[SCALE=] Scale factors for M1 and M2.  This can be a pair of numeric
+values or expressions using any of the scalar values calculated
+in the \PROC{IML} step.  The default scaling [\texttt{SCALE=1 1}]
+results in a plot of E/dfe and H/dfe, where the size 
+and orientation of E shows error variation on the data scale,
+and H is scaled conformably, allowing the group means to be
+shown on the same scale. The \emph{natural scaling} of H and E
+as generalized mean squares would be H/dfh and E/dfe, which is
+obtained using \texttt{SCALE=dfe/dfh 1}, Equivalently, the E matrix can
+be shrunk by the same factor by specifying \texttt{SCALE=1 dfh/dfe}.
+
+\item[VAXIS=] Name of an AXIS statement for the y variable
+
+\item[HAXIS=] Name of an AXIS statement for the x variable
+
+\item[LEGEND=] Name of a LEGEND statement.  If not specified, a legend for
+the M1 annd M2 matrices is drawn beneath the plot. Specify LEGEND=NONE
+to suppress the legend.
+
+\item[COLORS=] Colors for the H and E ellipses. \default{COLORS=BLACK RED}
+
+\item[LINES=] Line styles for the H and E ellipses. \default{LINES=1 21}
+
+\item[WIDTH=] Line widths for the H and E ellipses. \default{WIDTH=3 2}
+
+\item[HTEXT=] Height of text in the plot.  If not specified, the global
+graphics option HTEXT controls this.
+
+\item[OUT=] Name of the output dataset containing the points on the
+H and E ellipses. \default{OUT=OUT}
+
+\item[NAME=] Name of the graphic catalog entry. \default{NAME=HEPLOT}
+
+\item[GOUT=] Name of the graphic catalog. \default{GOUT=GSEG}
+
+\end{proglist}

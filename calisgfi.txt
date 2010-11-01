@@ -1,0 +1,37 @@
+_NAME_   R? P? type  Label    ref
+
+ N        1 0 a0 Sample size
+ FIT      1 1 a1 Fit Function                               
+ GFI      1 1 a1 Goodness of Fit Index                
+ AGFI     1 1 ap GFI Adjusted for Degrees of Freedom 
+ RMR      1 1 a1 Root Mean Square Residual            
+ PGFI     1 1 ap Parsimonious GFI                      Mulaik, 1989            
+ NPARM    1 0 a0 Number of parameters                                   
+ DF       1 1 a1 Chi-Square DF                              
+ N_ACT    1 0 a0 Number of active constraints                               
+ CHISQUAR 1 1 a1 Chi-Square           
+ P_CHISQ  1 1 a1 Pr > Chi-Square           
+ CHISQNUL 1 1 a0 Null Model Chi-Square   
+ .        0 1 a0 Null Model Chi-Square DF   
+ RMSEAEST 1 1 ap RMS Error of Approx Estimate (RMSEA)  Steigler & Lind, 1980              
+ RMSEALOB 1 1 ap RMSEA 90% Lower Confidence Limit      Browne & Du Toit 1992
+ RMSEAUPB 1 1 ap RMSEA 90% Upper Confidence Limit           
+ P_CLOSFT 1 1 ap Probability of Close Fit              Browne & Cudeck, 1993  
+ ECVI_EST 1 1 ap Expected Cross Validation Index (ECVI)                             
+ ECVI_LOB 1 1 ap ECVI 90% Lower Confidence Limit           
+ ECVI_UPB 1 1 ap ECVI 90% Upper Confidence Limit
+ COMPFITI 1 1 i3 Comparative Fit Index                 Bentler, 1989   
+ ADJCHISQ 1 1 a1 Adjusted Chi-square                   Browne, 1982
+ P_ACHISQ 1 0 a1 Pr > Adjusted Chi-square
+ RLSCHISQ 1 1 a1 Normal Theory Reweighted LS Chi-Square
+ AIC      1 1 ap Akaike's Information Criterion        Akaike, 1987
+ CAIC     1 1 ap Consistent AIC                        Bozdogan, 1987
+ SBC      1 1 ap Schwarz's Bayesian Criterion          Schwarz, 1978  
+ CENTRALI 1 1 ap Centrality Index                      McDonald, 1989   
+ BB_NONOR 1 1 i2 Non-normed Index (Rho)               Bentler & Bonett, 1980             
+ BB_NORMD 1 1 i1 Normed Fit Index (NFI)                Bentler & Bonett, 1980
+ PARSIMON 1 1 i1 Parsimonious NFI                  James, Mulaik, & Brett, 1982
+ ZTESTWH  1 1 a1 Z-Test for Chi-Square                 Wilson & Hilferty, 1931      
+ BOL_RHO1 1 1 i1 Normed Index Rho1                     Bollen, 1986   
+ BOL_DEL2 1 1 i2 Non-normed Index Delta2               Bollen, 1988  
+ CNHOELT  1 1 a1 Critical N                            Hoelter, 1983   

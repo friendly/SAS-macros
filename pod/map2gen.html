@@ -1,0 +1,211 @@
+<html> 
+<head>
+	<title>map2gen - Convert a SAS/Graph map to ArcView Generate format</title>
+	<link rev=made href="mailto:friendly@yorku.ca">
+	<link rel="stylesheet" href="macdoc.css" type="text/css">
+	<!-- Author: Michael Friendly York University  -->
+<!-- BeginInsertHead -->
+<script type="text/javascript" src="/SCS/menu/JSCookMenu.js"></script>
+<link rel="stylesheet" href="/SCS/menu/ThemeMacro/theme.css" type="text/css" />
+<script type="text/javascript" src="/SCS/menu/ThemeMacro/theme.js"></script>
+<script language="javascript" src="macmenu2.js"></script>
+<!-- EndInsertHead -->
+
+</head>
+<body>
+<!-- BeginInsertBody -->
+<div id="Panel">
+<script type="text/javascript">
+cmDraw ('Panel', macmenu, 'hbr', cmThemeMacro, 'ThemeMacro');
+</script>
+</div>
+<!-- EndInsertBody -->
+
+<!-- pnuts -->
+<CENTER>
+<TABLE width="100%">
+<TR>
+<td class="linksasL"> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/map2gen.sas">map2gen</a></td>
+<td class="title">Convert a SAS/Graph map to ArcView Generate format</td>
+<td class="linksasR"> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/map2gen.sas">map2gen</a></td>
+</TR>
+</TABLE>
+</CENTER>
+<h1>SAS Macro Programs: <tt>map2gen</tt></h1>
+
+$Version: 1.0 (12 Jan 2006 15:34:08)<br>
+<b>
+<a href="../friendly.html">Michael Friendly</a><br>
+York University
+</b><br>
+<script language="JavaScript">
+<!--
+	document.write("Updated " + document.lastModified);
+// -->
+</script>
+<hr>
+
+<h2>The <tt>map2gen</tt> macro (<A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/map2gen.sas">
+<IMG  WIDTH=20 HEIGHT=20 SRC="../icons/download.gif" alt="[download]" border=0> get map2gen.sas</A>)</h2>
+<h3>Convert a SAS/Graph map to ArcView Generate format</h3>
+
+<p>The <tt>MAP2GEN</tt> macro reads a SAS/Graph map data set and writes the
+polygons in ArcView Generate format. This is a commonly used input
+format for various cartographic programs, but the details often
+matter.</p>
+
+<H3><a name="method">Method</a></H3>
+<p>Generate map files can be in either 'line' format (a simple list of
+line segments, usually forming polygons for geographic regions),
+or 'polygon' format (similar, except the ID line for each region
+also contains the (x,y) coordinates of the polygon center and the
+region label.</p>
+<p>Line format files can be written as shown below, from any SAS/Graph
+map.  Some programs that read such files require that the polygons
+be closed, so that the last X,Y pair is the same as the first X,Y
+pair; use <code>CLOSE=1 </code>if so.</p>
+<pre>
+ id1
+ x-coord,y-coord
+ x-coord,y-coord
+ ...
+ end
+ id2
+ x-coord,y-coord
+ x-coord,y-coord
+ ...
+ end
+ end</pre>
+<p>Polygon format files are similar, except that the first line for each
+region also contains the X,Y coordinates of a center point in the polygon
+used for labeling.  In this case, a separate MAP2= data set is required,
+and is merged with the <a href="#item_map"><code>MAP=</code></a> data set.</p>
+<pre>
+ id1,x-coord-label,y-coord-label,idlabel
+ x-coord,y-coord
+ x-coord,y-coord
+ ...
+ end
+ id2,x-coord-label,y-coord-label,idlabel
+ x-coord,y-coord
+ ...
+ end
+ end</pre>
+
+
+<H2><a name="usage">Usage</a></H2>
+<p>The <tt>MAP2GEN</tt> macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:</p>
+<pre>
+  %map2gen(map=maps.us);</pre>
+
+<H3><a name="parameters">Parameters</a></H3>
+<dl>
+<dt><a name="item_map">MAP=</a><br />
+</dt>
+<dd>
+The (libname.)name of the map to be converted
+</dd>
+
+<dt><a name="item_map2">MAP2=</a><br />
+</dt>
+<dd>
+Data set containing polygon centers and ID labels when
+             <code>TYPE=POLY.  </code>
+</dd>
+
+<dt><a name="item_id">ID=</a><br />
+</dt>
+<dd>
+The name of an observation ID variable [Default: <code>ID=ID</code>]
+</dd>
+
+<dt><a name="item_x">X=</a><br />
+</dt>
+<dd>
+Name of X (longitude) variable in MAP and MAP2 [Default: <code>X=X</code>]
+</dd>
+
+<dt><a name="item_y">Y=</a><br />
+</dt>
+<dd>
+Name of Y (latitude) variable in MAP and MAP2 [Default: <code>Y=Y</code>]
+</dd>
+
+<dt><a name="item_idlabel">IDLABEL=</a><br />
+</dt>
+<dd>
+Label variable for region ID in the MAP2 data set, typically
+             the name of the region.
+</dd>
+
+<dt><a name="item_dlm">DLM=</a><br />
+</dt>
+<dd>
+Field delimiter used in writing output records. Use 
+             DLM=%STR(,) for comma delimited. [Default: DLM=%STR( )]
+</dd>
+
+<dt><a name="item_pre">PRE=</a><br />
+</dt>
+<dd>
+Prefix string for each x,y line [Default: PRE=%STR()]
+</dd>
+
+<dt><a name="item_close">CLOSE=</a><br />
+</dt>
+<dd>
+Close each polygon?  A non-zero value causes the first
+             X,Y pair to be repeated at the end of each polygon.
+             [Default: <code>CLOSE=1</code>]
+</dd>
+
+<dt><a name="item_type">TYPE=</a><br />
+</dt>
+<dd>
+Line or polygon style? [Default: <code>TYPE=LINE</code>]
+</dd>
+
+<dt><a name="item_xyformat">XYFORMAT=</a><br />
+</dt>
+<dd>
+Format for writing X,Y values [Default: <code>XYFORMAT=BEST9.</code>]
+</dd>
+
+<dt><a name="item_outfile">OUTFILE=</a><br />
+</dt>
+<dd>
+The name of the output file. You can specify a
+              file path, or the output will be written to the
+           working directory. [Default: OUTFILE=&amp;MAP.GEN]
+</dd>
+</dl>
+
+
+<H2><a name="example">Example</a></H2>
+<pre>
+ %map2gen(
+   map=mymaps.gfrance,
+   map2=mymaps.gfrance2,
+   id=dept,
+   idlabel=department,
+   type=poly
+   );</pre>
+<p>The output is written to GFRANCE.GEN.</p>      
+<h3>Example</h3>
+<pre>
+%include macros(map2gen);        *-- or include in an autocall library;
+
+%map2gen();
+</pre>
+
+<h3>See also</h3>
+<a href="/SCS/sasmac/meanplot.html">meanplot</a> Plot means for factorial designs<br>
+<a href="/SCS/vcd/panels.html">panels</a> Display a set of plots in rectangular panels<br>
+<a href="/SCS/sasmac/stat2dat.html">stat2dat</a> Convert summary dataset to raw data equivalent<br>
+<hr>
+<!-- pnuts -->
+
+</body>
+</html>

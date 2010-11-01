@@ -1,0 +1,105 @@
+=head1 Description
+
+The GOODFIT macro carries out Chi-square goodness-of-fit tests for
+discrete distributions.  These include the uniform, binomial,
+Poisson, negative binomial, geometric, and logarithmic series
+distributions, as well as any discrete (multinomial) distribution
+whose probabilities you can specify.  Both the Pearson chi-square
+and likelihood-ratio chi-square are computed.
+
+The data may consist either of individual observations on a single
+variable, or a grouped frequency distribution.  
+
+The parameter(s) of the distribution may be specified as constants
+or may be estimated from the data.
+
+=head1 Usage
+
+The GOODFIT macro is called with keyword parameters.
+The arguments may be listed within parentheses in any order, separated by commas. For example: 
+
+  %goodfit(var=k, freq=freq, dist=binomial);
+
+You must specify a C<VAR=> analysis variable and the keyword for the
+distribution to be fit with the C<DIST=> parameter.  All other parameters
+are optional.
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Specifies the name of the input data set to be analyzed.
+[Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Specifies the name of the variable to be analyzed, the basic
+count variable.
+
+=item FREQ=
+
+Specifies the name of a frequency variable for a grouped data
+set.  If no C<FREQ=> variable is specified, the program assumes
+the data set is ungrouped, and calculates frequencies using
+PROC FREQ.  In this case you can specify a SAS format with the
+C<FORMAT=> parameter to control the way the observations are
+grouped.
+
+=item DIST=
+
+Specifies the name of the discrete distribution to be fit.
+The allowable values are:
+UNIFORM, DISCRETE, BINOMIAL, POISSON, NEGBIN, GEOMETRIC,
+LOGSERIES.
+
+=item PARM=
+
+Specifies the value of parameter(s) for the distribution being
+fit.  If C<PARM=> is not specified, the parameter(s) are estimated
+using maximum likelihood or method of moment estimators.
+
+* item SUMAT=
+
+For a distribution where frequencies for values of the C<VAR=>
+variable = I<k> have been lumped into a single category, specify
+C<SUMAT=>I<k> causes the macro to sum the probabilities and fitted
+frequencies for all values >= I<k>.
+[Default: C<SUMAT=10000>]
+
+
+=item FORMAT=
+
+The name of a SAS format used when no C<FREQ=> variable has been
+specified.
+
+=item OUT=
+
+Name of the output data set containing the grouped frequency
+distribution, estimated fitted frequencies (EXP) and the values
+of the Pearson (CHI) and deviance (DEV) residuals.
+[Default: C<OUT=FIT>]
+
+=item OUTSTAT=
+
+Name of the output data set containing goodness-of-fit
+statistics.
+[Default: C<OUTSTAT=STATS>]
+
+=back 4
+
+=head2 See also
+
+=over 4
+
+=item L<rootgram>
+
+=item L<distplot>
+
+=item L<poisplot>
+
+=item L<ordplot>
+
+=back 4
+

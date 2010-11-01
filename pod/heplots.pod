@@ -1,0 +1,222 @@
+=head1 Description
+
+The HEPLOTS macro plots the covariance ellipses for one or more
+hypothesized (H) effects and for error (E) for two variables from a
+multivariate linear model (MLM).  For a MANOVA effect, the plot helps to
+show how the means of the groups differ on the two variables jointly,
+in relation to the within-group variation. 
+
+The original HEPLOT macro does this for a single H effect. The HEPLOTS
+macro also provides a scaling of the H ellipses (C<SIZE=EVIDENCE>) so that
+an H ellipse will protrude beyond the E ellipse, somewhere in the full
+p-variable space (not necessarily for the chosen C<X=> and C<Y=> variables),
+if and only if the Roy greatest-root test is significant at the specified
+C<ALPHA=> level.
+
+One alternative two-dimensional view is provided by the
+CANPLOT macro, which shows the data, variables, and within-group ellipses
+projected into the space of the largest two canonical variables---
+linear combinations of the responses for which the group differences
+are largest. The HECAN macro displays the H and E ellipses in canonical
+space.
+
+Typically, you perform a MANOVA analysis with PROC GLM, and save the
+output statistics, including the H and E matrices, using the C<OUTSTAT=>
+option.  This must be supplied to the macro as the value of the
+C<STAT=> parameter.  If you also supply the raw data for the analysis
+via the C<DATA=> parameter, the means for the levels of the C<EFFECT=>
+parameter are also shown on the plot.
+
+
+
+=head1 Usage
+
+The HEPLOT macro is defined with keyword parameters.  The C<STATS=>
+parameter and either the C<VAR=> or the C<X=> and C<Y=> parameters are required.
+You must also specify the C<EFFECTS=> parameter, indicating the H matrices
+to be extracted from the C<STATS=> data set.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  proc glm data=dataset outstat=HEstats;
+     model y1 y2  = A B A*B / ss3;
+     manova;
+  %heplots(data=dataset, stat=HEstats, var=y1 y2, effects=A B A*B );
+
+=head2 Parameters
+
+=over 4
+
+=item STAT=
+
+Name of the C<OUTSTAT=> dataset from proc glm containing the
+             SSCP matrices for model effects and ERROR, as indicated by
+          the _SOURCE_ variable.
+
+=item DATA=
+
+Name of the input, raw data dataset (for means)
+
+=item X=
+
+Name of the horizontal variable for the plot
+
+=item Y=
+
+Name of the vertical variable for the plot
+
+=item VAR=
+
+2 response variable names: x y.  Instead of specifying C<X=>
+             and C<Y=> separately, you can specify the names of two response
+          variables with the C<VAR=> parameter.
+
+=item EFFECT=
+
+Name(s) of the MODEL effect(s) to be displayed as H matrices.
+             This must be a blank-separated list of one or more
+             terms on the right hand side of the MODEL statement used
+          in the PROC GLM or PROC REG step, in the same format that this
+          efffect is labeled in the C<STAT=> dataset. These must be among
+          the values of the _SOURCE_ variable contained in the C<STAT=> 
+          dataset.
+
+
+=item EFFECTS=
+
+Synonym for C<EFFECT=>
+
+=item CLASS=
+
+Names of class variables(s) [Default: CLASS=&EFFECT]
+
+=item EFFLAB=
+
+Label(s) (up to 16 characters) for the H effects, 
+             annotated near the upper corner of the H ellipses. 
+          [Default: EFFLAB=&EFFECT]
+
+=item EFFLOC=
+
+Location for the effect label: MAX (above) or MIN (below). Can
+             be a list corresponding to the effects. [Default: C<EFFLOC=MAX>]
+
+=item MPLOT=
+
+Matrices to plot, a list of integers from 1 to the number of
+             effects
+
+=item GPFMT=
+
+The name of a SAS format for levels of the group/effect variable used
+             in labeling group means.
+
+=item SIZE=
+
+How to scale H ellipse(s) relative to E. If C<SIZE=EVIDENCE >or C<SIZE=SIGNIF>,
+             the H ellipses are scaled so a significant hypothesis ellipse extends outside the 
+             E ellipse. If C<SIZE=EFFECT >the H ellipses are plotted on the same scale as the
+          E ellipse. [Default: C<SIZE=EVIDENCE>]
+
+=item ALPHA=
+
+Significance level for Roy greatest-root test, if C<SIZE=EVIDENCE. >[Default: C<ALPHA=0.05>]
+
+=item LEVEL=
+
+Coverage proportion for the E ellipse for normally distributed errors. [Default: C<LEVEL=0.68>]
+
+=item SS=
+
+Type of SS to extract from the C<STAT=> dataset [Default: C<SS=SS3>]
+
+=item WHERE=
+
+To subset the C<DATA=> dataset
+
+=item ANNO=
+
+Name of an input annotate data set, used to add additional
+             information to the plot of y * x.
+
+=item NP=
+
+Number of points on each ellipse [Default: C<NP=40>]
+
+=item VAXIS=
+
+Name of an axis statement for the y variable
+
+=item HAXIS=
+
+Name of an axis statement for the x variable
+
+=item LEGEND=
+
+Name of a LEGEND statement to identify the ellipses.  Rarely needed,
+             because the ellipses are normally labeled via the C<EFFLAB=> parameter.
+          [Default: C<LEGEND=NONE>]
+
+=item COLORS=
+
+List of colors for the H and E ellipses.  The last value is used for the
+             E ellipse; all but the last value are repeated as necessary for the
+          hypothesized C<EFFECT=> ellipses. [Default: C<COLORS=BLACK RED>]
+
+=item LINES=
+
+Line styles for the H and E ellipses.  The last value is used for the
+             E ellipse; all but the last value are repeated as necessary for the
+          hypothesized C<EFFECT=> ellipses. [Default: C<LINES=1 21>]
+
+=item WIDTH=
+
+Line widths for the H and E ellipses.  The last value is used for the
+             E ellipse; all but the last value are repeated as necessary for the
+          hypothesized C<EFFECT=> ellipses. [Default: C<WIDTH=3 2>]
+
+=item HTEXT=
+
+Height of text labels
+
+=item HSYM=
+
+Height of point symbols (means)
+
+=item PRINT=
+
+
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=HEOUT>]
+
+=item OUTEFF=
+
+Name of output dataset describing effects [Default: C<OUTEFF=OUTEFF>]
+
+=item NAME=
+
+The name of the graph in the graphic catalog [Default: C<NAME=HEPLOT>]
+
+=item GOUT=
+
+The name of the graphics catalog [Default: C<GOUT=GSEG>]
+
+
+=back 4
+
+=head1 References
+
+Friendly, M. (2006).
+  Data Ellipses, HE Plots and Reduced-Rank Displays for Multivariate Linear 
+  Models: SAS Software and Examples. 
+  I<Journal of Statistical Software>, 17(6), 1-42.
+  L<http://www.jstatsoft.org/v17/i06/>
+
+Friendly, M. (2007).
+  HE plots for Multivariate General Linear Models.
+  I<Journal of Computational and Graphical Statistics>, 16, in press.
+  L<http://www.math.yorku.ca/SCS/Papers/heplots.pdf>
+
+

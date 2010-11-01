@@ -1,0 +1,120 @@
+=head1 Description
+
+The POWER2X2 macro computes the power of a test comparing proportions
+from two, equal-sized, independent samples.  Power is given for
+various sizes of the total sample, or required sample size is given
+for various power values, allowing you to pick the sample size that
+achieves the desired power.                                                                      
+
+=head1 Usage
+
+The POWER2X2 macro takes 9 keyword arguments.  You must supply the
+C<DIFF=> parameter.  By default the macro computes power for a range
+of sample sizes (given by C<NMIN=> and C<NMAX=>).  Alternatively, you may
+specify a range of power values (given by C<POWER=>) for which the
+required sample size is calculated.
+
+=head2 Parameters
+
+=over 4
+
+=item P1=   
+
+Specifies an estimate of the "success" rate in one
+group, the baseline group. [Default: P1=.50]
+
+=item DIFF=
+
+Specifies the difference in the proportions that you 
+want to detect.  This is the specification of the 
+alternative hypothesis at which power is computed.
+The difference MUST be specified; there is NO default.
+You may specify a list of values separated by commas, a
+range of the form C<x TO y BY z>, or a combination of these.
+However, you must surround the C<DIFF=> value with
+C<%STR()> if any commas appear in it.  For example,
+
+	diff=.10 to .30 by .05
+	diff=%str(.10, .13, .20)
+
+=item ALPHA=
+
+Specifies the significance level or size of the test. 
+It is a decimal value less that 1.  
+For example, C<ALPHA=.05> sets the probability of a Type
+1 error at 0.05.  You may specify a single value, or
+a list of values separated by commas, or a range of the
+form C<x TO y by z>.  [Default: C<ALPHA=.05>]
+
+=item POWER=
+
+Values of power for sample size calculation.
+You may specify a list of values separated by commas, a
+range of the form C<x TO y BY z>, or a combination of these,
+as in a C<DO> statement.
+However, you must surround the C<POWER=> value with
+C<%STR()> if any commas appear in it.
+
+=item NMIN=    
+
+Specifies the minimum total sample size at which power 
+will be computed.  [Default: C<NMIN=10>]
+
+=item NMAX=200   
+
+Specifies the minimum total sample size at which power
+will be computed.  [Default: C<NMAX=200>]
+To get power for a single total sample size, set NMIN and
+NMAX to half of the total sample size.
+
+=item PLOT=
+
+is a specification for plotting the results, in the form
+C<Y * X> or C<Y * X = Z>, where X, Y, and Z may be any of the
+variables N, DIFF, P2, POWER or OR.  No plots are produced 
+if C<PLOT=>  is blank.  [Default: C<PLOT=POWER >* C<N=DIFF>]
+
+=item PLOTBY=
+
+is another variable in the C<OUT=> data set.  Separate plots are
+drawn for each level of the C<PLOTBY=> variable.
+
+=item OUT=
+
+The name of the output data set. [Default: C<OUT=_POWER_>]
+
+
+=back 4
+
+=head1 Example
+
+     %power2x2( p1=.6,  diff=.10 to .20 by .05,  nmin=50);
+
+With the settings above, the expected baseline success rate is 60%.
+Power for detecting a difference of 10-20% in the two proportions will
+be computed for a .05 level test and for sample sizes ranging from
+50 to 200.
+
+=head1 Details
+
+Hypotheses in the test are:                                          
+
+       H0: p1 = p2                                                       
+       Ha: p1 ne p2                                                      
+
+where p1 and p2 are the success probabilities in the two
+populations.  The Pearson chi-square statistic tests the null
+hypothesis (H0) against the alternative hypothesis (Ha) and is
+available in the FREQ procedure when the CHISQ option is specified
+on the TABLES statement.
+
+The power is the probability of rejecting H0 and is a function of
+the true difference in proportions.  Power is often computed
+assuming many different settings of the true proportions.  The type
+2 error rate (denoted beta) is the probability of accepting H0 for
+some non-zero true difference and is equal to 1-power.  The power
+and beta are computed for a range of total sample sizes at a
+particular alternative hypothesis that you specify.  It is assumed
+that the total sample size will be split equally between the two
+samples.
+

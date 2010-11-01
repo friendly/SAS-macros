@@ -1,0 +1,85 @@
+%towide
+----------------------------------------------------------------------
+Description
+
+  The %towide macro will reshape a data set from long format to wide
+  format. 
+
+Syntax
+
+  %towide(longdata,widedata,id,suffix,suffixlo,suffixhi,vars,
+          types=,lengths=,numprint=,quiet=,sorted=)
+
+  longdata - name of input data file that is in long form
+  widedata - name of output data file that will be in wide form
+  id       - variable that uniquely identifies the wide records
+  suffix   - variable name for the suffix of the wide variables
+  suffixlo - the lowest value of the suffix variable
+  suffixhi - the highest value of the suffix variable
+  vars     - a list of the base names to transpose
+
+  optional parameters
+    types    - (default, all numeric) 
+               A list of the types of the long variables separated by spaces.
+               N for numeric and C for character.  
+    lengths  - (default 8 for each var)
+               a list of the lengths of the long variables separated by spaces.
+    numprint - (default 10) 
+               Number of wide records to print for verification
+    quiet    - suppress PROC PRINT and PROC MEANS for verification
+               NO (default) - display proc print and proc means
+               YES - suppress display of proc print and proc means 
+    sorted   - whether the input (long) data file is already sorted by id
+               NO (default) - assumes longdata is not sorted and needs to
+                              be sorted by id
+               YES - assumes longdata is already sorted and does not sort
+                     it again ;
+
+
+Examples
+
+  data long1; 
+    input famid year faminc ; 
+  cards; 
+  1 96 40000 
+  1 97 40500 
+  1 98 41000 
+  2 96 45000 
+  2 97 45400 
+  2 98 45800 
+  3 96 75000 
+  3 97 76000 
+  3 98 77000 
+  ; 
+  run; 
+  %towide(long1,wide1,famid,year,96,98,faminc); 
+
+
+  The data set in wide format will look like this:
+
+OBS    FAMID    FAMINC96    FAMINC97    FAMINC98 
+ 1       1        40000       40500       41000 
+ 2       2        45000       45400       45800 
+ 3       3        75000       76000       77000 
+
+Authors
+
+  Michael Mitchell
+  mnm@ucla.edu
+  UCLA Academic Technology Services
+  Statistical Consulting Group
+
+Also See
+
+  See a complete example in
+    http://www.ats.ucla.edu/stat/sas/modules/towide.htm
+  Also see the help from 
+    %net_help(tolong, http://www.ats.ucla.edu/stat/sas/macros)
+  Also see the macro itself from 
+    http://www.ats.ucla.edu/stat/sas/macros/towide.sas.txt
+
+
+
+
+
+

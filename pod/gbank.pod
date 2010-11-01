@@ -1,0 +1,114 @@
+=head1 Description
+
+Cleveland (1988) introduced the idea of the `shape parameter' of a
+bivariate graph and showed that often patterns, trends and
+differences can be most easily seen when the slopes of successive
+line segments is about 45 degrees on average.  Setting the relative
+height/width ratio of a graph on this basis is called 'banking to
+45 degrees.'
+
+The GBANK macro calculates *either* the desired height or width of
+a plot so that the average slope of successive line segments is
+approximately 45 degrees, facilitating perception of trends in 
+the data.  The results are returned in an output data set, global
+macro variables HSIZE and VSIZE are set, and a GOPTIONS statement
+of the form GOPTIONS HSIZE=&HSIZE VSIZE=&VSIZE is executed.
+
+
+=head2 Method
+
+Calculate the successive slopes in a data step and use PROC SUMMARY.
+
+=head2 Warning
+
+The graphic device parameters XMAX and YMAX set the maximum values
+for HSIZE and VSIZE, and these differ widely across SAS/Graph devices.
+If a calculated value is outside the allowed maximum for the current 
+GDEVICE,  SAS/Graph will reset it to the maximum. 
+
+=head1 Usage
+
+The GBANK macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %gbank(data=sunspot, y=sunspots, x=year, height=15, gunit=pt);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item Y=
+
+Vertical variable for the plot [Default: C<Y=Y>]
+
+=item X=
+
+Horizontal variable for the plot [Default: C<X=X>]
+
+=item FUNCTION=
+
+Function of the absolute slope to calculate: MEDIAN or MEAN
+[Default: C<FUNCTION=MEDIAN>]
+
+=item HEIGHT=
+
+Desired graph height; the corresponding width is calculated.
+             You should set a value for either C<HEIGHT=> or WIDTH=,
+          but not both. Specifying C<HEIGHT=AUTO >is the same a specifying
+          a null (empty) value.
+
+=item WIDTH=
+
+Desired graph width; the corresponding height is calculated.
+
+=item GUNIT=
+
+Units for C<HEIGHT=> and C<WIDTH=>. T>ypical values are C<GUNIT=IN>,
+             C<GUNIT=CM >and C<GUNIT=PT> (for pixel-based drivers) 
+			 [Default: C<GUNIT=IN>]
+
+=item OUT=
+
+The name of the output data set. This contains the variables
+XMIN, XMAX, YMIN, YMAX and MSLOPE [Default: C<OUT=_>bank_]
+
+
+
+=back 4
+
+=head1 Examples
+
+ %include data(sunspots);
+
+ proc summary data=sunspots nway;
+    class year;
+    var sunspots;
+    output out=sunspot mean=sunspots;
+
+ *-- standard plot;
+ goptions hsize=4in vsize=4in;
+
+ proc gplot data=sunspot;
+    plot sunspots * year / vaxis=axis1 haxis=axis2;
+    symbol1 v=none i=join;
+    axis1 label=(a=90);
+    axis2 order=(1750 to 2000 by 50);
+    run;
+
+ *-- banked plot, width=400 pt;
+ %gbank(data=sunspot, y=sunspots, x=year, width=400, height=AUTO, gunit=pt);
+ proc gplot data=sunspot;
+    plot sunspots * year / vaxis=axis1  haxis=axis2;
+    symbol1 v=none i=join;
+    axis1 label=none value=none;
+    axis2 order=(1750 to 2000 by 50);
+    run;
+
+
+
+

@@ -1,0 +1,79 @@
+=head1 Description
+
+The RUG macro creates an annotate data set to draw 'rug lines'
+along an axis in a plot indicating the univariate distribution
+of a variable.
+
+=head1 Usage
+
+The RUG macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %rug(data=foo, var=X1, at=0.05, out=rug1);
+  proc gplot data=foo;
+     plot Y * X1 / anno=rug1 ... ;
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Name of the variable for rug plot
+
+=item BY=
+
+Grouping variable: if specified, rugs are produced for each
+             level of the C<BY=> variable
+
+=item CLASS=
+
+Synonym for C<BY=>
+
+=item ON=
+
+Axis on which to display the VAR values [Default: C<ON=X>]
+
+=item AT=
+
+Location of bottom rug lines on axis, in percent coordinates.
+            [Default: C<AT=0.5>]
+
+=item HT=
+
+Height of rug lines, in percent coordinates. [Default: C<HT=2>]
+
+=item COLOR=
+
+Color(s) of rug lines.  A different color is used for each
+             level of the C<CLASS=> variable. [Default: C<COLOR=BLACK BLUE RED GREEN>]
+
+=item JITTER=
+
+Amount of random jitter applied to the C<VAR=> values.  This is
+             useful when the C<VAR=> values are discrete, and would otherwise
+          overplot. [Default: C<JITTER=0>]
+
+=item COPY=
+
+The names of any variables to be copied to output dataset
+
+=item IN=
+
+The name of an optional input annotate data set.  If
+             specified, the C<IN=> data set is concatenated with the
+          C<OUT=> data set.
+
+=item OUT=
+
+Name for output data set [Default: C<OUT=_RUG_>]
+
+
+
+=back 4
+

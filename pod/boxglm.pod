@@ -1,0 +1,119 @@
+=head1 Description
+
+The BOXGLM macro computes the maximum likelihood power transformation
+(or folded-power transformation) of the response variable in a general
+linear model with zero or more predictors.  It produces a variety of plots,
+including a display of the maximum likelihood solution, t-values for
+effects in the model, and an influence plot of the observations in
+determining the power.  The optimal transformation of the response
+variable is returned in an output dataset.
+
+If the response variable is bounded on a closed interval, [0, b],
+the C<FOLD=> parameter may be used to obtain analogous folded-power
+transformations.  For example, use C<FOLD=100 >when the response
+variable is a percentage on the interval [0, 100].
+
+=head2 Method
+
+The program uses transforms the response to all powers from
+the C<LOPOWER=> value to the C<HIPOWER=> value, and fits a GLM
+for each, extracting values to an output dataset from
+which the plots are drawn.
+
+
+=head1 Usage
+
+The BOXGLM macro is defined with keyword parameters.  The C<RESP=>
+and C<MODEL=> parameters are required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %boxglm(data=duncan, resp=prestige, model=income educ, id=job);
+
+=head2 Parameters
+
+=over 4
+
+=item RESP=
+
+Name of the response variable for analysis
+
+=item MODEL=
+
+The independent variables in the model, i.e., the 
+             terms on the right side of the = sign in the MODEL statement 
+             for PROC GLM.  The C<MODEL=> argument should be spelled
+             out completely, rather than using the abbreviated 'bar'
+             notation.
+
+=item CLASS=
+
+A blank-separated list of the C<MODEL=> variables which are classification
+             factors, rather than continuous variables.
+
+=item ID=
+
+Name of an ID variable for observations used as labels in
+             the INFL plot.
+
+=item DATA=
+
+The name of the data set holding the response and predictor
+             variables.  [Default: C<DATA=_LAST_>]
+
+=item OUT=
+
+Output dataset with transformed resp. Contains all original
+             variables, with the transformed response replacing the 
+             original variable. [Default: C<OUT=_DATA_>]
+
+=item OUTPLOT=
+
+Output dataset for plot of powers Contains _RMSE_, and 
+             t-values for each effect in the model, with one observation
+             for each power value tried. [Default: C<OUTPLOT=_PLOT_>]
+
+=item PPLOT=
+
+Printer plots: One or more of RMSE, LOGL, EFFECT, and INFL
+             [Default: C<PPLOT=NONE>]
+
+=item GPLOT=
+
+Graphic plots: One or more of RMSE, LOGL, EFFECT, and INFL 
+             [Default: C<GPLOT=RMSE EFFECT INFL>]
+
+=item ADD=
+
+Additive constant for response, used to avoid problems when
+             the response can be negative or zero.
+
+=item FOLD=
+
+Upper bound on the response when the response
+             is bounded above and below.. 
+          If FOLD>0 is specified, folded power transformations 
+          are computed. E.g., for a response which is a proportion, 
+          specify C<FOLD=1>; for a percentage, specify C<FOLD=100.>
+          [Default: C<FOLD=0>]
+
+=item LOPOWER=
+
+Low value for power [Default: LOPOWER=-2]
+
+=item HIPOWER=
+
+High value for power [Default: C<HIPOWER=2>]
+
+=item NPOWER=
+
+Number of power values in interval [Default: C<NPOWER=21>]
+
+=item CONF=
+
+Confidence coefficient of CI on power [Default: C<CONF=0.95>]
+
+
+
+=back 4
+

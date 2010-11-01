@@ -1,0 +1,67 @@
+=head1 Description
+
+The GDISPLA macro is used to switch graphics display off or on, in
+a device-independent way.  
+
+It allows for the fact that for direct
+output to the display device, the required GOPTIONS are C<NODISPLAY>
+or C<DISPLAY>, whereas for output to a GSF, GIF, or EPS file, the options
+are C<GSFMODE=NONE> or C<GSFMODE=APPEND>.  It is usually used with the
+PANELS macro or the SCATMAT macro, or other programs which produce
+multiple plots and then join those plots in a template using
+PROC GREPLAY.
+
+=head1 Usage
+
+The GDISPLA macro is called with positional parameters.  The first
+(SWITCH) parameter must be specified.  The second parameter is only
+used within SAS/IML.
+
+  %let devtype=SCREEN;
+  %gdispla(OFF);
+  proc gplot;
+     plot y * x;
+     by group;
+  %gdispla(ON);
+  %panels(rows=1, cols=3);
+
+=head2 Parameters
+
+=over 4
+
+=item SWITCH
+
+A string value, OFF or ON.  
+
+=item IML
+
+Specify any non-blank value to use the GDISPLA macro
+within SAS/IML.
+
+
+=back 4
+
+=head2 Global parameters
+
+The macro uses one global macro parameter, C<DEVTYP>, to determine the
+appropriate action. This parameter is normally initialized either in 
+the F<AUTOEXEC.SAS> file, or in device-specific macros.
+For example, a macro to initialize EPS output should set 
+the macro variable C<DEVTYP=EPS>, using
+
+ %let devtype=eps;
+
+
+
+=over 4
+
+=item DEVTYP
+
+String value, the type of graphic device driver.  The
+values EPS, GIF, CGM and WMF cause the macro to use
+the C<GSMODE> option; the value C<DEVTYPE=SCREEN> causes the
+macro to use the C<DISPLAY> or C<NODISPLAY> option.
+All other values are ignored.
+
+=back 4
+

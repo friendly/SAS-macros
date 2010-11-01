@@ -1,0 +1,88 @@
+=head1 Description
+
+For a binary response variable, Y, taking values 0 or 1, and a
+continuous independent variable, X, the LOGODDS macro groups the
+X variable into some number of ordered, non-overlapping intervals.
+It plots the empirical log-odds of C<Y=1> (and/or Pr{C<Y=1>}) against
+X for each interval of X, together with the fitted linear logistic
+relation, an optional smoothed curve (using the LOWESS macro),
+and the observed binary responses.
+
+
+=head1 Usage
+
+The input data to be plotted must be in case form.
+The LOGODDS macro is called with keyword parameters.  The C<X=> and C<Y=>
+variables are required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %include catdata(icu);
+  %logodds(data=icu, x=age, y=died, smooth=0.25, ncat=16,
+     options=order=data);
+
+=head2 Parameters
+
+=over 4
+
+=item X=
+
+Name of the continuous independent variable
+
+=item Y=
+
+Name of the binary response variable
+
+=item EVENT=
+
+Value of Y for the event of interest [Default: C<EVENT=1>]
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item OPTIONS=
+
+Options for PROC LOGISTIC, for example, C<OPTIONS=DESCENDING>.
+
+=item NCAT=
+
+Number of categories of the X variable.
+For example, if deciles of X are desired, use C<NCAT=10>.
+[Default: C<NCAT=10>]
+
+=item PLOT=
+
+Scale(s) for the response. C<PLOT=LOGIT> gives a plot on the
+logit scale, C<PLOT=PROB> on the probability scale.
+[Default: C<PLOT=LOGIT PROB>]
+
+=item SMOOTH=
+
+Smoothing parameter for a lowess smooth, in the interval
+(0-1).  No smooth curve is produced unless a C<SMOOTH=>
+value is specified.  
+
+=item SHOW=
+
+Specifies whether to plot the binary observations.
+[Default: C<SHOW=OBS>]
+
+=item OBS=
+
+Specifies how to display the binary observations.  If
+C<OBS=STACK>, the observations are plotted in vertical
+columns at the top (C<Y=1>) or bottom (C<Y=0>) of the plot.
+If C<OBS=JITTER> a small random quantity is added (C<Y=0>)
+or subtracted (C<Y=1>) to the Y value.  [Default: C<OBS=STACK>]
+
+=item NAME=
+
+The name of the graph in the graphic catalog [Default: C<NAME=LOGODDS>]
+
+=item GOUT=
+
+The name of the graphic catalog [Default: C<GOUT=GSEG>]
+
+
+=back 4

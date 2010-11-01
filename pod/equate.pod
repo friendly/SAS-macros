@@ -1,0 +1,119 @@
+=head1 Description
+
+The EQUATE macro creates AXIS statements for a GPLOT with equated
+axes, and optionally produces a plot using point labels (supplied
+in an input annotate data set).  It is a modified version of the
+same macro appearing in the SAS Sample Library.
+
+It creates an AXIS statement for the vertical variable Y and
+an AXIS statement for horizontal variable X such that an inch
+on the vertical axis represents the same data range as an inch on
+the horizontal axis.  Equated axes are necessary whenever
+distances between points, or angles between vectors from the origin
+are to be interpreted.
+
+=head1 Usage
+
+The EQUATE macro takes 15 keyword arguments.  The C<X=> and C<Y=>
+parameters are required.  
+
+You may wish to reset the defaults below to be more
+suited to your devices.  As well, you should
+use C<GOPTIONS HSIZE=> VSIZE=;> to
+allow the maximum plot size if you  specify the C<XMAX=> and
+C<YMAX=> parameters as null values.
+
+As an additional convenience (particularly for use within other
+macros) EQUATE will calculate reasonable tick mark increments
+from the data, to give about 6 tick marks on an axis, if the
+C<XINC=> or C<YINC=> parameters are specified as null values.
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the input data set [Default: C<DATA=_LAST_>]
+
+=item ANNO=
+
+Name of an Annotate data set (used only if C<PLOT=YES>).
+[Default: ANNO=&DATA]
+
+=item X=
+
+Name of the X variable [Default: C<X=X>]
+
+=item Y=
+
+Name of the Y variable [Default: C<Y=Y>]
+
+=item XMAX=
+
+Maximum X axis length (inches).  If C<XMAX=> (a null value)
+the macro queries the device driver (using the DSGI)
+to determine the maximum axis length. [Default: C<XMAX=6.5>]
+
+=item YMAX=
+
+Maximum Y axis length (inches).  If C<YMAX=> (a null value)
+the macro queries the device driver (using the DSGI)
+to determine the maximum axis length. [Default: C<YMAX=8.5>]
+
+=item XINC=
+
+X axis tick increment.  If C<XINC=> (a null value),
+the macro calculates an increment from the data
+which is 1, 2, 2.5, 4, or 5 times a power of 10
+so that about 6 tick marks will appear on the X
+axis. [Default: C<XINC=0.1>]
+
+=item YINC=
+
+Y axis tick increment.  If C<XINC=> (a null value),
+the macro calculates an increment from the data
+which is 1, 2, 2.5, 4, or 5 times a power of 10
+so that about 6 tick marks will appear on the X
+axis. [Default: C<YINC=0.1>]
+
+=item XPEXTRA=
+
+Number of extra X axis tick marks at the high end.
+Use the C<XPEXTRA=> and C<XMEXTRA=> parameters to extend the
+range of the X variable beyond the data values, e.g.,
+to accommodate labels for points in a plot.
+[Default: C<XPEXTRA=0>]
+
+=item XMEXTRA=
+
+Number of extra X axis tick marks at the low end.
+[Default: C<XMEXTRA=0>]
+
+=item YPEXTRA=
+
+Number of extra Y axis tick marks at the high end.
+Use the C<YPEYTRA=> and C<YMEYTRA=> parameters to extend the
+range of the Y variable beyond the data values, e.g.,
+to accommodate additional annotations in a plot.
+[Default: C<YPEXTRA=0>]
+
+=item YMEXTRA=
+
+Number of extra Y axis tick marks at the low end.
+[Default: C<XMEXTRA=0>]
+
+=item VAXIS=
+
+Name of the AXIS statement for Y axis [Default: C<VAXIS=AXIS98>]
+
+=item HAXIS=
+
+Name of the AXIS statement for X axis [Default: C<HAXIS=AXIS99>]
+
+=item PLOT=
+
+Draw the plot? [Default: C<PLOT=NO>]
+
+=back 4
+

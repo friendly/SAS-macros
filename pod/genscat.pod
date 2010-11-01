@@ -1,0 +1,118 @@
+=head1 Description
+
+The GENSCAT macro produces generalized scatterplot matrix for
+all pairs of variables, which may be categorical or numeric
+(Friendly, 1999).  For pairs consisting of two numeric variables, an 
+ordinary scatterplot is produced; pairs of two categorical variables 
+are shown by a mosaic plot; pairs of one categorical and one numeric 
+variable are shown by boxplots.
+
+=head1 Usage
+
+The GENSCAT macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %genscat(data=test, var=X1 X2 Group Sex, group=gp);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the data set to be plotted. [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+List of the variables to be plotted. You can use any of
+             the standard SAS abbreviations. [Default: C<VAR=_NUMERIC_>]
+
+=item NAMES=
+
+Alternative variable names used to label the diagonal
+             cells
+
+=item TYPES=
+
+List of variable types, corresponding to the names in C<VAR=>
+             used to override the default treatment of numeric variables:
+             a list of C and N.
+
+=item GROUP=
+
+Grouping variable (determines plot symbols in scatterplots)
+
+=item INTERP=
+
+Plot interpolation method [Default: C<INTERP=NONE>]
+
+=item HSYM=
+
+Height of plot symbols
+
+=item HTITLE=
+
+Height of variable name titles for diag panels
+
+=item PLOTOPT=
+
+Additional plot options
+
+=item SYMBOLS=
+
+List of symbols used for observations in scatterplots.
+             [Default: C<SYMBOLS=%STR(CIRCLE SQUARE + : $ = X _ Y)>]
+
+=item COLORS=
+
+List of colors used in scatterplots and boxplots.
+             [Default: C<COLORS=BLUE RED GREEN BROWN BLACK YELLOW ORANGE PURPLE>]
+
+=item ANNO=
+
+Annotate diagonal or off-diag plot. At present, C<ANNO=BOX> adds a boxplot
+             to diagonal plots, C<ANNO=ELLIPSE> adds a data ellipse to off-diagonal
+             plots for pairs of numeric variables. [Default: C<ANNO=NONE>]
+
+=item GTEMP=
+
+Temporary graphics catalog.  For repeated use within
+             the SAS Session Manager, need to start a new catalog,
+             and kill it at the end.  [Default: C<GTEMP=GTEMP>]
+
+=item KILL=
+
+Delete GTEMP when done [Default: C<KILL=Y>]
+
+=item GOUT=
+
+Name for output graphics catalog [Default: C<GOUT=GSEG>]
+
+=item NAME=
+
+Graph name in output graphics catalog [Default: C<GOUT=GENSCAT>]
+
+
+=back 4
+
+=head2 Dependencies
+
+GENSCAT requires the following macros:
+
+gdispla
+gensym
+boxaxis
+contour
+table
+mosaic
+boxplot
+panels
+
+
+=head1 References
+
+Friendly, M. ``Extending Mosaic Displays: Marginal, Conditional, and
+Partial Views of Categorical Data'', JCGS, 8:373-395, 1999.
+L<http://www.math.yorku.ca/SCS/Papers/drew/drew.pdf>
+

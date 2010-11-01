@@ -1,0 +1,140 @@
+
+% translated by spod2latex from canplot.pod on Fri Sep 29 16:37:26 EDT 2006
+\subsection{The \macro{CANPLOT}: Canonical discriminant structure plot.}\label{mac:canplot}
+ \index{\macro{canplot}}
+
+The \macro{CANPLOT} constructs a canonical discriminant structure
+plot. The plot shows class means on the two largest canonical
+variables, confidence circles for those means, and variable vectors
+showing the correlations of variables with the canonical variates.
+
+\subsubsection*{Method}
+
+Discriminant scores and coefficients are extracted from \PROC{CANDISC}
+and plotted.
+
+Other designs may be handled either by (a) coding factor combinations
+'interactively', so, e.g., the combinations of A*B are represented by
+a GROUP variable, or (b) by applying the method to adjusted response
+vectors (residuals) with some other predictor (class or continuous)
+partialled out.  The latter method is equivalent to analysis of
+the residuals from an initial \PROC{GLM} step, with the effects to be
+controlled or adjusted for as predictors.
+
+e.g., to examine Treatment, controlling for Block and Sex,
+
+\begin{listing}
+  proc glm data=..;
+   model Y1-Y5 = block sex;
+   output out=resids
+      r=E1-E5;
+ %canplot(data=resids, var=E1-E5, class=Treat, ... );
+\end{listing}
+\subsubsection*{Usage}
+
+The \macro{CANPLOT} is defined with keyword parameters.
+Values must be supplied for the \texttt{CLASS=} and \texttt{VAR=} parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:
+
+\begin{listing}
+ %canplot(data=inputdataset, var=predictors, class=groupvariable...,);
+\end{listing}
+
+The interpretation of the angles betweeen variable vectors
+relies on the units for the horizontal and vertical axes being made
+equal (so that 1 data unit measures the same length on both axes.
+The axes should be equated either by using the GOPTIONS \texttt{HSIZE= VSIZE=}
+options, or using the macro \texttt{HAXIS=} and \texttt{VAXIS=} parameters
+and AXIS statements which specify the \texttt{LENGTH=} value for both
+axes. The current version now uses the \macro{EQUATE} if the 
+\texttt{HAXIS=} and \texttt{VAXIS=} arguments are not supplied.
+
+\subsubsection*{Parameters}
+\begin{proglist}
+
+\item[DATA=] Name of data set to analyze. \default{DATA=_LAST_}
+
+\item[CLASS=] Name of one class variable, defining the groups to be
+discriminated.
+
+\item[VAR=] List of classification variables
+
+\item[ID=] Observation ID variable, used to label observations in the plot.
+
+\item[VARLAB=] How to label variables? \verb|_NAME_| or \verb|_LABEL_|. \default{VARLAB=_NAME_}
+
+\item[DIM=] Number of canonical dimensions to be extracted. \default{DIM=2}
+
+\item[SCALE=] Scale factor for variable vectors in plot. The variable 
+vectors are multiplied by the \texttt{SCALE=} value, which should
+be specified (perhaps by trial and error) to make the vectors and
+observations fill the same plot region. \default{SCALE=4}
+
+\item[CONF=] Confidence probability for canonical means, determining the ra. \default{CONF=.99}
+
+\item[OUT=] Output data set containing discrim scores. \default{OUT=_DSCORE_}
+
+\item[OUTVAR=] Output data set containing coefficients. \default{OUTVAR=_COEF_}
+
+\item[ANNO=] Output data set containing annotations. \default{ANNO=_DANNO_}
+
+\item[ANNOADD=] Additional annotations to add to the plot.  Can include
+'MEAN' and/or 'GPLABEL' and/or the name(s) of additional
+input annotate data sets. \default{ANNOADD=MEAN}
+
+\item[PLOT=] YES (or NO to suppress plot) \default{PLOT=YES}
+
+\item[HAXIS=] The name of an optional AXIS statement for 
+the horizontal axis. The \texttt{HAXIS=} and \texttt{VAXIS=} arguments may be used
+to equate the axes in the plot so that the units are the same
+on the horizontal and vertical axes.  If neither \texttt{HAXIS=} nor
+\texttt{VAXIS=} are supplied, the \macro{EQUATE} is called to generate
+axis statements.
+
+\item[VAXIS=] The name of an optional AXIS statement for 
+the  vertical axis.
+
+\item[INC=] X, Y axis tick increments, in data units. \default{INC=1 1}
+
+\item[XEXTRA=] \# of extra X axis tick marks on the left and right.  Use this to
+extend the axis range. \default{XEXTRA=0 0}
+
+\item[YEXTRA=] \# of extra Y axis tick marks on the bottom and top. \default{YEXTRA=0 0}
+
+\item[LEGEND=] Name of a LEGEND statement to specify legend for groups.  Use
+\texttt{LEGEND=NONE }to suppress the legend (perhaps with \texttt{ANNOADD=GPLABEL}
+to plot group labels near the means).
+
+\item[HSYM=] Height of plot symbols. \default{HSYM=1.2}
+
+\item[HID=] Height of ID labels. \default{HID=1.4}
+
+\item[IDCOLOR=] Color of ID labels
+
+\item[HTEXT=] Height of variable and group labels. \default{HTEXT=1.5}
+
+\item[CANX=] Horizontal axis of plot. \default{CANX=CAN1}
+
+\item[CANY=] Vertical axis of plot. \default{CANY=CAN2}
+
+\item[DIMLAB=] Dimension label prefix. \default{DIMLAB=Canonical Dimension}
+
+\item[COLORS=] List of colors to be used for groups (levels of the \texttt{CLASS=} variable).
+The values listed are recycled as needed for the number of groups.
+\newline
+\default{COLORS=RED GREEN BLUE BLACK PURPLE BROWN ORANGE YELLOW}
+
+\item[SYMBOLS=] List of symbols to be used for the observations within the groups,
+recycled as needed.
+\default{SYMBOLS=dot circle triangle square star - : \$  =}
+
+\item[LINES=] List of line style numbers used for the confidence circles.
+\newline
+\default{LINES=20 20 20 20 20 20 20}
+
+\item[NAME=] Name for graphic catalog entry. \default{NAME=CANPLOT}
+
+\item[GOUT=] The name of the graphics catalog. \default{GOUT=GSEG}
+
+\end{proglist}

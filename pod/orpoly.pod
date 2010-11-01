@@ -1,0 +1,111 @@
+=head1 Description
+
+For ANOVA models with quantitative factor variables, it is most useful
+to describe and analyse the factor effects using tests for linear,
+quadratic, etc. effects.  These tests could be carried out with a
+regression model, but orthogonal polynomial contrasts provide a
+way to do the same tests, in an ANOVA framework with PROC GLM (or PROC
+MIXED).  But, you need to find the appropriate contrast coefficients.
+
+The ORPOLY macro finds contrast coefficients for orthogonal polynomials
+for testing a quantitative factor variable, and constructs CONTRAST
+(or ESTIMATE) statements (for use with PROC GLM or PROC MIXED) using 
+these values.
+
+This is most useful when either (a) the factor levels are unequally
+spaced (Trials=1 2 4 10), or (b) the sample sizes at the different levels
+are unequal.  In these cases, the 'standard' orthogonal polynomial
+coefficients cannot be used.  The ORPOLY macro uses the SAS/IML
+orpoly() function to find the correct values, and to construct the
+required CONTRAST (or ESTIMATE) statements.
+
+When the factor levels are equally spaced, *and* sample sizes are
+equal, the POLY macro provides a simpler way to generate the contrast
+coefficients, and the associated INTER macro generates contrasts for
+interactions among the polynomial contrasts.
+
+=head1 Usage
+
+The ORPOLY macro is defined with keyword parameters.  The C<VAR=> parameter
+must be specified.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %orpoly(var=A, file=temp);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+The name(s) of quantitative factor variable(s) for orthogonal 
+polynomial contrasts.
+
+=item DEG=
+
+Maximum degree of orthogonal polynomial contrasts
+
+=item FILE=
+
+Fileref for contrast statements.  The default,
+C<FILE=PRINT>, simply prints the generated statements
+in the listing file.  
+
+To use the generated contrast statements directly following
+a PROC GLM step, use the C<FILE=> parameter to assign a fileref
+and create temporary file, which may be used in a GLM step.
+
+=item TYPE=
+
+Type of statement generated: CONTRAST, ESTIMATE, or BOTH
+[Default: C<TYPE=CONTRAST>]                
+
+
+=back 4
+
+=head1 Example
+
+Generate some data, with linear & quad A effects, linear B.
+Levels of B are unequally spaced;
+
+  data testit;
+     do a=1 to 5;
+        do b=1, 5, 9, 13;
+           do obs=1 to 2;
+              y = a + a*a + b + 5*normal(124241);
+              output;
+              end;
+           end;
+        end;
+  run;
+
+Generate the CONTRAST statements with ORPOLY, and %INCLUDE in the GLM step:
+
+  %orpoly(data=testit, var=a b, file=poly);
+
+  proc glm data=testit;
+     class a b;
+     model y=a b a*b;
+     %include poly;
+
+The ORPOLY macro generates the following lines, which are used in the
+PROC GLM step as a result of the %include statement:
+
+  contrast "A-lin" A -0.22361 -0.11180 -0.00000  0.11180  0.22361;
+  contrast "A-quad" A  0.18898 -0.09449 -0.18898 -0.09449  0.18898;
+  contrast "A-3rd" A -0.11180  0.22361  0.00000 -0.22361  0.11180;
+
+  contrast "B-lin" B -0.21213 -0.07071  0.07071  0.21213;
+  contrast "B-quad" B  0.15811 -0.15811 -0.15811  0.15811;
+
+=head1 Bugs:
+
+For some strange reason, PROC GLM considers the contrasts non-estimable.
+It does the proper tests when the sample sizes are equal, but not when
+they differ.
+

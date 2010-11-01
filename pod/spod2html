@@ -1,0 +1,85 @@
+#!/usr/local/bin/perl
+#
+# Translate sas-pod-html to vcd-html.
+#
+# Usage: 
+# pod2html file.pod > file.html
+# perl -pi~ spod2html file.html
+
+BEGIN {undef $/;
+	$tfile = "/home/friendly/SCS/sasmac/.template.html";
+	open (TEMPLATE, "<$tfile") || warn "Cant read template\n";
+	$template =<TEMPLATE>;
+	$template =~ s|<h3>Method</h3>.*<h3>Example|<h3>Example|s;
+	close TEMPLATE;
+	@source_dirs = qw(
+		~/sasuser/catdata/	
+		~/sasuser/macros/	
+		~/sasuser/mosaics/	
+	);
+}
+
+sub SAS_title {
+    local($title,$name);
+	local ($/="\n");
+	
+    $name=$_[0];
+#	 $name = $ENV{HOME} . "/sasuser/macros/$name.sas";    # add dirname
+	$name = &find_file($name);
+    open(F, $name) || do{warn "cant open $name\n"; return $_[0]};
+    while(<F>) {
+      chomp;
+		if (/title:\s+(.*)/i) {
+			$title = $1;
+			$title =~ s@\s*[/*|.;]+\s*$@@;
+#			print "TITLE: $title\n";
+			last;
+		}
+	 }
+	$title =~ s|[*-]{2,}| |g;
+	close F;
+	return "$title";
+}
+
+sub find_file {
+	my $filename = shift;
+	$filename .= '.sas' unless $filename =~ /\.\w+$/;
+	
+	foreach $d ( ('./', @source_dirs) ) {
+		$dir = $d;
+		$dir =~ s|^~/|$ENV{HOME}/|;
+#		print "Checking $dir$filename\n";
+		return "$dir$filename" if -e "$dir$filename";
+		}
+	$status++;
+	return undef;
+}
+
+m/The ([A-Za-z\d]+) (macro|program)/i; $myname=lc($1);
+$template =~ s/myname/$myname/g;
+
+s|<!DOCTYPE.*INDEX END -->\n||si;
+s|^.*?\n<H1>.*?Description:?</A></H1>||si;
+s|<hr />||g;
+s|\n\n</A>|</A>|gm;
+s|\n<P>\n\n<DT>|<DT>|gmi;
+s|<dt><strong>(<a .*</a>)</strong>|<dt>$1|i;        # now in macdoc.css
+s|<P>\n+<P>\n<HR>\n||gmi;
+s|<p></p>||gi;
+s|<p>\n</p>||gmi;
+s/_3d//g;
+s|<(/?)H2>|<$1H3>|gmi;
+s|<(/?)H1>|<$1H2>|gmi;
+s|<PRE>|<PRE>\n|g;
+s|he ([A-Za-z\d]+) macro|he <tt>$1</tt> macro|ig;
+s|he ([A-Za-z\d]+) program|he <tt>$1</tt> program|ig;
+s|^.*?\n<H2>.*?Description:?</A></H2>||si;
+s|</DL>\n</DL>|</DL>|;
+s|\s+</BODY>.*$||si;
+
+$stuff = $_;
+($new = $template) =~ s|(<h3>Title</h3>\n)|$1$stuff|s;
+$title = SAS_title($myname);
+$new =~ s/Title/$title/g;
+$_ = $new;
+#$_ = "$template\n$_";

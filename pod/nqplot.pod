@@ -1,0 +1,81 @@
+=head1 Description
+
+The NQPLOT macro produces normal Q-Q plots for single variable, with
+optional confidence bands and a detrended version.  The
+parameters C<MU=> and C<SIGMA=> determine how the comparison line,
+representing a perfect fit to a normal distribution, is estimated.
+
+=head1 Usage
+
+The NQPLOT macro is defined with keyword parameters.  The C<VAR=> parameter
+must be specified.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %nqplot(data=baseball, var=salary);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the input data set [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Variable to be plotted [Default: C<VAR=X>]
+
+=item OUT=
+
+Name of the output data set [Default: C<OUT=NQPLOT>]
+
+=item MU=
+
+Estimate of the mean of the reference normal distribution. 
+            Specify C<MU=MEAN>, C<MU=MEDIAN>, or MU=numeric value
+            [Default: C<MU=MEDIAN>]
+
+=item SIGMA=
+
+Estimate of the standard deviation of the reference normal 
+             distribution: Specify C<SIGMA=STD>, C<SIGMA=HSPR>, or SIGMA=numeric value.
+             [Default: C<SIGMA=HSPR>]
+
+
+=item STDERR=
+
+Plot std errors around curves? [Default: C<STDERR=YES>]
+
+=item DETREND=
+
+Plot detrended version?   If C<DETREND=YES>the detrended version is plotted too.
+         [Default: C<DETREND=YES>]
+
+=item LH=
+
+Height, in character cells, for axis labels [Default: C<LH=1.5>]
+
+=item ANNO=
+
+Name(s) of optional input annotate data set(s).
+
+=item COLORS=
+
+Colors for points, reference line, and confidence bands [Default: C<COLORS=BLACK BLUE RED>]
+
+=item SYMBOL=
+
+Plotting symbol [Default: C<SYMBOL=DOT>]
+
+=item NAME=
+
+Name of graphic catalog entries [Default: C<NAME=NQPLOT>]
+
+=item GOUT=
+
+The name of the graphics catalog
+
+
+=back 4
+

@@ -1,0 +1,47 @@
+=head1 Description
+
+The BPYCOLORS macro generates a data set containing n colors ranging
+from blue through pink to yellow, typically used to color code a
+unidimensional variable.  It has the advantage of looking nice when
+reproduced in black and white.
+
+=head1 Usage
+
+The BPYCOLORS macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %bpycolors(n=15);
+   %bpycolors(n=20, colorvar=col, result=pal);
+   %put pal = &pal;
+
+=head2 Parameters
+
+=over 4
+
+=item N=
+
+Number of different colors included in the palette [Default: C<N=10>]
+
+=item TRIM=
+
+Tail fraction to be cut off. A value of 0 gives a palette
+             ranging from black to white.  The default, 0.1, gives a
+          color range from blue to yellow. [Default: C<TRIM=0.1>]
+
+=item OUT=
+
+Name of output data set [Default: C<OUT=PALETTE>]
+
+=item COLORVAR=
+
+Name of the color variable in the data set [Default: C<COLORVAR=COLOR>]
+
+=item RESULT=
+
+Name of output macro variable containing color list
+
+
+
+=back 4
+

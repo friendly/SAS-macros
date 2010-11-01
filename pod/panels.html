@@ -1,0 +1,278 @@
+<html> 
+<head>
+	<title>SAS Macro Programs: panels - Macro to display a set of plots in rectangular panels</title>
+	<link rev=made href="mailto:friendly@yorku.ca">
+	<link rel="stylesheet" href="macdoc.css" type="text/css">
+	<!-- Author: Michael Friendly York University  -->
+</head>
+<body>
+<!-- pnuts --> 
+<CENTER>
+<TABLE WIDTH="100%" BGCOLOR="#FFFF99" >
+<TR>
+<TD width="10%"><FONT SIZE=+2><tt><b> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/panels.sas">panels</a></b></tt></FONT></TD>
+
+<TD align="center"><FONT FACE="Arial"><FONT SIZE=+1>Macro to display a set of plots in rectangular panels</FONT></FONT></TD>
+
+<TD  width="10%" align="right"><FONT SIZE=+2><tt><b> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/panels.sas">panels</a></b></tt></FONT></TD>
+</TR>
+</TABLE>
+</CENTER>
+<h1>SAS Macro Programs: <tt>panels</tt></h1>
+
+$Version: 1.8 (20 Dec 2005 10:42:00)<br>
+<b>
+<a href="../friendly.html">Michael Friendly</a><br>
+York University
+</b><br>
+<script language="JavaScript">
+<!--
+	document.write("Updated " + document.lastModified);
+// -->
+</script>
+<hr>
+
+<h2>The <tt>panels</tt> macro (<A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/panels.sas">
+<IMG  WIDTH=20 HEIGHT=20 SRC="../icons/download.gif" alt="[download]" border=0> get panels.sas</A>)</h2>
+<h3>Macro to display a set of plots in rectangular panels</h3>
+
+<p>The <tt>PANELS</tt> macro constructs a template in which to replay a series of
+graphs, assumed all the same size, in a rectangular array of R
+rows and C columns. By default, the panels are displayed
+left-to-right across rows,  starting either from the top
+(<code>ORDER=DOWN</code>) or bottom (<code>ORDER=UP</code>).  If the number of rows and
+columns are unequal, the aspect ratio of individual panels can
+be maintained by setting equate=Y.  It is assumed that all the
+plots have already been created, and stored in a graphics catalog
+(the default, WORK.GSEG is used automatically by SAS/GRAPH
+procedures).</p>
+<p>For interactive use within the SAS Session Manager you should be
+aware that all plots are stored cumulatively in the graphics
+catalog throughout your session, unless explicitly changed with
+the <a href="#item_gout"><code>GOUT=</code></a> option in graphics procedures or macros  To create multiple
+panelled plots you can use the <a href="#item_first"><code>FIRST=</code></a> and <a href="#item_last"><code>LAST=</code></a> parameters or a <a href="#item_replay"><code>REPLAY=</code></a>
+list to specify which plots are used in a given call.</p>
+
+
+<H2><a name="usage">Usage</a></H2>
+<p>Call the <tt>PANELS</tt> macro after the steps which create the graphs in the
+graphics catalog.  The <tt>GDISPLA</tt> macro may be used to suppress the
+display of the original full-sized graphs.
+The <a href="#item_rows"><code>ROWS=</code></a> and <a href="#item_cols"><code>COLS=</code></a> parameters must be specified.</p>
+<pre>
+  goptions hsize=7in vsize=5in;
+  %gdispla(OFF);
+  proc gplot data=mydata;
+     plot y * x = group;
+     by sex;</pre>
+<pre>
+  %gdispla(ON);
+  %panels(rows=1, cols=2);</pre>
+
+<H3><a name="parameters">Parameters</a></H3>
+<dl>
+<dt><strong><a name="item_rows">ROWS=</a></strong><br />
+</dt>
+<dt><strong><a name="item_cols">COLS=</a></strong><br />
+</dt>
+<dd>
+The <a href="#item_rows"><code>ROWS=</code></a> and <a href="#item_cols"><code>COLS=</code></a> arguments are required, and specify the
+  size of the array of plots to be displayed. These are the only
+  required arguments.
+</dd>
+
+<dt><strong><a name="item_plots">PLOTS=</a></strong><br />
+</dt>
+<dd>
+If there are fewer than &amp;ROWS*&amp;COLS plots, specify the number
+  as the <a href="#item_plots"><code>PLOTS=</code></a> argument. Optionally, there can be an additional
+  plot, which is displayed (as a GSLIDE title, for example) in
+  the top nn% of the display, as specified by the <a href="#item_top"><code>TOP=</code></a> argument.
+</dd>
+
+<dt><strong><a name="item_top">TOP=</a></strong><br />
+</dt>
+<dd>
+If TOP=nn is specified, the top nn% of the display is reserved
+  for one additional panel, to serve as the plot
+  title or annotation. The other panels are replayed in the bottom
+  100-&amp;top percent of the display. The vertical size of the top panel is 
+  determined by the <a href="#item_topheight"><code>TOPHEIGHT=</code></a> argument.
+</dd>
+
+<dt><strong><a name="item_topname">TOPNAME=</a></strong><br />
+</dt>
+<dd>
+Specifies the plot name or number of the graph to be used as the
+  top panel.  If not specified, the macro uses the next graph after
+  the last one from the GIN catalog used in filling the replay list,
+  i.e., %eval(&amp;last+&amp;plots-1).
+</dd>
+
+<dt><strong><a name="item_topheight">TOPHEIGHT=</a></strong><br />
+</dt>
+<dd>
+Specifies the vertical size of the panel used to replay the top
+  panel.  If you use PROC GSLIDE to create an overall title for the
+  graph, use the default <code>TOPHEIGHT=100</code>.  If you want to use a graph
+  rescaled to fit entirely within the top panel (i.e., with
+  TOPHEIGHT=&amp;TOP), that graph should be created with an aspect ratio
+  to match the shape of the desired top panel; otherwise it will be
+  deformed to fit.
+</dd>
+
+<dt><strong><a name="item_order">ORDER=</a></strong><br />
+</dt>
+<dd>
+The <a href="#item_order"><code>ORDER=</code></a> argument specifies the order of the panels in the
+  <a href="#item_replay"><code>REPLAY=</code></a> list, when <a href="#item_replay"><code>REPLAY=</code></a> is not specified. 
+  Typically, the panels are displayed across the columns, starting
+  in the top row.
+  <code>ORDER=UP</code> means that the panels in the bottom row are
+  are drawn first, and numbered 1, 2, ..., &amp;COLs. <code>ORDER=DOWN</code> means
+  that the panels in the top row are drawn first, numbered 1, 2, ..., 
+  &amp;COLs.  If you add the keyword BYROWS to ORDER=, the panels are
+  displayed up or down the rows.  For example, when <code>ROWS=3</code>, <code>COLS=5</code>,
+  <code>ORDER=DOWN BYROWS</code> generates the <a href="#item_replay"><code>REPLAY=</code></a> list as,
+</dd>
+<dd>
+<pre>
+      replay=1:1  2:4  3:7  4:10  5:13
+             6:2  7:5  8:8  9:11 10:14
+            11:3 12:6 13:9 14:12 15:15</pre>
+</dd>
+
+<dt><strong><a name="item_equate">EQUATE=</a></strong><br />
+</dt>
+<dd>
+The <a href="#item_equate"><code>EQUATE=</code></a> argument determines if the size of the panels is adjusted
+  so that the aspect ratio of the plots is preserved.  If <code>EQUATE=Y</code>,
+  the size of each plot is adjusted to the maximum of &amp;ROWS and &amp;COLS.
+  This is usually desired, as long as the graphic options HSIZE and
+  VSIZE are the same when the plots are replayed in the panels
+  template as when they were originally generated.  The default is
+  <code>EQUATE=Y.</code>
+</dd>
+
+<dt><strong><a name="item_replay">REPLAY=</a></strong><br />
+</dt>
+<dd>
+The <a href="#item_replay"><code>REPLAY=</code></a> argument specifies the list of plots to be replayed
+  in the constructed template, in one of the forms used with the
+  PROC GREPLAY REPLAY statement, for example, <code>REPLAY=1:1 2:3 3:2
+  4:4</code> or <code>REPLAY=1:plot1 2:plot3 3:plot2 4:plot4</code>.  If <a href="#item_top"><code>TOP=</code></a> is used
+  for a top panel, that graph should be replayed in panel 0.
+</dd>
+
+<dt><strong><a name="item_template">TEMPLATE=</a></strong><br />
+</dt>
+<dd>
+The name of the template constructed to display the plots. The
+  default is <code>TEMPLATE=PANEL</code>&amp;ROWS.&amp;COLS.
+</dd>
+
+<dt><strong><a name="item_tc">TC=</a></strong><br />
+</dt>
+<dd>
+The name of the template catalog used to store the template.
+  You may use a two-part SAS data set name to save the template
+  permanently.
+</dd>
+
+<dt><strong><a name="item_first">FIRST=</a></strong><br />
+</dt>
+<dd>
+By default, the <a href="#item_replay"><code>REPLAY=</code></a> argument is constructed to replay plot
+i in panel i.  If the <a href="#item_replay"><code>REPLAY=</code></a> argument is not specified, you can
+override this default assignment by specifying <a href="#item_first"><code>FIRST=</code></a> the sequential
+number of the first graph in the graphics catalog to plot (default:
+FIRST=1), where:
+</dd>
+<dl>
+<dt><strong><a name="item__3e0">&gt;0</a></strong><br />
+</dt>
+<dd>
+A positive integer means the absolute number of the first graph in the input catalog to be
+replayed.  For example, <code>FIRST=3</code> starts with the third graph.
+</dd>
+<dd>
+<dt>&lt;1
+<dd>
+An integer less than 1 means the number of first graph relative to last
+graph in the input catalog (i.e. <code>FIRST=0</code> means 
+last graph only, <code>FIRST=-1</code> means the first is the one before last, etc.)
+</dd>
+</dl>
+<dt><strong><a name="item_last">LAST=</a></strong><br />
+</dt>
+<dd>
+The <a href="#item_last"><code>LAST=</code></a> parameter may be used to specify the number of the last graph
+in the input graphics catalog to be replayed.  The default is LAST=0,
+which refers to the last plot in the graphics catalog.  The <a href="#item_last"><code>LAST=</code></a> value
+is interpreted as follows:
+</dd>
+<dl>
+<dt><strong>&gt;0</strong><br />
+</dt>
+<dd>
+A positive integer means the absolute number of last graph in the input catalog to be
+replayed.  For example, <code>LAST=4</code> ends with the fourth graph.
+</dd>
+
+<dt><strong><a name="item__3c1">&lt;1</a></strong><br />
+</dt>
+<dd>
+An integer less than 1 means the number of last graph relative to last
+graph in the input catalog (i.e. <code>LAST=0</code> means 
+last graph only, <code>LAST=-1</code> means to end with the one before last, etc.)
+</dd>
+</dl>
+<dt><strong><a name="item_shape">SHAPE=</a></strong><br />
+</dt>
+<dd>
+Ordinarily, the graphs are replayed in a rectangular template (<code>SHAPE=RECT</code>),
+  but for some applications graphs are generated as the lower or upper triangle
+  of a square matrix, with or without the diagonal.  Specify <a href="#item_shape"><code>SHAPE=</code></a>
+  <code>LOWTRI(D)</code> or <code>UPTRI(D)</code> for these cases.
+</dd>
+
+<dt><strong><a name="item_gin">GIN=</a></strong><br />
+</dt>
+<dd>
+GIN specifies the name of the input graphics catalog, from which the
+  plots to be replayed are taken. The default is <code>GIN=WORK.GSEG.</code>
+</dd>
+
+<dt><strong><a name="item_gout">GOUT=</a></strong><br />
+</dt>
+<dd>
+GOUT= specifies the name of the graphics catalog in which the panelled
+  plot is stored. The default is <code>GOUT=WORK.GSEG.</code>
+</dd>
+</dl>
+
+
+<H2><a name="notes">Notes</a></H2>
+<p>To use PANELS within another macro (such as SCATMAT), it is best to generate
+the individual graphs to a temporary graphics catalog rather than to the 
+same catalog used for the replayed graphs.</p>
+<p>The GREPLAY procedure does not allow a graph name to be assigned to the
+graph generated by by a TREPLAY or REPLAY statement.
+
+</p>      
+<h3>Example</h3>
+<pre>
+%include macros(panels);        *-- or include in an autocall library;
+
+%panels();
+</pre>
+
+<h3>See also</h3>
+<a href="meanplot.html">meanplot</a> Plot means for factorial designs<br>
+<a href="panels.html">panels</a> Display a set of plots in rectangular panels<br>
+<a href="stat2dat.html">stat2dat</a> Convert summary dataset to raw data equivalent<br>
+<hr>
+<!-- pnuts --> 
+
+</body>
+</html>

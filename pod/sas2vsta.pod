@@ -1,0 +1,107 @@
+=head1 Description
+
+The SAS2VSTA macro reads a SAS data set and produces an output file
+suitable as input to ViSta.  Handles multivariate data and
+frequency classification data.  Doesn't handle frequency table
+data.  See: http://forrest.psych.unc.edu/research/ for information
+about ViSta.
+
+=head1 Usage
+
+The SAS2VSTA macro is called with keyword parameters.  The C<VAR=>
+parameter is required.  The arguments may be listed within
+parentheses in any order, separated by commas. For example:
+
+  %sas2vsta(data=new, var=Name Group X1 X2 X3, id=name,
+     about=%str(A sample data set, converted to ViSta));
+
+Observations may be selected by the C<WHERE=> parameter.  They appear in
+the output in their order in the input data set.  Sort them first
+if you want some alternative order.
+
+By default, output is written to a file of the same name as the
+SAS data set, with the extension '.lsp', in the current SAS
+directory.
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item DNAME=
+
+Data name, the name of the data set for ViSta.
+[Default: DNAME=&DATA]
+
+=item VAR=
+
+List of variable names to be output, a blank separated
+list.  Variables appear in the output in the order listed,
+and in the C<:VARIABLES> list in the case given.
+
+=item FREQ=
+
+Name of a frequency variable, if any.  Added as the last
+variable, and the C<:FREQ t> flag is set.  All other variables
+are treated as Category variables in this case.
+
+=item ID=
+
+The name(s) of observation ID variable(s), which are used
+as row C<:LABELS>.  If two or more variables are given, their
+values are joined using the C<SEP=> character for each observation.
+
+=item SEP=
+
+Separator character just to join adjacent ID variables.
+If you want to use a character which the SAS macro processor
+treats as special, use, e.g., C<SEP=%str(,)>.
+
+=item ABBREV=
+
+Maximum length of any ID variable when there are 2 or more
+listed in C<ID=>.  If C<ABBREV=> is specified, each C<ID=> variable
+is abbreviated to this length to construct a single observation
+label.
+
+=item WHERE=
+
+WHERE clause to subset the observations in the output file.
+Use C<WHERE=%str(var=value)> if value contains any funny characters. 
+
+=item TITLE=
+
+Title string for the data for ViSta [Default: TITLE=&DATA]
+
+=item ABOUT=
+
+C<:ABOUT> description; use %str() if it contains ','.  If
+not specified, we use the data set label, if there is
+one.  NB: you must use quotes, as in
+
+  data foobar (label="My foobar data");
+
+for the label to be accessible to this macro.
+
+=item OUT=
+
+Output destination, one of C<OUT=FILE, PRINT or STDOUT> 
+[Default: C<OUT=FILE>]
+
+=item OUTFILE=
+
+Name of output LSP file. [Default: &DATA.lsp]
+
+=item OUTDIR=
+
+Name of output directory. [Default: Current SAS directory]
+
+=item LS=
+
+Output linesize [Default: 80]
+
+=back 4
+

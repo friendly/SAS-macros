@@ -1,0 +1,129 @@
+=head1 Description
+
+The AGREEPLOT macro produces a graphic display of agreement in a 
+square n x n contingency table, typically arising when observations
+are classified on the same scale by two raters or instruments.
+The display shows both the observed agreement and the expected
+agreement by superposed shaded and white rectangles, respectively.
+
+This macro provides a more convenient macro interface to
+the SAS/IML modules for agreement plots, so that you can input
+a SAS data set (in frequency form), rather than constructing the
+arrays used by the IML modules. It also provides the
+means to produce multiple agreement plots for two-way tables stratified
+by other C<BY=> variables.
+
+
+=head1 Usage
+
+The AGREEPLOT macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %agreeplot(data=sexfun, var=Husband Wife);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+Names of factor variables, including C<BY=> variables.  The first
+             two variables are used as the rows and columns of the
+          agreement plot.
+
+=item BY=
+
+Specifies the names of one (or more) By variables.  Partial
+             agreement plots are produced for each combination of the levels
+             of the C<BY=> variables.  The C<BY=> variable(s) *must* be listed among
+             the C<VAR=> variables.
+
+
+=item COUNT=
+
+Name of the frequency variable [Default: C<COUNT=COUNT>]
+
+=item WEIGHTS=
+
+Specifies weights for exact agreement and for steps removed 
+             from exact agreement, both in the plot and in the calculation
+          of the Bangdiwala agreement strength statistic. C<WEIGHTS=1 >counts
+          only exact agreement. C<WEIGHTS=LIN2> or C<WEIGHTS=CA2> uses inverse
+          linear (Cicchetti-Allison) weights: 1, 1/(n-1) for an n x n
+          table.  C<WEIGHTS=SQ2> or C<WEIGHTS=FC2> uses inverse square
+          (Fleiss-Cohen) weights, 1, 1/(n-1)**2. You can also use an
+          IML expression that evaluates to a row vector starting with 1,
+          e.g., C<WEIGHTS=1 || 1-1/(n-1)> or C<WEIGHTS={1 0.5}>.
+
+=item COLORS=
+
+Specifies colors for exact agreement and for one or more steps 
+             removed from exact agreement.  [Default: C<COLORS=BLACK GRAY>]
+
+=item HTEXT=
+
+Height of text value labels. Variable names are scaled up from
+             this by a factor of 1.4 [Default: C<HTEXT=1.5>]
+
+=item FONT=
+
+Font for text labels. Internal code uses the hardware font
+             HWPSl009 by default for PostScript devices and SWISS otherwise.
+
+=item LABROT=
+
+Rotation angles for the horizontal and  vertical value labels 
+             [Default: C<LABROT=0 90>]
+
+=item TITLE=
+
+Title for plot(s).  When there are C<BY=> variables, a string
+             indicating their levels is appended.
+
+=item GOUT=
+
+The name of the graphics catalog [Default: C<GOUT=WORK.GSEG>]
+
+=item NAME=
+
+The name of the graph in the graphic catalog [Default: C<NAME=AGREE>]
+
+
+=back 4
+
+=head1 Examples
+
+ proc format;
+  value rating 1='Never_fun' 2='Fairly_often' 
+               3='Very_often' 4='Almost_always';
+ data sexfun;
+   label Husband = 'Husband rating'
+          Wife    = 'Wife Rating';
+   format Husband Wife rating.;
+   do Husband = 1 to 4;
+   do Wife    = 1 to 4;
+     input count @@;
+     output;
+     end; end;
+ datalines;
+  7     7     2      3
+  2     8     3      7
+  1     5     4      9
+  2     8     9     14
+ ;
+
+ *-- Convert numbers to formatted values;
+ %table(data=sexfun, var=Husband Wife, char=true, weight=count, out=table);
+ %agreeplot(data=table, var=Husband Wife, title=Husband and Wife Sexual Fun);
+
+=head1 Bugs
+
+With C<BY=> variables, the graphs are correct, but the BN statistics
+dont use the given WEIGHTS.
+
+

@@ -1,0 +1,147 @@
+=head1 Description
+
+The ROBCOV macro calculates robust estimates of the mean vector,
+variance-covariance matrix and/or correlation matrix for a multivariate
+sample.  It also calculates classical estimates of multivariate
+(Mahalanobis) distance, and robust estimates of multivariate distance
+which ignore potential outliers.  Optionally, it produces a plot of
+robust vs. classical distances.
+
+These results may be used both to detect multivariate outliers and
+leverage points, and to provide robust versions of any multivariate
+technique which depends on the covariance or correlation matrix,
+simply by substituting the robust result for the classical ones.
+Typical applications include regression, canonical correlation,
+factor analysis, and structural equation models, when the input
+may be supplied as a covariance (correlation) matrix, *or* when the
+procedure ignores observations with C<WEIGHT=0 >to be excluded.
+
+Two types of highly-robust estimators are provided: the minimum covariance
+determinant (MCD) estimator, based on the fast-MCD algorithm of
+Rousseeuw and Van Driessen (1999), and the minimum volume ellispoid (MVE)
+estimator based on earlier work by Rousseeuw (1984).  MCD is defined
+as minimizing the determinant of the covariance matrix computed on
+h points, while MVE is defined as minimizing the volume of the 
+p-dimensional ellipsoid containing h points.  
+
+=head2 Method
+
+The macro is essentially an easily-used interface to the SAS/IML
+MCD and MVE call routines.  It creates a copy of the input variables
+augmented by the observation distances, robust distances, and weights.
+It creates robust covariance and correlation data sets in the form
+which may be used as input to other SAS procedures.
+
+=head1 Usage
+
+The ROBCOV macro is defined with keyword parameters.  There are no
+required parameters, but you should include an C<ID=> variable for more
+interpretable results.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %robcov(data=hawkins, var=x1-x4 y, id=case);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of the input data set [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+List of input variable names.  You may use any of the
+standard SAS abbreviations for variable lists, e.g.,
+C<VAR=X1-X20 Y1-Y3>, C<VAR=AGE--STORAGE>, or C<VAR=_NUMERIC_>.
+[Default: C<VAR=_NUMERIC_>]
+
+=item ID=
+
+Name of an observation ID variable.  This variable is
+simply copied to the output C<OUT=> data set.
+
+=item METHOD=
+
+Robust estimation method: MVE or MCD [Default: C<METHOD=MCD>]
+
+=item OPT=
+
+Options for the MVE or MCD call, a list of 5 numbers controlling
+the details MVE and MCD methods and printed output.  See the SAS
+System Help (e.g., 'MCD call') for details on opt[].  The
+default, OPT=, is usually sufficient; two of these options
+may be specified more easily with the C<QUANTILE=> and C<PRINT=>
+options.
+
+=item QUANTILE=
+
+The quantile value of the h parameter, specified as a
+fraction of (n+p+1).  This value may also be specified in
+terms of number of observations as the value of opt[4].
+If neither C<QUANTILE=> or opt[4] are specified, the default
+works out to C<QUANTILE=.5> or h=(n+p+1)/2.  This default has
+a high breakdown-bound (50%) but higher values, up to about
+C<QUANTILE=.75> are more efficient under milder deviations
+from multivariate normality.
+
+=item PRINT=
+
+This parameter controls the printed output from the
+macro, and should be one of the following: NONE,
+SOME, ALL.  Unless C<PRINT=NONE>, opt[1] is modified.
+[Default: C<PRINT=SOME>]
+
+=item OUT=
+
+Output data set corresponding to the input C<DATA=> data set,
+with classical Mahalanobis distances (DISTANCE), robust 
+distances (RDIST), and observation weights (WEIGHT).
+[Default: C<OUT=OUTDATA>]
+
+=item OUTR=
+
+Name for the output data set containing the robust 
+correlation matrix, a C<TYPE=CORR> data set.  This data set
+is only produced if the C<OUTR=> name is specified;
+if so, the macro fiddles with opt[3].
+[Default: OUTR=]
+
+=item OUTC=
+
+Name for the output data set containing the robust 
+covariance matrix. [Default: C<OUTC=OUTCOV>]                
+
+=item PLOT=
+
+If non-blank, a plot RDIST * DISTANCE is produced,
+with reference lines and case labels identifying
+outliers. [Default: C<PLOT=RDIST>]
+
+=item SUBSET=
+
+A logical expression to determine which observations
+are labeled in the plot. [Default: (C<WEIGHT=0>)]
+
+=item SYMBOL=
+
+Value for point symbols in the plot. [Default: C<SYMBOL=DOT>]
+
+=back 4
+
+=head2 Notes
+
+For best results with the graphic plot, you should specify appropriate
+graphic options, such as C<HTEXT=>, C<FTEXT=>, C<HTITLE=>, C<FTITLE=> in a
+C<GOPTIONS> statement.
+
+=head1 References
+
+Rousseeuw, P. J. (1984). "Least median of squares regression," JASA,
+79, 871-880.
+
+Rousseeuw, P. J. & Van Driessen, K. (1990) "A Fast Algorithm for the
+Minimum Covariance Determinant Estimator,"  Technometrics, 41, 212-223.
+
+

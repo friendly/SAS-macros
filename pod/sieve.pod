@@ -1,0 +1,91 @@
+=head1 Description
+
+The SIEVE program is a collection of SAS/IML modules for
+drawing sieve (or parquet) diagrams for a two-way contingency table.
+
+=head1 Usage
+
+  proc iml;
+  %include iml(sieve);
+  run sieve( f, vnames, lnames, title );
+
+=head2 Parameters
+
+The required parameters for the RUN SIEVE statement are:
+
+=over 4
+
+=item f
+
+A two-way contingency table, size r x c
+
+=item vnames
+
+Variable names, a 1x2 character matrix.
+vnames[,1]=row variable, vnames[,2]=column variable
+
+=item lnames
+
+Category names, a 2 x max(r,c) character matrix.
+lnames[1,]=row categories, vnames[2,]=column categories.
+
+=item title
+
+Plot title
+
+=back 4
+
+=head2 Global variables
+
+=over 4
+
+=item filltype
+
+=over 4
+
+=item OBS
+
+fill cells in proportion to observed frequencies
+
+=item OBSP
+
+like OBS, but also write obs. freq. in cell
+
+=item DEV
+
+fill in proportion to deviations from independence.
+
+=item EXL
+
+no fill, write expected frequency in cell
+
+=item EXP
+
+expfill, write expected frequency in cell
+
+=back 4
+
+=item margins
+
+=over 4
+
+=item ''
+
+nothing in margins
+
+= items TOTALS
+
+row/col totals in margins
+
+=back 4
+
+=item font
+
+font for text
+
+=item colors
+
+Names of two colors to use for the positive and
+negative residuals.  [Default: {BLUE RED}]
+
+=back 4

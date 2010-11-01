@@ -1,0 +1,112 @@
+<html> 
+<head>
+	<title>SAS Macro Programs: hemreg - Extract H and E matrices for multivariate regression</title>
+	<link rev=made href="mailto:friendly@yorku.ca">
+	<link rel="stylesheet" href="macdoc.css" type="text/css">
+	<!-- Author: Michael Friendly York University  -->
+</head>
+<body>
+<!-- pnuts --> 
+<CENTER>
+<TABLE WIDTH="100%" BGCOLOR="#FFFF99" >
+<TR>
+<TD width="10%"><FONT SIZE=+2><tt><b> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/hemreg.sas">hemreg</a></b></tt></FONT></TD>
+
+<TD align="center"><FONT FACE="Arial"><FONT SIZE=+1>Extract H and E matrices for multivariate regression</FONT></FONT></TD>
+
+<TD  width="10%" align="right"><FONT SIZE=+2><tt><b> <A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/hemreg.sas">hemreg</a></b></tt></FONT></TD>
+</TR>
+</TABLE>
+</CENTER>
+<h1>SAS Macro Programs: <tt>hemreg</tt></h1>
+
+$Version: <br>
+<b>
+<a href="../friendly.html">Michael Friendly</a><br>
+York University
+</b>
+<script language="JavaScript">
+<!--
+	document.write("Updated " + document.lastModified);
+// -->
+<hr>
+
+<h2>The <tt>hemreg</tt> macro (<A  HREF="http://euclid.psych.yorku.ca/ftp/sas/macros/hemreg.sas">
+<IMG  WIDTH=20 HEIGHT=20 SRC="../icons/ftp.gif" alt="[ftp]"> get hemreg.sas</A>)</h2>
+<h3>Extract H and E matrices for multivariate regression</h3>
+
+<p>The <tt>HEMREG</tt> macro extracts hypothesis (H) and error (E) matrices for an
+overall test in a multivariate regression analysis, in a form similar to
+that provided by the <code>OUTSTAT=</code> option with PROC GLM.  This is typically
+used with the <tt>HEPLOT</tt> macro, or the <tt>MPOWER</tt> macro for MMRA.</p>
+
+<H3><a name="method">Method</a></H3>
+<p>For a multivariate regression analysis, using</p>
+<pre>
+  proc glm outstat=stats;
+     model y1 y2 y3 = x1-x5;</pre>
+<p>proc glm will produce 5 separate 3x3, 1 df SSCP matrices for the separate
+predictors X1-X5, in the <code>OUTSTAT=</code> data set, but no SSCP matrix for
+the overall multivariate test. The <tt>HEMREG</tt> macro uses proc reg instead,
+obtains the HypothesisSSCP and ErrorSSCP tables using ODS, and massages
+these into the same format used by proc glm.</p>
+
+
+<H2><a name="usage">Usage</a></H2>
+<p>The <tt>HEMREG</tt> macro is defined with keyword parameters.  The <a href="#item_y"><code>Y=</code></a> and
+<a href="#item_x"><code>X=</code></a> parameters are required.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:</p>
+<pre>
+  %hemreg(y=SAT PPVT RAVEN, x=N S NS NA SS);</pre>
+
+<H3><a name="parameters">Parameters</a></H3>
+<dl>
+<dt><strong><a name="item_data">DATA=</a></strong><br />
+</dt>
+<dd>
+Name of input dataset [Default: <code>DATA=_LAST_</code>]
+</dd>
+
+<dt><strong><a name="item_y">Y=</a></strong><br />
+</dt>
+<dd>
+List of response variables.  Must be an explicit,
+             blank-seaparated list of variable names.
+</dd>
+
+<dt><strong><a name="item_x">X=</a></strong><br />
+</dt>
+<dd>
+List of predictor variables.  Must be an explicit,
+             blank-seaparated list of variable names.
+</dd>
+
+<dt><strong><a name="item_hyp">HYP=</a></strong><br />
+</dt>
+<dd>
+name for the hypothesis _source_ [Default: <code>HYP=H</code>yp]
+</dd>
+
+<dt><strong><a name="item_out">OUT=</a></strong><br />
+</dt>
+<dd>
+The name of output HE dataset [Default: <code>OUT=HE</code>]
+</dd>
+</dl>      
+<h3>Example</h3>
+<pre>
+%include macros(hemreg);        *-- or include in an autocall library;
+
+%hemreg();
+</pre>
+
+<h3>See also</h3>
+<a href="meanplot.html">meanplot</a> Plot means for factorial designs<br>
+<a href="panels.html">panels</a> Display a set of plots in rectangular panels<br>
+<a href="stat2dat.html">stat2dat</a> Convert summary dataset to raw data equivalent<br>
+<hr>
+<!-- pnuts --> 
+
+</body>
+</html>

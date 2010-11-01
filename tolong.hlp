@@ -1,0 +1,81 @@
+%tolong
+----------------------------------------------------------------------
+Description
+
+  The %tolong macro will reshape a data set from wide format to long
+  format. 
+
+Syntax
+
+  %tolong(widedata,longdata,id,suffix,suffixlo,suffixhi,vars,
+	  types=,lengths=,numprint=,quiet=)
+
+  widedata - name of input data file that is in wide form
+  longdata - name of output data file that will be in long form
+  id       - variable that uniquely identifies the wide records
+  suffix   - variable name for the suffix of the wide variables
+  suffixlo - the lowest value of the suffix variable
+  suffixhi - the highest value of the suffix variable
+  vars     - a list of the base names to transpose
+
+  optional parameters
+    types    - a list of the types of the long variables separated by spaces.
+               N for numeric and C for character. This is optional. If omitted, 
+               all variables are assumed to be numeric.
+    lengths  - a list of the lengths of the long variables separated by spaces.
+               This is optional.  If omitted, lengths of 8 are assumed.
+    numprint - number of wide records to print for verification
+    quiet    - suppress PROC PRINT and PROC MEANS for verification
+               NO - display proc print and proc means
+               YES - suppress display of proc print and proc means 
+
+
+Examples
+
+  data wide; 
+    input famid faminc96 faminc97 faminc98 ; 
+    cards; 
+  1 40000 40500 41000 
+  2 45000 45400 45800 
+  3 75000 76000 77000 
+  ; 
+  run; 
+
+  %tolong(wide,long,famid,year,96,98,faminc); 
+
+  The data set in long format will look like this:
+
+  OBS    FAMID    YEAR    FAMINC 
+   1       1       96      40000 
+   2       1       97      40500 
+   3       1       98      41000 
+   4       2       96      45000 
+   5       2       97      45400 
+   6       2       98      45800 
+   7       3       96      75000 
+   8       3       97      76000 
+   9       3       98      77000 
+
+  Reshaping two variables at the same time:
+  %tolong(wide2,long2,famid,year,96,98,faminc spend); 
+
+Authors
+
+  Michael Mitchell
+  mnm@ucla.edu
+  UCLA Academic Technology Services
+  Statistical Consulting Group
+
+Also See
+
+  See a complete example in
+    http://www.ats.ucla.edu/stat/sas/modules/tolong.htm
+  Also see the help from 
+    %net_help(towide, http://www.ats.ucla.edu/stat/sas/macros)
+  Also see the macro itself from 
+    http://www.ats.ucla.edu/stat/sas/macros/tolong.sas.txt
+
+
+
+
+
