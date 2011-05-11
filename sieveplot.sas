@@ -1,7 +1,7 @@
  /*--------------------------------------------------------------*
   *    Name: sieveplot.sas                                       *
   *   Title: Macro program for sieve diagrams                    *
-        Doc: http://www.math.yorku.ca/SCS/sasmac/sieveplot.html   
+        Doc: http://datavis.ca/sasmac/sieveplot.html   
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 24 May 2004 11:20:12                                *

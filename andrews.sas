@@ -1,7 +1,7 @@
  /*--------------------------------------------------------------*
   *    Name: andrews.sas                                         *
   *   Title: Andrews function plots for multivariate data        *
-  *     Doc: http://www.math.yorku.ca/SCS/sasmac/nodoc.html      *
+  *     Doc: http://datavis.ca/sasmac/nodoc.html      *
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 19 Jul 2001 13:30:02                                *

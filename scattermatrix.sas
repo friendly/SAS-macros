@@ -9,7 +9,7 @@
 /*-----
  * group: Data presentation
  * purpose: Create a matrix of scatter plots, graphing pairs of variables from your data
- * notes: Find other good stuff at <a href="http://www.math.yorku.ca/SCS/vcd/">Michael Friendly's</a> Visualizing Categorical Data
+ * notes: Find other good stuff at <a href="http://datavis.ca/sasmac/">Michael Friendly's</a> Visualizing Categorical Data
  */
 
 

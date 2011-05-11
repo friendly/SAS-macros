@@ -1,7 +1,7 @@
  /*-------------------------------------------------------------------*
   *    Name: multnorm.sas                                             *
   *   Title: Tests and Plots for Multivariate Normality               *
-  *     Doc: http://www.math.yorku.ca/SCS/sasmac/multnorm.html        *
+  *     Doc: http://datavis.ca/sasmac/multnorm.html        *
   *                                                                   *
   *  minimal syntax: %multnorm (var=variables);                       *
   *-------------------------------------------------------------------*

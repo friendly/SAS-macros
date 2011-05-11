@@ -1,7 +1,7 @@
  /*--------------------------------------------------------------*
   *    Name: webout.sas                                          *
   *   Title: Execute a SAS file producing HTML output            *
-  *     Doc: http://www.math.yorku.ca/SCS/sasmac/nodoc.html      *
+  *     Doc: http://datavis.ca/sasmac/nodoc.html      *
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created:  10-04-1997                                         *

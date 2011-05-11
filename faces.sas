@@ -1,7 +1,7 @@
 /*-------------------------------------------------------------------*
  *    Name: faces.sas                                                *
  *   Title: Draw asymmetric faces to represent multivariate data     *
- *     Doc: http://www.math.yorku.ca/SCS/sasmac/faces.html           *
+ *     Doc: http://datavis.ca/sasmac/faces.html           *
  *                                                                   *
  * Usage:  See comments in macro parameter lists                     *
  *                                                                   *

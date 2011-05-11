@@ -3,25 +3,27 @@
   *   Title: Macro to generate SYMBOL statement for each GROUP        *
         Doc: http://www.datavis.ca/sasmac/gensym.html              
   *-------------------------------------------------------------------*
-  *  Author:  Michael Friendly            <friendly@yorku.ca>         *
-  * Created: 05 Jan 1999 12:55                                        *
-  * Revised: 05 Apr 2009 12:47:50                                     *
-  * Version: 1.4-1                                                    *
-  * 1.1 - Added FONT= for those special symbol fonts (only one)       *
-  *       Added START= for first SYMBOL stmt.                         *
-  * 1.2 - Added WIDTH= and REPEAT=                                    *
-  *       Fixed bug with large N=                                     *
-  * 1.3 - Added LABEL= to set a pointlabel option (suggested by Eric  *
-  *       Eisenstein)                                                 *
-  *  - Fixed buglet with START=                                       *
-  *  - Added CI= for color of interpolation                           *
-  *  - Default CI= changed to empty                                   *
-  * 1.4
-  *  - CI made to recycle
-  *  - WIDTH made to recycle
-  *  - Modified default SYMBOLS=
-  *                                                                   *
-  * From ``Visualizing Categorical Data'', Michael Friendly (2000)    *         
+     Author:  Michael Friendly            <friendly@yorku.ca>          
+    Created: 05 Jan 1999 12:55                                         
+    Revised: 05 Apr 2009 12:47:50                                      
+    Version: 1.5-0                                                     
+    1.1 - Added FONT= for those special symbol fonts (only one)        
+          Added START= for first SYMBOL stmt.                          
+    1.2 - Added WIDTH= and REPEAT=                                     
+          Fixed bug with large N=                                      
+    1.3 - Added LABEL= to set a pointlabel option (suggested by Eric   
+          Eisenstein)                                                  
+     - Fixed buglet with START=                                        
+     - Added CI= for color of interpolation                            
+     - Default CI= changed to empty                                    
+    1.4
+     - CI made to recycle
+     - WIDTH made to recycle
+     - Modified default SYMBOLS=
+    1.5
+     - H allowed to be vectorized and recycle
+                                                                       
+    From ``Visualizing Categorical Data'', Michael Friendly (2000)              
   *-------------------------------------------------------------------*/
  /*=
 =Description:
@@ -42,9 +44,9 @@
  The arguments may be listed within parentheses in any order, separated
  by commas. For example: 
  
-	%gensym(n=4);
+	%gensym(n=4, colors=red blue, line=1 2 3 4);
  
- The INTERP=, LINE=, SYMBOLS=, and COLORS= parameters are each lists
+ The H=, INTERP=, LINE=, SYMBOLS=, and COLORS= parameters are each lists
  of one or more values. If fewer than N (blank delimited) values are
  given,  the available values are reused cyclically as needed.
 
@@ -55,8 +57,7 @@
 
 * START=       Number of the first symbol statement. [Default: START=1]
 
-* H=           The height of the plotting symbol. The same H= value is
-               used for all SYMBOL statements. [Default: H=1.5]
+* H=           List of one or more heights of the plotting symbol(s).  [Default: H=1.5]
 
 * INTERP=      List of one or more interpolation options. 
                [Default: INTERP=NONE]
@@ -64,7 +65,7 @@
 * LINE=        List of one or more numbers in the range 1..46 giving
                SAS/GRAPH line styles [Default: LINE=1]
 
-* SYMBOLS=     A list of one or more names of SAS/GRAPH plotting symbols.
+* SYMBOLS=     A list of one or more names of SAS/GRAPH plotting symbols. 
                [Default: SYMBOLS=%STR(SQUARE TRIANGLE : $ = X _ Y)]
 
 * COLORS=      A list of one or more names of SAS/GRAPH colors.
@@ -120,7 +121,7 @@
 
 *options mprint symbolgen;
     %*--  symbols, colors, line styles, and interp are recycled as needed;
-  %local chr col int lin k cic;
+  %local chr col int lin k cic ht;
   %do k=&start %to %eval(&n + &start -1) ;
      %if %length(%scan(&symbols, &k, %str( ))) = 0 
 	      %then %let symbols = &symbols &symbols;
@@ -132,6 +133,8 @@
 	      %then %let line = &line &line;
      %if %length(%scan(&width,   &k, %str( ))) = 0 
 	      %then %let width = &width &width;
+     %if %length(%scan(&h,   &k, %str( ))) = 0 
+	      %then %let h = &h &h;
      %if %length(&ci) 	%then %do;
          %if %length(%scan(&ci,  &k, %str( ))) = 0 
 	           %then %let ci = &ci &ci;
@@ -143,14 +146,26 @@
      %let lin =%scan(&line,   &k, %str( ));
      %let wid =%scan(&width,  &k, %str( ));
      %let lin =%scan(&line,   &k, %str( ));
+     %let ht  =%scan(&h,      &k, %str( ));
 
-	  %if &k=99 %then %let repeat=999;
+	 %if &k=99 %then %let repeat=999;
+/*	 
+ 	 %let symstr = %nstr(
+      %if %length(&font) 	  %then font=&font;
+	  %if %length(&label) 	%then pointlabel=%str( (h=1 "#&label") );
+	  height=&ht value=&chr color=&col i=&int l=&lin w=&wid r=&repeat
+	  %if %length(&cic) 	%then %str(ci=&cic);
+	  )
+	  ;
+*/
+  
      symbol&k
       %if %length(&font) 	  %then font=&font;
 	  %if %length(&label) 	%then pointlabel=%str( (h=1 "#&label") );
-	  height=&h value=&chr color=&col i=&int l=&lin w=&wid r=&repeat
+	  height=&ht value=&chr color=&col i=&int l=&lin w=&wid r=&repeat
 	  %if %length(&cic) 	%then %str(ci=&cic);
 	  ;
+
 	%if &k=99 %then %goto done;
   %end;
 *options nomprint nosymbolgen;

@@ -82,7 +82,7 @@
 =Dependencies:
 
  If you use the SMOOTH= parameter, the LOWESS macro is required. See
- http://www.math.yorku.ca/SCS/sssg/lowess.html
+ http://datavis.ca/sasmac/lowess.html
  
  =*/
  

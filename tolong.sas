@@ -1,7 +1,7 @@
  /*--------------------------------------------------------------*
   *    Name: tolong.sas                                          *
   *   Title:                                                     *
-  *     Doc: http://www.math.yorku.ca/SCS/sasmac/nodoc.html      *
+  *     Doc: http://datavis.ca/sasmac/nodoc.html      *
   *--------------------------------------------------------------*
   *  Author:  Michael Mitchell            <mnm@ucla.edu>         *
   * Created: 21 Nov 2002 17:00:45                                *

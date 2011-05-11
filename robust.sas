@@ -1,7 +1,7 @@
  /*-------------------------------------------------------------------*
   * Name:   robust.sas                                                *
   * Title:  M-estimation for robust models fitting via IRLS           *
-  *   Doc:  http://www.math.yorku.ca/SCS/vcd/robust.html              *
+  *   Doc:  http://datavis.ca/sasmac/robust.html              *
   *                                                                   *
   *-------------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@YorkU.ca>         *

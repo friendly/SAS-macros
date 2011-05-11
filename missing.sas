@@ -1,7 +1,7 @@
  /*--------------------------------------------------------------*
   *    Name: missing.sas                                         *
   *   Title: Screen data for missing variables                   *
-  *     Doc: http://www.math.yorku.ca/SCS/sasmac/nodoc.html      *
+  *     Doc: http://datavis.ca/sasmac/nodoc.html      *
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 11 Mar 2000 11:15:39                                *

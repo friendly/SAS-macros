@@ -1,7 +1,7 @@
  /*--------------------------------------------------------------*
   *    Name: sasgfile.sas                                        *
   *   Title: Set the filename of the output graphics file        *
-  *     Doc: http://www.math.yorku.ca/SCS/sasmac/nodoc.html      *
+  *     Doc: http://datavis.ca/sasmac/nodoc.html      *
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 12 Feb 2001 10:24:14                                *

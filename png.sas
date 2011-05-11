@@ -1,7 +1,7 @@
  /*--------------------------------------------------------------*
   *    Name: png.sas                                             *
   *   Title: Set graphics parameters for PNG file output         *
-  *     Doc: http://www.math.yorku.ca/SCS/sasmac/nodoc.html      *
+  *     Doc: http://datavis.ca/sasmac/nodoc.html      *
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created:   5 Dec 1996 14:30:47                               *

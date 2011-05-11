@@ -133,7 +133,7 @@
  
  These are all available from http://euclid.psych.yorku.ca/ftp/sas
  (though in different subdirectories), or via the documentation pages,
- http://www.math.yorku.ca/SCS/sasmac/
+ http://datavis.ca/sasmac/
  
   
  =*/

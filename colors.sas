@@ -1,7 +1,7 @@
  /*--------------------------------------------------------------*
   *    Name: colors.sas                                          *
   *   Title: Produce color chart from a data set of color values *
-  *     Doc: http://www.math.yorku.ca/SCS/sasmac/nodoc.html      *
+  *     Doc: http://datavis.ca/sasmac/nodoc.html      *
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 10 Apr 98 11:16                                     *

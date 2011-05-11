@@ -13,10 +13,12 @@
 *.brf
 *.out
 _*.sas
+*.eml
 *0.sas
 # special files
 tags
 Distfile
+.dir.*
 # exclude directories
 mtest/
 Private/

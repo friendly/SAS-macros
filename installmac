@@ -2,6 +2,7 @@
 
 ###
 # install a sas macro and the .html file
+# Remember to update macmenu2.js
 #
 #   installmac [-i] [-u] [-d dir] mac mac ...
 ###
@@ -9,7 +10,7 @@
 use Getopt::Std;
 &getopts('itud:');
 
-$htmlbase = '/SCS/sasmac';
+$htmlbase = '/datavis/sasmac';
 $sdir = $opt_d;
 $sdir .= '/' if ($sdir && $sdir !=~ m|.*/$|);
 $testing = $opt_t;
@@ -18,9 +19,9 @@ $interactive = $opt_i;
 $interactive = 1;
 $uninstall = $opt_u;
 
-$sasmac='/home/friendly/SCS/sasmac';
-#$serverbase='/home/Users/FTP/pub/sas/macros';
-$serverbase='/home/ftp/pub/sas/macros';
+$sasmac='/home/friendly/datavis.ca/sasmac';
+#$serverbase='/home/ftp/pub/sas/macros';
+$serverbase='/home/friendly/datavis.ca/sas/macros';
 $macdir='/home/friendly/sasuser/macros';
 
 $xref="$sasmac/.xref";

@@ -1,7 +1,7 @@
  /*--------------------------------------------------------------*
   *    Name: gsize.sas                                           *
   *   Title: Set SAS/Graph size in a device-independent way      *
-  *     Doc: http://www.math.yorku.ca/SCS/sasmac/nodoc.html      *
+        Doc: http://datavis.ca/sasmac/nodoc.html      
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 11 May 2009 15:17:52                                *
@@ -45,7 +45,7 @@
 
 * OPTIONS=    Other graphic options
 
-* DPI=        Dots per inch, for pixel devices [Default: DPI=72]
+* DPI=        Dots per inch, for pixel devices [Default: DPI=96]
 
 ==Global parameters:
 
@@ -76,7 +76,7 @@
 	xpixels=,   /* Horizontal size (pixels)  */
 	ypixels=,   /* Vertical size (pixels)    */
 	options=,   /* Other graphic options     */
-	dpi=72      /* dots per inch, for pixel devices */ 
+	dpi=96      /* dots per inch, for pixel devices */ 
 	);
 
 	%*-- List of device types requiring size in pizels;
@@ -89,7 +89,7 @@
 		%let devtyp=;
 		%let thisdev = &SYSDEVIC;
 		%end;
-	%put GSIZE: pixdevs = |&pixdevs| thisdev=|&thisdev| devtyp=|&devtyp|;
+	%*put GSIZE: pixdevs = |&pixdevs| thisdev=|&thisdev| devtyp=|&devtyp|;
 
 	%*-- Determine current hsize and vsize settings.  Assume inches;
 	%*put HSIZE = %sysfunc(getoption(HSIZE));
