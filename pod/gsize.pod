@@ -1,0 +1,81 @@
+=head1 Description
+
+The GSIZE macro is designed to deal with the following infelicity
+in SAS/Graph:  For most graphic devices, the size of graphs is set
+by the HSIZE and GSIZE graphic options; however, for pixel-based
+devices, you must use XPIXELS and YPIXELS.  Thus, you have to change
+the GOPTIONS you set to switch from, e.g., a PS or PDF device to
+a pixel-based device (e.g., JPG, GIF).
+
+The GSIZE macro allows all graphic output sizes to be set via
+HSIZE and VSIZE, with units in IN or CM.
+
+=head1 Usage
+
+The GSIZE macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %global devtyp; %let devtyp=JPG;
+  %gsize(hsize=6, vsize=6, options=htext=1.8);
+
+=head2 Parameters
+
+=over 4
+
+=item HSIZE=
+
+Horizontal size
+
+=item VSIZE=
+
+Vertical size
+
+=item UNIT=
+
+Unit for HSIZE and VSIZE: either IN or CM [Default: C<UNIT=IN>]
+
+=item XPIXELS=
+
+Horizontal size (pixels)
+
+=item YPIXELS=
+
+Vertical size (pixels)
+
+=item OPTIONS=
+
+Other graphic options
+
+=item DPI=
+
+Dots per inch, for pixel devices [Default: C<DPI=96>]
+
+=back 4
+
+=head2 Global parameters
+
+The macro uses one global macro parameter, C<DEVTYP>, to determine whether
+the current graphic device driver is pixel-based. This parameter can be initialized in 
+the AUTOEXEC.SAS file, or in device-specific macros
+
+=over 4
+
+=item DEVTYP
+
+String value, the type of graphic device driver.  The
+           values GIF, JPG and PNG cause the macro to translate
+        HSIZE and VSIZE to XPIXELS and YPIXELS.
+           All other values are ignored.
+
+
+
+=back 4
+
+=head1 Notes
+
+Device drivers in SAS/Graph have a maximum horizontal and vertical size
+set as XMAX and YMAX. This macro doesn't check whether the computed
+sizes exceeed those limits.
+
+
