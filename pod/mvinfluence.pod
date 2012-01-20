@@ -1,0 +1,149 @@
+=head1 Description
+
+The MVINFLUENCE macro calculates and plots measures of influence in a
+multivariate regression model.  These are generalizations of the usual
+influence measures for univariate regression described by Barrett &
+Ling (1992).  This is an initial, experimental implementation designed
+to explore thiese methods.
+
+Three types of plots are provided (controlled by the C<PLOTS=> argument) 
+
+COOKD: scatterplot of generalized Cook's D against generalized leverage
+STRES: bubble plot of generalized squared studentized residual against generalized leverage using Cook's D as bubble size
+LR:    bubble plot of log residual factor against log leverage factor using Cook's D as bubble size 
+
+=head1 Usage
+
+The MVINFLUENCE macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %mvinfluence(data=rohwer, x=n s ns na ss, y=SAT PPVT Raven)
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set [Default: C<DATA=_LAST_>]
+
+=item Y=
+
+Names of response variables
+
+=item X=
+
+Names of predictor variables
+
+=item ID=
+
+The name of an observation ID variable
+
+=item BUBBLE=
+
+Bubble proportional to: COOKD.  No other choices in this implementation [Default: C<BUBBLE=COOKD>]
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=COOKD>]
+
+=item PRINT=
+
+Print the C<OUT=> data set? Not yet implemented. [Default: C<PRINT=NONE>]
+
+=item PLOTS=
+
+Which plots to produce? NONE, ALL, or one or more of COOK, STRES, LR [Default: C<PLOTS=ALL>]
+
+=item LABEL=
+
+Points to label: ALL, NONE, or INFL [Default: C<LABEL=INFL>]
+
+=item INFL=
+
+Criteria for influential [Default: INFL=%STR(((HAT>&HCRIT)|COOKD>.5))]
+
+=item LSIZE=
+
+Obs label size.  The height of other text is controlled by the C<HTEXT=> goption [Default: C<LSIZE=1.6>]
+
+=item LCOLOR=
+
+Obs label color [Default: C<LCOLOR=BLACK>]
+
+=item LPOS=
+
+Obs label position [Default: C<LPOS=5>]
+
+=item LFONT=
+
+Obs label font
+
+=item BSIZE=
+
+Bubble size scale factor [Default: C<BSIZE=10>]
+
+=item BSCALE=
+
+Bubble size proportional to AREA or RADIUS [Default: C<BSCALE=AREA>]
+
+=item BCOLOR=
+
+Bubble color [Default: C<BCOLOR=RED>]
+
+=item BFILL=
+
+Bubble fill? SOLID or GRADIENT
+
+=item REFCOL=
+
+Color of reference lines [Default: C<REFCOL=BLACK>]
+
+=item REFLIN=
+
+Line style for reference lines; 0->NONE [Default: C<REFLIN=33>]
+
+=item NAME=
+
+The name of the graph in the graphic catalog [Default: C<NAME=MVINFL>]
+
+=item GOUT=
+
+The name of the graphics catalog
+
+
+=back 4
+
+=head2 Dependencies
+
+%labels
+%gskip
+
+
+=head1 References
+
+* Barrett, B. E. & Ling, R. F. (1992). General classes of influence measures for multivariate
+regression, I<JASA>, 87, # 417, 184-191.
+
+* Barrett, B. E. (2003): Understanding Influence in Multivariate Regression, I<Communications in Statistics
+- Theory and Methods>, 32:3, 667-680
+
+* Some code from Timm & Mieczkowski, Univariate and Multivariate General Linear Models,
+http://ftp.sas.com/samples/A55809, Program 5_6.sas, was used in the initial implementation.                      
+
+
+
+=head1 Examples
+
+  %include data(rohwer);
+  data rohwer;
+     set rohwer;
+     where group=2;
+     drop subjno;
+     case = _n_;
+  %include macros(mvinfluence);
+  %mvinfluence(data=rohwer, x=n s ns na ss, y=SAT PPVT Raven, id=case,
+  bfill=gradient, plots=ALL);
+
+

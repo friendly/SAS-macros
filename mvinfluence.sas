@@ -82,20 +82,30 @@
 ==Dependencies:
 
 %labels
+%gskip
 
 =References:
 
-Barrett, B. E. & Ling, R. F. (1992). General classes of influence measures for multivariate
-regression, JASA, 87, # 417, 184-191.
+* Barrett, B. E. & Ling, R. F. (1992). General classes of influence measures for multivariate
+regression, I<JASA>, 87, # 417, 184-191.
 
-Barrett, B. E. (2003): Understanding Influence in Multivariate Regression, Communications in Statistics
-- Theory and Methods, 32:3, 667-680
+* Barrett, B. E. (2003): Understanding Influence in Multivariate Regression, I<Communications in Statistics
+- Theory and Methods>, 32:3, 667-680
 
-Some code from Timm & Mieczkowski, Univariate and Multivariate General Linear Models,
+* Some code from Timm & Mieczkowski, Univariate and Multivariate General Linear Models,
 http://ftp.sas.com/samples/A55809, Program 5_6.sas, was used in the initial implementation.                      
 
 
 =Examples:
+	%include data(rohwer);
+	data rohwer;
+		set rohwer;
+		where group=2;
+		drop subjno;
+		case = _n_;
+	%include macros(mvinfluence);
+	%mvinfluence(data=rohwer, x=n s ns na ss, y=SAT PPVT Raven, id=case,
+	bfill=gradient, plots=ALL);
 
  =*/
 
@@ -260,6 +270,7 @@ run;
 		symbol1 v=dot;
 		axis1 label=(a=90);
 		run; quit;
+	%gskip;
 	%end;
 
 
@@ -285,6 +296,7 @@ run;
 			;
 		axis1 label=(a=90);
 		run; quit;
+	%gskip;
 	%end;
 
 %if &plots = ALL or %index(&plots,LR)>0 %then %do;
@@ -299,7 +311,7 @@ run;
 		xmin = floor(xmin); xmax = ceil(xmax);
 		ymin = floor(ymin); ymax = ceil(ymax);
 		length color function $8;
-		retain xsys ysys '2' color "&refcol" line &refline when 'B';
+		retain xsys ysys '2' color "&refcol" line &reflin when 'B';
 		drop xmin ymin xmax ymax v;
 
 		*-- lines with slope = -1 along x axis;
