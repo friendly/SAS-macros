@@ -5,8 +5,8 @@
   *-------------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>         *
   * Created: 03 Feb 98 11:32                                          *
-  * Revised: 18 Mar 2001 11:17:49                                     *
-  * Version: 1.3                                                      *
+  * Revised: 06 Sep 2011 09:19:38                                     *
+  * Version: 1.3-1                                                    *
   * 1.1  Added FULLRANK parameter                                     *
   * 1.2  Now handles multiple VARiables                               *
   * 1.3  Added PREFIX=VARNAME and PREFIX=BLANK for more flexibility   *
@@ -63,7 +63,7 @@
            value of the VAR= variable to the prefix.  Otherwise, the
            dummy variables are named by appending numbers, 1, 2, ...
            to the prefix.  The resulting name must be 8 characters or
-           less.
+           less and contain only characters legal in variable names.
 
 * BASE=    Indicates the level of the baseline category, which is given
            values of 0 on all the dummy variables.  You can give one or 

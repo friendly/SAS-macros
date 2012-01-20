@@ -4,18 +4,22 @@
         Doc: http://www.datavis.ca/sasmac/inflogis.html            
   *                                                                   *
   *-------------------------------------------------------------------*
-  *  Author:  Michael Friendly            <friendly@yorku.ca>         *
-  * Created:  14 Nov 1993 10:42:11                                    *
-  * Revised:  16 Jan 2009 16:00:29                                    *
-  * Version:  1.3-1                                                   *
-  *  - Added TRIALS= parameter(for event/trials syntax)               *
-  *  - Added OUT= parameter                                           *
-  *  - Added INFL= parameter (what's influential?)                    *
-  *  - Refinements to labeling influential observations               *
-  *                                                                   *
-  * Dependencies:  %gskip (needed for eps/gif only)                   *
-  *                                                                   *
-  * From ``Visualizing Categorical Data'', Michael Friendly (2000)    *         
+     Author:  Michael Friendly            <friendly@yorku.ca>          
+    Created:  14 Nov 1993 10:42:11                                     
+    Revised:  08 Jan 2012 15:44:00                                     
+    Version:  1.4-1                                                   
+     - Added TRIALS= parameter(for event/trials syntax)                
+     - Added OUT= parameter                                            
+     - Added INFL= parameter (what's influential?)                     
+     - Refinements to labeling influential observations                
+	 1.4 
+	  Added BFILL= option for filled bubbles.  BFILL=gradient is useful
+	  Added LFONT= option for font of bubble labels 
+	  Sort descending by &bubble when BFILL specified                           
+                                                                       
+    Dependencies:  %gskip (needed for eps/gif only)                    
+                                                                       
+    From ``Visualizing Categorical Data'', Michael Friendly (2000)              
   *-------------------------------------------------------------------*/
  /*=
 =Description:
@@ -77,11 +81,16 @@ size of a bubble symbol.
 
 * LPOS=       Observation label position [Default: LPOS=5]
 
+* LFONT=      Font used for observation labels.
+ 
 * BSIZE=      Bubble size scale factor [Default: BSIZE=10]
 
 * BSCALE=     Bubble size proportional to AREA or RADIUS [Default: BSCALE=AREA]
 
 * BCOLOR=     Bubble color [Default: BCOLOR=BLACK]
+
+* BFILL=      Bubble fill? Options are BFILL=SOLID | GRADIENT, where the
+              latter uses a gradient version of BCOLOR
 
 * REFCOL=     Color of reference lines [Default: REFCOL=BLACK]
 
@@ -113,9 +122,11 @@ size of a bubble symbol.
                    /* text is controlled by the HTEXT= goption*/
    lcolor=BLACK,   /* obs label color                         */
    lpos=5,         /* obs label position                      */
+   lfont=,         /* obs label font                          */
    bsize=10,       /* bubble size scale factor                */
    bscale=AREA,    /* bubble size proportional to AREA or RADIUS */
-   bcolor=BLACK,   /* bubble color                            */
+   bcolor=RED,     /* bubble color                            */
+   bfill=,         /* fill bubbles?  SOLID|GRADIENT              */
    refcol=BLACK,   /* color of reference lines                */
    reflin=33,      /* line style for reference lines; 0->NONE */
    loptions=noprint,/* options for PROC LOGISTIC              */
@@ -170,6 +181,13 @@ data &out;
          hat = 'Leverage (Hat value)'
          studres = 'Studentized deviance residual';
    studres = resdev / sqrt(1-hat);
+   run;
+
+%if %length(&bfill) %then %do; 
+proc sort data=&out;
+	by  descending &bubble;
+	run;
+%end;
 
 %do i=1 %to &ny;
    %let gyi = %scan(&gy, &i);
@@ -181,7 +199,7 @@ data &out;
    data _label_;
       set &out nobs=n;
       length xsys $1 ysys $1 function $8 position $1 text $16 color $8;
-      retain xsys '2' ysys '2' function 'LABEL' color "&lcolor";
+      retain xsys '2' ysys '2' function 'LABEL' color "&lcolor" when 'A';
       retain hcrit hcrit1;
       drop hcrit;
       *keep &id x y xsys ysys function position text color size position
@@ -203,6 +221,9 @@ data &out;
          end;
       size=&lsize;
       position="&lpos";
+	  %if %length(&lfont) %then %do; 
+		style="&lfont";
+		%end;
       %if &label = INFL %then %do;
 /*         if %scan(&gy,1) > &dev
 		   or difchisq > &dev
@@ -242,6 +263,9 @@ data &out;
               %end;
            %end;
            bsize=&bsize  bcolor=&bcolor  bscale=&bscale
+		   %if %length(&bfill) %then %do; 
+			bfill=&bfill
+			%end;
            name="&name"
            Des="Logistic influence plot for &y";
      axis1 label=(a=90 r=0);

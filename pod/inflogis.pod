@@ -1,6 +1,6 @@
-=head1 Description:
+=head1 Description
 
-The INFLOGIS macro produces influence plots for a logistic regression
+This SAS macro produces influence plots for a logistic regression
 model.  The plot shows a measure of badness of fit for a given
 case (DIFDEV or DIFCHISQ) vs.  the fitted probability (PRED) or
 leverage (HAT), using an influence measure (C or CBAR) as the
@@ -8,11 +8,16 @@ size of a bubble symbol.
 
 =head1 Usage
 
-The INFLOGIS macro is called with keyword parameters.
+The inflogis macro is called with keyword parameters.
 The arguments may be listed within parentheses in any order, separated
 by commas. For example:
 
-   %inflogis();
+  %include data(arthrit);
+  %inflogis(data=arthrit,
+        y=better,
+        x=_sex_ _treat_ age,
+        id=case,
+        );
 
 =head2 Parameters
 
@@ -21,7 +26,7 @@ by commas. For example:
 =item DATA=
 
 Specifies the name of the input data set to be analyzed.
-[Default: C<DATA=_LAST_>]
+             [Default: C<DATA=_LAST_>]
 
 =item Y=
 
@@ -34,6 +39,10 @@ Name of trials variable (for event/trials syntax)
 =item X=
 
 Names of predictors
+
+=item CLASS=
+
+Names of class variables among predictors (V8)
 
 =item ID=
 
@@ -61,12 +70,18 @@ Points to label: ALL, NONE, or INFL [Default: C<LABEL=INFL>]
 
 =item DEV=
 
-DIFDEV/DIFCHISQ criterion for influential points [Default: C<DEV=4>]
+DIFDEV/DIFCHISQ criterion for infl pts [Default: C<DEV=4>]
+
+=item INFL=
+
+Specifies the criterion used to determine which observations
+             are influential (when used with C<LABEL=INFL>).
+             [Default: INFL=%STR(DIFCHISQ > &DEV OR &BUBBLE > 1)]
 
 =item LSIZE=
 
 Observation label size.  The height of other text is controlled
-by the C<HTEXT=> goption. [Default: C<LSIZE=1.5>]
+             by the C<HTEXT=> goption. [Default: C<LSIZE=1.5>]
 
 =item LCOLOR=
 
@@ -75,6 +90,10 @@ Observation label color [Default: C<LCOLOR=BLACK>]
 =item LPOS=
 
 Observation label position [Default: C<LPOS=5>]
+
+=item LFONT=
+
+Font used for observation labels.
 
 =item BSIZE=
 
@@ -87,6 +106,11 @@ Bubble size proportional to AREA or RADIUS [Default: C<BSCALE=AREA>]
 =item BCOLOR=
 
 Bubble color [Default: C<BCOLOR=BLACK>]
+
+=item BFILL=
+
+Bubble fill? Options are C<BFILL=SOLID >| GRADIENT, where the
+             latter uses a gradient version of BCOLOR
 
 =item REFCOL=
 
@@ -110,3 +134,4 @@ Name of the graphics catalog
 
 
 =back 4
+

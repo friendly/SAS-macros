@@ -4,22 +4,25 @@
         Doc: http://www.datavis.ca/sasmac/inflglim.html            
   *                                                                   *
   *-------------------------------------------------------------------*
-  *  Author:  Michael Friendly            <friendly@yorku.ca>         *
-  * Created:  24 Nov 1997 10:36:05                                    *
-  * Revised:  16 Jan 2009 15:49:19                                    *
-  * Version:  1.5-1                                                   *
-  *  - Fixed error if DIST= not specified. Added FREQ= parm           *
-  *  - Added MOPT= parm, INFL= parm (what's influential?)             *
-  *  1.4   Fixed make ... noprint for V7+                             *
-  *    Fixed numerous problems with GENMOD for V7+ (sigh)             *
-  *    Added PRINT= to control printing of OUT= data set              *
-  *  1.5 Added OFFSET=                                                *
-  *    Fixed problem with PRINT=N                                     *
-  *    Fixed problem with long variable names                         *
-  *                                                                   *
-  * Dependencies:  %gskip (needed for eps/gif only)                   *
-  *                                                                   *
-  * From ``Visualizing Categorical Data'', Michael Friendly (2000)    *         
+     Author:  Michael Friendly            <friendly@yorku.ca>          
+    Created:  24 Nov 1997 10:36:05                                     
+    Revised:  08 Jan 2012 16:31:02                                     
+    Version:  1.6-1                                                   
+     - Fixed error if DIST= not specified. Added FREQ= parm            
+     - Added MOPT= parm, INFL= parm (what's influential?)              
+     1.4   Fixed make ... noprint for V7+                              
+       Fixed numerous problems with GENMOD for V7+ (sigh)              
+       Added PRINT= to control printing of OUT= data set               
+     1.5 Added OFFSET=                                                 
+       Fixed problem with PRINT=N                                      
+       Fixed problem with long variable names                          
+	 1.6 
+	  Added BFILL= option for filled bubbles.  BFILL=gradient is useful
+	  Added LFONT= option for font of bubble labels                            
+                                                                       
+    Dependencies:  %gskip (needed for eps/gif only)                    
+                                                                       
+    From ``Visualizing Categorical Data'', Michael Friendly (2000)              
   *-------------------------------------------------------------------*/
  /*=
 =Description:
@@ -137,12 +140,17 @@
 * LPOS=       Observation label position, relative to the point.
               [Default: LPOS=5]
 
+* LFONT=      Font used for observation labels.
+ 
 * BSIZE=      Bubble size scale factor. [Default: BSIZE=10]
 
 * BSCALE=     Specifies whether the bubble size is proportional to AREA 
               or RADIUS. [Default: BSCALE=AREA]
 
 * BCOLOR=     The color of the bubble symbol. [Default: BCOLOR=RED]
+
+* BFILL=      Bubble fill? Options are BFILL=SOLID | GRADIENT, where the
+              latter uses a gradient version of BCOLOR
 
 * REFCOL=     Color of reference lines.  Reference
               lines are drawn at nominally 'large' values for HAT values,
@@ -167,7 +175,7 @@
      class=,         /* Names of class variables                */
      dist=,          /* Error distribution                      */
      link=,          /* Link function                           */
-	  offset=,        /* Offset variable(s)                      */
+     offset=,        /* Offset variable(s)                      */
      mopt=,          /* other model options (e.g., NOINT)       */
      freq=,          /* Freq variable                           */
      weight=,        /* Observation weight variable (zeros)     */
@@ -185,9 +193,11 @@
                      /* text is controlled by the HTEXT= goption*/
      lcolor=BLACK,   /* obs label color                         */
      lpos=5,         /* obs label position                      */
+	 lfont=,         /* obs label font                          */
      bsize=10,       /* bubble size scale factor                */
      bscale=AREA,    /* bubble size proportional to AREA or RADIUS */
      bcolor=RED,     /* bubble color                            */
+	 bfill=,         /* bubble fill? SOLID or GRADIENT          */
      refcol=BLACK,   /* color of reference lines                */
      reflin=33,      /* line style for reference lines; 0->NONE */
      name=INFLGLIM,  /* Name of the graph in the graphic catalog */
@@ -340,9 +350,9 @@ proc print data=&out noobs label;
    data _label_;
       set &out nobs=n;
       length xsys $1 ysys $1 function $8 position $1 text $12 color $8;
-      retain xsys '2' ysys '2' function 'LABEL' color "&lcolor";
+      retain xsys '2' ysys '2' function 'LABEL' color "&lcolor" when 'A';
       keep &id &class x y xsys ysys function position text color size
-           position hat difchi &bubble;
+           position hat difchi &bubble when style;
       x = &gxj;
       y = &gyi;
       %if &id ^= %str() %then %do;
@@ -363,6 +373,9 @@ proc print data=&out noobs label;
          %end;
       size=&lsize;
       position="&lpos";
+	  %if %length(&lfont) %then %do; 
+		style="&lfont";
+		%end;
       %if &label = INFL %then %do;
          if &infl then output;
          %end;
@@ -388,9 +401,13 @@ proc print data=&out noobs label;
          %end;
       %end;
       bsize=&bsize  bcolor=&bcolor  bscale=&bscale
+      %if %length(&bfill) %then %do; 
+			bfill=&bfill
+      %end;
       name="&name"
       Des="Influence plot for &resp (&gyi vs. &gxj)";
      axis1 label=(a=90 r=0);
+     format hat 3.2 streschi stresdev best3.1;
    run; quit;
    %gskip;
    %end;   /* gx loop */

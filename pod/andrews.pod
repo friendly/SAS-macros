@@ -1,0 +1,147 @@
+=head1 Description
+
+The ANDREWS macro calculates a periodic function, z(t), composed of sin
+and cosine components to represent each observation in a multivariate
+sample.  The macro plots this function vs. t, from -pi to +pi.
+
+Two function types may be calculate and plotted.  The original version,
+from Andrews (1972) defines
+
+  z(t) = Y1/sqrt(2) + Y2 sin(t) + Y3 cos(t) + Y4 sin(2t) + Y5 cos (2t) + ...
+
+A modified version, suggested by Khattree and Naik (2001) defines
+
+  z(t) = [Y1 + Y2 (sin(t)+cos(t)) + Y3 (sin(t)-cos(t)) +
+          Y4 (sin(2t)+cos(2t)) + Y5 (sin(2t)-cos(2t)) + ...]/sqrt(2)
+
+and appears to separate distinct observations better than the
+original formulation.
+
+These plots assume that the variables are measured on the same scale.
+If not, it is usually worthwhile to standardize them first, using
+either C<PROC STANDARD M=0 S>=1, or scaling each variable to a [0,1]
+range with C<PROC STDIZE METHOD=RANGE.>
+
+=head1 Usage
+
+The ANDREWS macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %andrews(var=x1-x8, id=name);
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+Name of input data set [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+List of variables to plot.  You can list variables
+             individually, or use any of the SAS shorthand notations,
+             such as C<VAR=X-X101> or C<VAR=INCOME--STATUS1>.
+             [Default: C<VAR=_NUMERIC_>]
+
+=item ID=
+
+Name of an ID variable (character or numeric), used in the 
+             legend for the curves, or as a curve label  [Default: C<ID=_N_>]
+
+=item TYPE=
+
+Type of function: ORIGinal or MODified [Default: C<TYPE=ORIG>]
+
+=item NUMPTS=
+
+Number of function points (-1) calculated for each
+             observation, on the range -pi to pi. [Default: C<NUMPTS=80>]
+
+=item ANNO=
+
+Name of an optional input annotate data set.   
+
+=item OUT=
+
+Name of the output data set.  The output data set
+             contains the variables Z, T, and ID, and (NUMPTS+1)*nobs
+             observations. [Default: C<OUT=ANDREWS>]
+
+=item PLOT=
+
+Draw the plot? [Default: C<PLOT=Y>]
+
+=item VAXIS=
+
+Custom vertical axis statement, e.g., C<VAXIS=AXIS1>,
+             where you have defined AXIS1 before calling the macro.
+             If not specified, the macro uses
+
+                  axis98 offset=(2) label=(angle=90 rotate=0);
+
+=item HAXIS=
+
+Custom horizontal axis statement, e.g., C<HAXIS=AXIS2.>
+             If not specified, the macro uses
+
+                 axis99 order=(-3.1416 to 3.1416 by 1.5708)
+                    value=(font=greek '-p' '-p/2' '0' 'p/2' 'p')
+                    offset=(2);
+
+=item SYMBOLS=
+
+Plotting symbols for the observations. [Default: C<SYMBOLS=NONE>]
+
+=item COLORS=
+
+List of colors to be used for the observations.
+             [Default: C<COLORS=BLACK RED GREEN BLUE BROWN YELLOW ORANGE PURPLE>]
+
+=item LINES=
+
+List of line styles for observations.
+             [Default: C<LINES=1 20 41 21 7 14 33 12 5>]
+
+=item LEGEND=
+
+Name of a LEGEND statement, to alter the default placement
+             or characteristics of the legend for observations.
+
+=item IDLOC=
+
+If non-blank, the legend is suppressed, and the curves are
+             labeled using the C<ID=> variable to the right of the last
+             point plotted for each observation.
+
+=item YLABEL=
+
+Y-axis label. [Default: YLABEL=z(t)]
+
+=item XLABEL=
+
+X-axis label. [Default: XLABEL=t]
+
+=item NAME=
+
+Name of graphics catalog entry. [Default: C<NAME=ANDREWS>]
+
+=item GOUT=
+
+Name of graphics catalog. [Default: C<GOUT=GSEG>]
+
+
+=back 4
+
+=head1 References
+
+Andrews, D. F. (1972).  Plots of high dimensional data.  Biometrics,
+  28, 125-136.
+
+Khattree, R. and Naik, D. N. (2001).  Andrews plots for multivariate data:
+  Some new suggestions and applications. J. Stat. Planning and Inference,
+  100(2), 411-425.
+
+
+

@@ -8,13 +8,13 @@
   * Revised:  5 Jan 1997 10:46:34                                *
   * Version:  1.1                                                *
   * Dependencies:                                                *
-  *   defined                                                    *
+  *   sasgfile                                                   *
   *--------------------------------------------------------------*/
  /*=
 =Description:
 
  The PDF macro initializes SAS/GRAPH to produce PDF output.
- It sets the name of the output postscript file based on the SASFILE
+ It sets the name of the output file based on the SASFILE
  or GSASFILE environment parameters, or 'grfout.pdf' if neither of these
  variables are defined.
  
@@ -27,12 +27,12 @@
 
 %macro pdf(
 	fn,
-	hsize=, 
-	vsize=
+	hsize=6in, 
+	vsize=6in
 	);
 
 	%let devtyp=PDF;
-	%let dev=pdfc;
+	%let dev=pdf;
 	%local gprolog gaccess;
 
 	%*-- Get the basename of the graphic file(s);
@@ -55,4 +55,5 @@ goptions device=&dev gaccess=&gaccess gsfname=gsasfile gsflen=80
    gsfmode=append  gprolog=&gprolog;	
 goptions lfactor=3;
 goptions ftext='helvetica'; 
+goptions hsize=&hsize vsize=&vsize;
 %mend;

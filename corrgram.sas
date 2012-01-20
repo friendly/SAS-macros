@@ -5,14 +5,15 @@
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 24 Nov 2000 07:10:52                                *
-  * Revised: 12 Sep 2007 14:57:45                                *
-  * Version: 1.2-1                                               *
+  * Revised: 30 Oct 2011 11:58:56                                *
+  * Version: 1.2-2                                               *
   *  1.1 Added FILL=L type for parametric ellipse                *
   *  1.2 Added FONT=  (suggestions from Ray.Lindsay@abare.gov.au)*
   *      Fixed problem with TITLE=                               *
   *      Added output of global macro variable VORDER            *
   *      Fixed buglet with var=a1-a8 (thx: Ian Wakeling)         *
-  *   Try to handle longer variable names (thx: Bill raynor)     *
+  *   Try to handle longer variable names (thx: Bill Raynor)     *
+  *   Updated for V 9.3 where CORR is builtin (thx: Bill Raynor) * 
   *                                                              *
   *--------------------------------------------------------------*/
  /*=
@@ -442,6 +443,9 @@ start dobar;
 	finish;
 */
 
+%macro corr;
+*-- corr()  defined in SAS 9.3;
+%if &sysver < 9.3 %then %do; 
 start corr (x);
   d = x - repeat(x[:,], nrow(x), 1);
   xpx=t(d)*d;                      * crossproduct;
@@ -451,6 +455,9 @@ start corr (x);
   corr= diag(v) * xpx * diag(v);   * correlation matrix;
   return (corr);
 finish;
+%end;
+%mend;
+%corr;
 
 start rinv(r);
 	*-- Matrix of all partial correlations is - R^{-1}, scaled to corr matrix;

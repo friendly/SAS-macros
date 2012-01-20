@@ -5,8 +5,8 @@
   *-------------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@YorkU.ca>         *
   * Created: 24 Oct 2006 16:10:05                                     *
-  * Revised: 28 May 2010 09:36:36                                     *
-  * Version:  2.4-5                                                   *
+  * Revised: 07 Oct 2011 15:22:31                                     *
+  * Version:  2.5-0                                                   *
   * Requires: IML                                                     *
   *                                                                   *
   *    Renamed from contour.sas, originally from SSSG.  contour.sas   *
@@ -18,6 +18,8 @@
   *  Fixed buglet with INANNO
   *  Added comments to OUT= annotate data set
   *  WIDTH=0 will now suppress the ellipse
+  * V 2.5
+  *  Added IWIDTH= to control width of interpolated line.
   *                                                                   *
   *-------------------------------------------------------------------*/
  /*=
@@ -114,6 +116,8 @@ data ellipse for one or more groups.
 
 * INTERP=     (synonym for I=)
 
+* IWIDTH=     Width for SYMBOL statement interpolate option
+
 * COLORS=     List of colors for each of the groups.  If there are  g  groups,
               specify  g  colors if ALL=NO, and g +  1  colors if ALL=YES.
               The colors specified are recycled as needed.
@@ -172,6 +176,7 @@ data ellipse for one or more groups.
 	vaxis=,                /* AXIS statement for vertical axis    */
 	i=none,                /* SYMBOL statement interpolate option */
 	interp=,               /* (synonym for I=)                    */
+	iwidth=,
 	colors=RED BLUE GREEN BLACK PURPLE BROWN ORANGE YELLOW ,
 	symbols=dot square circle + star -     plus   :      $     =,
 	hsym=1.2,               /* Height of plot symbols              */
@@ -483,7 +488,7 @@ data &out;
  
 %if %upcase(&plot)=YES %then %do;
 
-   %gensym(n=&ngroup, h=&hsym, interp=&i, colors=&colors, symbols=&symbols );
+   %gensym(n=&ngroup, h=&hsym, interp=&i, colors=&colors, symbols=&symbols, width=&iwidth );
 
    %if %length(&haxis)=0 %then %do;
       axis99 offset=(3);

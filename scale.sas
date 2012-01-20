@@ -1,6 +1,9 @@
 /*
 NOTE:  In V8.2+, this macro can be replaced by PROC STDIZE
- in SAS/STAT
+ in SAS/STAT, e.g.,
+ proc stdize data=in out=out method=range;
+   var ...;
+   
 */
  /*--------------------------------------------------------------*
   *    Name: scale.sas                                           *
@@ -9,8 +12,8 @@ NOTE:  In V8.2+, this macro can be replaced by PROC STDIZE
   *                                                              *
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
-  * Revised: 15 May 2006 09:15:49                                *
-  * Version: 1.0                                                 *
+  * Revised: 28 Sep 2011 14:19:39                                *
+  * Version: 1.0-1                                               *
   *--------------------------------------------------------------*/
  
 /*----------------------------------------------------*
@@ -51,6 +54,7 @@ proc iml;
      use &data;
      %if &id ^= %str() %then %let rn=rowname=&id;
      read all var {&var} into  x[ &rn colname=vars ];
+	 close &data;
      n = nrow( x);
      k = ncol( x);
      %if &minmax ^= %str() %then %do;

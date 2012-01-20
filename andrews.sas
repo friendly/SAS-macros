@@ -1,12 +1,12 @@
  /*--------------------------------------------------------------*
   *    Name: andrews.sas                                         *
   *   Title: Andrews function plots for multivariate data        *
-  *     Doc: http://datavis.ca/sasmac/nodoc.html      *
+  *     Doc: http://datavis.ca/sasmac/andrews.html    
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 19 Jul 2001 13:30:02                                *
-  * Revised: 14 Aug 2001 10:27:14                                *
-  * Version: 1.1                                                 *
+  * Revised: 30 Sep 2011 09:31:49                                *
+  * Version: 1.1-0                                               *
   * 1.1  Added IDLOC= (label curves in plot, not legend),        *
   *      YLABEL=, XLABEL=; inlined %words macro.                 *
   *                                                              *
@@ -34,7 +34,7 @@
  These plots assume that the variables are measured on the same scale.
  If not, it is usually worthwhile to standardize them first, using
  either PROC STANDARD M=0 S=1, or scaling each variable to a [0,1]
- range.
+ range with PROC STDIZE METHOD=RANGE.
 
 =Usage:
 
@@ -112,7 +112,7 @@
 
  Khattree, R. and Naik, D. N. (2001).  Andrews plots for multivariate data:
    Some new suggestions and applications. J. Stat. Planning and Inference,
-	??, ???-??? (in press).
+	100(2), 411-425.
 
  
  =*/

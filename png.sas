@@ -5,8 +5,8 @@
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created:   5 Dec 1996 14:30:47                               *
-  * Revised:  29 Dec 2002 13:16:43                               *
-  * Version:  1.1                                                *
+  * Revised:  30 May 2011 09:01:26                               *
+  * Version:  1.1-1                                              *
   * Dependencies:                                                *
   *   sasgfile                                                   *
   *   defined                                                    *
@@ -48,7 +48,11 @@
  E.g. for 600 dpi 6x4 images, use:
  
    goptions xmax=6in ymax=4in xpixels=3600 ypixels=2400;
- 
+
+ Under SAS 9.2, the PNG driver may produce lower resolution graphical output
+ with large XPIXELS and YPIXELS.  Use the ZPNG driver, or PNG300 for 300 dpi
+ output.
+  
 =Bugs:
 
  Doesn't work with procedures that produce multiple output graphics, e.g.,
@@ -60,11 +64,14 @@
 
 %global driver fig gsasfile gsasdir devtyp;
 
-%macro png(fn);
+%macro png(fn,
+	defdriv=PNG  /* Default to PNG driver  */
+);
    %sasgfile(png,&fn);
    %if not %defined(DRIVER) %then
        %let driver =%SYSGET(DRIVER);
-   %if &driver=%str() %then %let driver = png;
+   %if &driver=%str() %then %let driver = &defdriv;  
+   %*if &driver=%str() %then %let driver = png;
    %let dev=&driver;
    %let devtyp = PNG;
    %let fig=1;

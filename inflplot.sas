@@ -7,20 +7,23 @@
   *  leverage (hat-value), using COOK's D or DFFITS as the size  *
   *  of a bubble symbol.                                         *
   *--------------------------------------------------------------*
-  *  Author:  Michael Friendly            <friendly@yorku.ca>    *
-  * Created:  14 Nov 1993 10:42:11                               *
-  * Revised:  13 Feb 2006 15:38:11                               *
-  * Version:  1.2                                                *
-  *  1.1  Added INFL= to control what's influential              *
-  *       Added HREF= to control ref lines for hat values        *
-  *       Fixed NAME=                                            *
-  *       Added VREF= to control ref lines for residuals         *
-  *       Added OUT=, OUTANNO= for output data sets              *
-  *       Added plot for COVRATIO                                *
-  *  1.2 Added contour plots for CookD, DFFITS and CovRatio      *
-  *   Fixed some problems with labels                            *
-  *   Added internal documtentation                              *
-  *                                                              *
+     Author:  Michael Friendly            <friendly@yorku.ca>     
+    Created:  14 Nov 1993 10:42:11                                
+    Revised:  17 Jan 2012 15:51:35                                
+    Version:  1.3-1                                                 
+     1.1  Added INFL= to control what's influential               
+          Added HREF= to control ref lines for hat values         
+          Fixed NAME=                                             
+          Added VREF= to control ref lines for residuals          
+          Added OUT=, OUTANNO= for output data sets               
+          Added plot for COVRATIO                                 
+     1.2 Added contour plots for CookD, DFFITS and CovRatio       
+      Fixed some problems with labels                             
+      Added internal documtentation
+	 1.3 
+	  Added BFILL= option for filled bubbles.  BFILL=gradient is useful
+	  Added LFONT= option for font of bubble labels                            
+                                                                  
   *--------------------------------------------------------------*/
 
  /*=
@@ -88,6 +91,8 @@
 * LPOS=       Observation label position, using a position value
               understood by the Annotate facility. [Default: LPOS=5]
 
+* LFONT=      Font used for observation labels.
+ 
 * BSIZE=      Bubble size scale factor [Default: BSIZE=10]
 
 * BSCALE=     Scale for the bubble size. BSCALE=AREA makes the bubble area 
@@ -95,6 +100,9 @@
               radius proportional to influence. [Default: BSCALE=AREA]
 
 * BCOLOR=     Bubble color [Default: BCOLOR=RED]
+
+* BFILL=      Bubble fill? Options are BFILL=SOLID | GRADIENT, where the
+              latter uses a gradient version of BCOLOR
 
 * HREF=       Locations of horizontal reference lines. The macro variables
               HCRIT and HCRIT1 are internally calculated as 2 and 3 times the
@@ -155,9 +163,11 @@
                      /* text is controlled by the HTEXT= goption   */
      lcolor=BLACK,   /* obs label color                            */
      lpos=5,         /* obs label position                         */
+	 lfont=,
      bsize=10,       /* bubble size scale factor                   */
      bscale=AREA,    /* bubble size proportional to AREA or RADIUS */
      bcolor=RED,     /* bubble color                               */
+	 bfill=,         /* fill bubbles?  SOLID|GRADIENT              */
      href=&hcrit &hcrit1,
      vref=-&tcrit1 -&tcrit 0 &tcrit &tcrit1,
      refcol=BLACK,   /* color of reference lines                   */
@@ -170,6 +180,7 @@
      );
  
 
+%local me; %let me=&sysmacroname;
 %let abort=0;
 %let nv = %numwords(&x);        /* number of predictors */
 %if &nv = 0 %then %do;
@@ -191,7 +202,7 @@
 %if not ((%bquote(&bubble) = COOKD)
     or   (%bquote(&bubble) = DFFITS)
 	or   (%bquote(&bubble) = COVRATIO)) %then %do;
-    %put BUBBLE=%bquote(&bubble) is not valid. BUBBLE=COOKD will be used;
+    %put &me: BUBBLE=%bquote(&bubble) is not valid. BUBBLE=COOKD will be used;
     %let bubble=cookd;
     %end;
  
@@ -223,8 +234,8 @@ proc reg data=&data noprint outest=_outest_;
 
    data &outanno;
       set &out nobs=n;
-      length xsys $1 ysys $1 function $8 position $1 text $12 color $8;
-      retain xsys '2' ysys '2' function 'LABEL' color "&lcolor";
+      length xsys $1 ysys $1 function $8 position $1 text $12 color $8 style $8;
+      retain xsys '2' ysys '2' function 'LABEL' color "&lcolor" when 'A';
       retain tcrit hcrit bcrit tcrit1 hcrit1;
       drop tcrit hcrit bcrit  tcrit1 hcrit1 bcrit p;
 
@@ -262,13 +273,16 @@ proc reg data=&data noprint outest=_outest_;
       x=hatvalue;
       y=rstudent;
       %if &id ^= %str() %then %do;
-         text = &id;
+         text = trim(left(&id));
          %end;
       %else %do;
-         text = put(_n_,3.0);
+         text = trim(left(put(_n_,3.0)));
          %end;
       size=&lsize;
       position="&lpos";
+	  %if %length(&lfont) %then %do; 
+		style="&lfont";
+		%end;
       %if %upcase(&label) = INFL %then %do;
 			if &infl then output;
          %end;
@@ -303,6 +317,9 @@ proc gplot data=&out &GOUT ;
         href= &href   lhref=&reflin  chref=&refcol
         %end;
         bsize=&bsize  bcolor=&bcolor  bscale=&bscale
+		%if %length(&bfill) %then %do; 
+			bfill=&bfill
+			%end;
         des="Regression influence plot for &y"
 		name="&name";
   label rstudent='Studentized Residual'

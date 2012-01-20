@@ -13,10 +13,13 @@
  *-------------------------------------------------------------------*
  *  Author:  Michael Friendly            <friendly@yorku.ca>         *
  * Created:  23 Jul 1991 11:38:23                                    *
- * Revised:  10 Sep 2007 09:07:22                                    *
- * Version:  1.5-1                                                   *
+ * Revised:  28 Sep 2011 15:04:32                                    *
+ * Version:  1.6-0                                                   *
  * Requires: gskip
  * - Added %gskip if multiple pages                                  *
+ * - Added ecolor= to color eyes
+ * - added std= to standardize data
+ * - added min= and max= to enforce range
  * Original source:  ASYMFACE.SAS by M. Schupbach (1989)             *
  *-------------------------------------------------------------------*/
 %macro FACES(
@@ -24,13 +27,17 @@
    out=asym,       /* Name of output anno set              */
    id=,            /* Character ID variable                */
    idnum=,         /* Numeric ID variable                  */
+   std=,           /* how to standardize variables         */
+   min=.,
+   max=.,
    blks=1,         /* Blocks per page                      */
    rows=4,         /* Rows per block                       */
    cols=4,         /* Columns per block                    */
    res=3,          /* resolution: 1=high/3=low             */
    frame=Y,        /* frame around each face?              */
    color='BLACK',  /* color of each face: variable         */
-   hcolor='BLACK', /*  name or string in quotes            */
+   hcolor='BLACK', /* hair color: name or string in quotes */
+   ecolor='BLACK', /* eye color                            */
    row=,           /* use to assign particular             */
                    /* locations to faces                   */
    col=,           /* column variable                      */
@@ -82,6 +89,22 @@
          %let l&i = .5;
        %end;
     %end;
+
+%if %length(&std) %then %do;
+
+	proc stdize data=&data out=_scaled_ method=&std;
+	run;
+	%if %length(&id.&idnum) %then %do;
+		data _scaled_;
+			merge &data(keep=&id &idnum) _scaled_ ;
+			run;
+		%end;
+
+	*scale(data=&data, out=_scaled_, id=&id, copy=&idnum);
+	%let data=_scaled_;
+	
+%end;
+
  
   *-- Determine number of observations and number of pages --;
 data _null_;
@@ -161,7 +184,7 @@ data &out;
           &r13,&r14,&r15,&r16,&r17,&r18,&l1 ,&l2 ,&l3 ,&l4 ,&l5 ,&l6 ,
           &l7 ,&l8 ,&l9 ,&l10,&l11,&l12,&l13,&l14,&l15,&l16,&l17,&l18,
           blk,row,col,&idnum, &id,&blks,&rows,&cols,&res,&frame,&color,
-          &hcolor);
+          &hcolor,&ecolor, &min, &max);
 /*  if fnum = &lastob then */
        if miss>0 then
        put 'FACES: ' miss 'variables contained missing values';
@@ -181,7 +204,7 @@ data &out;
 %*  VSIZE is set constant to VSIZE=12.288                          *;
 %*  This will yield blocks of approximately 20.5x27.1 centimeters  *;
 %*******************************************************************;
-*GOPTIONS DEVICE=VER8224 COLORS=(BLACK) HSIZE=17.315 VSIZE=12.288;
+
 
    proc gslide anno=&out name="&name" gout=&gout;
    run;
@@ -231,7 +254,8 @@ data &out;
            RIG11,RIG12,RIG13,RIG14,RIG15,RIG16,RIG17,RIG18,
            LEF1,LEF2,LEF3,LEF4,LEF5,LEF6,LEF7,LEF8,LEF9,LEF10,
            LEF11,LEF12,LEF13,LEF14,LEF15,LEF16,LEF17,LEF18,
-           blk,row,col,NO,ID,blks,rows,cols,res,frame,color,hcolor);
+           blk,row,col,NO,ID,blks,rows,cols,res,frame,color,hcolor,ecolor,
+		   min, max);
 
 **************************************************************;
 *     framing and labeling the faces                         *;
@@ -257,7 +281,7 @@ data &out;
     array p{18} p1-p18;
     ARRAY XUP{121}  XXUP1-XXUP121;
     ARRAY XLOW{121} XXLO1-XXLO121;
-    ARRAY YUP{121}  YYUP1-YYUP121;
+    ARRAY YUP{121}  YYUP1-YYUP121; 
     ARRAY YLOW{121} YYLO1-YYLO121;
     ARRAY XFACE{97} XXFA1-XXFA97;
     ARRAY YFACE{97} YYFA1-YYFA97;
@@ -294,6 +318,8 @@ data &out;
     YFMIN1=-4.7097; YFMIN2= -5.4093; YFMIN3=-2.2439;
     YFMIN4= 0.2125; YFMIN5=  1.9345; YFMIN6= 0.2350;
 
+	dmin = &min;
+	dmax = &max;	
 **************************************************************;
 *        begin drawing the RIGHT - face - side               *;
 **************************************************************;
@@ -302,11 +328,13 @@ data &out;
         p{&i} = &&RIG&i;      /* assign RIGht to array */
         %end;
     link chk_miss;
+
+	*link chk_range;
  
    color = &color;  link do_face;
+   color = &color;  link do_nose;  link do_mouth; link do_brow;  
    color = &hcolor; link do_hair;
-   color = &color;  link do_nose;   link do_mouth;
-                    link do_brow;   link do_eye;
+   color = &ecolor; link do_eye;
  
 *************************************************************;
 *           begin drawing the LEFT - face - side            *;
@@ -318,10 +346,10 @@ data &out;
     link chk_miss;
  
    color = &color;  link do_face;
+   color = &color;  link do_nose;  link do_mouth; link do_brow;  
    color = &hcolor; link do_hair;
-   color = &color;  link do_nose;   link do_mouth;
-                    link do_brow;   link do_eye;
-    return;   /* to next observation */
+   color = &ecolor; link do_eye;
+   return;   /* to next observation */
 ***********************************************************;
 *            end of computing one face                    *;
 ***********************************************************;
@@ -349,6 +377,14 @@ chk_miss:
           end;
        end;
     return;
+
+
+chk_range:                   * restrict range to (&min, &max);
+	do i = 1 to 18;
+		if dmin ^= . then p{i} = max( p{i}, dmin);
+		if dmax ^= . then p{i} = min( p{i}, dmax);
+		end;
+	return;
  
   ***************************************************************;
   * Routines for drawing parts of the face using RIG or LEF parms;

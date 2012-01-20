@@ -6,8 +6,8 @@
   *-------------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>         *
   * Created:   4 Oct 1989 11:07:50                                    *
-  * Revised:  24 Oct 2010 15:33:59                                    *
-  * Version:  1.8-1                                                   *
+  * Revised:  07 Oct 2011 16:32:31                                    *
+  * Version:  1.8-2                                                   *
   * Requires: %gdispla %lowess %ellipses %boxaxis %gensym %rug        *
   *                                                                   *
   *      From ``SAS System for Statistical Graphics, First Edition''  *
@@ -33,7 +33,8 @@
          Replaced CONTOUR with ELLIPSES                                
          Fixed careless syntax error; clean up temp datasets           
     1.8  Added PVALUE to control size for ELLIPSES
-         Fixed problem with long variable names (VALIDVARNAME=V7)              
+         Fixed problem with long variable names (VALIDVARNAME=V7)
+		 Added IWIDTH= for interpolated lines              
 
  **/
 
@@ -145,6 +146,7 @@
    names=,                /* Alternative variable names         */
    group=,                /* grouping variable (plot symbol)    */
    interp=none,           /* plot interpolation method          */
+   iwidth=2,
    hsym=,                 /* height of plot symbols             */
    htitle=,               /* height of variable name titles     */
    plotopt=,              /* additional plot options            */
@@ -326,7 +328,7 @@ title h=0.01 ' ';
 					out=_anno_, colors=&colors, plot=NO, points=30, line=1, pvalue=&pvalue);
 			%let annoopt=anno=_anno_;
 			%let inanno=_anno_;
-			%gensym(n=&ngroups, h=&h, interp=&interp, symbols=&symbols, colors=&colors, width=2, ci=&colors);
+			%gensym(n=&ngroups, h=&h, interp=&interp, symbols=&symbols, colors=&colors, width=&iwidth, ci=&colors);
 			SYMBOL&plotnam v=none i=none;
 			%end;
 			

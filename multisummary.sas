@@ -1,11 +1,11 @@
  /*--------------------------------------------------------------*
   *    Name: multisummary.sas                                    *
   *   Title: Calculate Summary statistics for multiple variables *
-        Doc: http://www.datavis.ca/sasmac/nodoc.html       
+        Doc: http://www.datavis.ca/sasmac/multisummary.html       
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 23 Mar 2005 10:23:45                                *
-  * Revised: 15 Dec 2005 08:56:02                                *
+  * Revised: 10 Jan 2012 09:53:31                                *
   * Version: 1.0                                                 *
   *                                                              *
   *--------------------------------------------------------------*/
