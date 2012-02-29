@@ -337,7 +337,7 @@ options notes;
 %macro tempdel(fileref);
 	%global tempfn;
     *-- Avoid annoying flash with X commands;
-    %if &sysver > 6.10 %then %do;
+    %if %sysevalf(&sysver  > 6.10) %then %do;
         %let rc=%sysfunc(fdelete(&fileref));
         %let rc=%sysfunc(filename(&fileref,''));
     %end;

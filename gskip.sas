@@ -120,7 +120,7 @@
 %mend gskip;
 
 %macro defined (mvar);
-	%if &sysver >= 9 %then %do;
+	%if %sysevalf(&sysver  >= 9) %then %do;
   		%symglobl(&mvar);
 		%end;
 	%else %do;

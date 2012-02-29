@@ -8,11 +8,12 @@
   | ----------------------------------------------------------------|
   |   Author: Michael Friendly               <friendly@yorku.ca>    |
   |  Created: 09 Jul 1999 16:52:05                                  |
-  |  Revised: 30 May 2005 11:33:16                                  |
-  |  Version: 1.3                                                   |
+  |  Revised: 29 Feb 2012 09:37:51                                  |
+  |  Version: 1.4-1                                                 |
   *  1.1  Inlined %tempfile %tempdel                                *
   *  1.2  Added WHERE= to subset categories of table variables      *
   *  1.3  Added ORDERBY= to order variables by formatted values     *
+  *  1.4  Fixed problem in SAS 9.3 regarding use of PROC PRINTO
   *                                                                 *
   * From ``Visualizing Categorical Data'', Michael Friendly (2000)  *         
   *-----------------------------------------------------------------*/
@@ -44,7 +45,7 @@
 
 * WHERE=             A WHERE-clause, to be used to subset the categories of 
                      the table variables in the PROC FREQ step.  E.g., 
-		     WHERE=Sex not in (' ', 'Other')
+                     WHERE=Sex not in (' ', 'Other')
 
 * CHAR=              If non-blank, forces the VAR= variables to be
                      converted to character variables (using formatted
@@ -62,7 +63,7 @@
 
 * ORDERBY=           An SQL 'order by' clause to reorder the table, for
                      example to reorder a variable according to the levels
-		     of its formatted value.
+                     of its formatted value.
 
 * FORMAT=            List of variable(s), format pairs (suitable for a
                      format statement).  The FORMAT= option may be used
@@ -108,10 +109,12 @@ forced to character variables (CHAR=n) may not include embedded blanks.
    out=table        /* Name of output dataset                       */
    );
 
+%local abort ls;
 %let abort=0;
 %let ls=120;
 %*-- Save original linesize;
-%if &sysver>6.10 %then %do;
+%if %sysevalf(&sysver >=7) %then %do;
+   %local lso pso dto cto o2;
    %let lso=%sysfunc(getoption(ls,keyword));
    %let pso=%sysfunc(getoption(ps,keyword));
    %let dto=%sysfunc(getoption(date));
@@ -146,9 +149,13 @@ proc freq data=&data
    /*
     * Force the VAR= variables to character.  To do this cleanly, we
     * resort to printing the &out dataset, then reading it back as
-    * character.  
+    * character. 
+    * In SAS 9.3, this only works if ODS LISTING is turned on. 
     */
    %tempfile(table,&ls);
+   %if %sysevalf(&sysver >9.2) %then %do;
+   	ods listing;
+   %end;
    proc printto new print=table;
    options nodate nocenter nonumber ls=&ls ps=10000;
    proc print data=&out;
@@ -181,6 +188,9 @@ proc freq data=&data
    *proc contents data=&out;
 
 %tempdel(table);
+ %if %sysevalf(&sysver >9.2) %then %do;
+ 	ods listing close;
+ %end;
 %end;
 
 %if %length(&orderby) %then %do;
@@ -194,7 +204,7 @@ proc sql;
 %done:;
 %if &abort %then %put ERROR: The TABLE macro ended abnormally.;
 options notes &lso &pso &dto &cto;
-%if &sysver<=6.10 %then %do;
+%if %sysevalf(&sysver <7) %then %do;
 	options center date ls=80 ps=60;
 	%end;
 
@@ -251,7 +261,7 @@ Join the &delim-separated words in &string with &sep.
 %macro tempdel(fileref);
    %global tempfn;
     *-- Avoid annoying flash with X commands;
-    %if &sysver > 6.10 %then %do;
+    %if %sysevalf(&sysver  > 6.10) %then %do;
         %let rc=%sysfunc(fdelete(&fileref));
         %let rc=%sysfunc(filename(&fileref,''));
     %end;

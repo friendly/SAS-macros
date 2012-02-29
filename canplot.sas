@@ -242,7 +242,7 @@ proc candisc data=&data /* ncan=&dim */
    var &var ;
 	run;
 options nonotes;
-%if &sysver > 6.08 %then %do;
+%if %sysevalf(&sysver  > 6.08) %then %do;
 	*-- Extract canonical correlations --> % eig;
 	data _dull_;
 		set _dstat_ end=eof;

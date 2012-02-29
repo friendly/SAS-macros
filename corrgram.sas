@@ -130,7 +130,7 @@
 %if %length(%qscan(&display,2))=0 %then
 	%let display = &display &display;
 
-%if &sysver>=7 and %qupcase(&title)=AUTO %then %do;
+%if %sysevalf(&sysver >=7 and %qupcase(&title)=AUTO) %then %do;
     data _null_;
         set sashelp.vtitle(obs=1);
         call symput('title', trim(text));
@@ -445,7 +445,7 @@ start dobar;
 
 %macro corr;
 *-- corr()  defined in SAS 9.3;
-%if &sysver < 9.3 %then %do; 
+%if %sysevalf(&sysver  < 9.3) %then %do; 
 start corr (x);
   d = x - repeat(x[:,], nrow(x), 1);
   xpx=t(d)*d;                      * crossproduct;

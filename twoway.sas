@@ -172,7 +172,7 @@
 			then call symput( 'rlabel', label);
 %end;
 
-%if &sysver>6.10 %then %do;
+%if %sysevalf(&sysver >6.10) %then %do;
 	%*-- Find horizontal/vertical size: x.xx IN;
    %let hso=%sysfunc(getoption(hsize));
    %let vso=%sysfunc(getoption(vsize));
@@ -267,7 +267,7 @@ start twoway;
     /*----------------------------------*
      | Start IML graphics               |
      *---------------------------------**/
-    %if &sysver < 6 %then %do;
+    %if %sysevalf(&sysver  < 6) %then %do;
        %let lib=%scan(&gout,1,.);
        %let cat=%scan(&gout,2,.);
        %if &cat=%str() %then %do;
@@ -770,7 +770,7 @@ start boxval (x);
  
 quit;
  
-%if &sysver>6.10 %then %do;
+%if %sysevalf(&sysver >6.10) %then %do;
 	%*-- Restore original plot size;
 	* This generates an error because, e.g., vso=7.000 in.
 *	goptions hsize=&hso vsize=&vso;

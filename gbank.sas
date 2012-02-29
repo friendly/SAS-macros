@@ -129,7 +129,7 @@
 	%end;
 
 %*-- Reset required global options;
-%if &sysver >= 7 %then %do;
+%if %sysevalf(&sysver  >= 7) %then %do;
     %local o1;
     %let o1 = %sysfunc(getoption(notes));
     options nonotes;
@@ -223,7 +223,7 @@ goptions hsize=&hsize vsize=&vsize;
   run; quit;
 
 %*-- Restore global options;
-%if &sysver >= 7 %then %do;
+%if %sysevalf(&sysver  >= 7) %then %do;
     options &o1;
     %end;
 %else %do;

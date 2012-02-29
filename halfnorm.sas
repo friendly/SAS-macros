@@ -172,7 +172,7 @@ proc genmod data=&data;
 	%if %length(&offset)>0 %then %do; offset=&offset  %end;
 	%if %length(&mopt)>0 %then %do;  %str(&mopt) %end;
 		obstats residuals;
-  make 'obstats'  out=_obstat_ %if &sysver<7 %then noprint;;
+  make 'obstats'  out=_obstat_ %if %sysevalf(&sysver <7) %then noprint;;
   run;
 
 %*-- Find variables listed in model statment;
@@ -220,7 +220,7 @@ run;
 %end;
 
 %put HALFNORM: Generating &nres simulated residual sets...;
-%if &sysver >= 7 %then %do;
+%if %sysevalf(&sysver  >= 7) %then %do;
 	ods listing exclude all;
 	%end;
 %do i=1 %to &nres;
@@ -246,7 +246,7 @@ proc genmod data=_obstat_;
 
 %end;  /* End %do i */
 %let _print_=ON;
-%if &sysver >= 7 %then %do;
+%if %sysevalf(&sysver  >= 7) %then %do;
 	ods listing exclude none;
 	%end;
 

@@ -202,7 +202,7 @@
    %global tempfn;
    %if %length(&ls)=0 %then %let ls=80;
 
-   %if &sysver > 6.10 %then %do;
+   %if %sysevalf(&sysver  > 6.10) %then %do;
 		filename &fileref temp &options
 			%if %length(&ls)>0 %then lrecl=&ls;
 			;		
@@ -222,7 +222,7 @@
    %global tempfn;
 	%if length(&tempfn)=0 %then %goto done;
     *-- Avoid annoying flash with X commands;
-    %if &sysver > 6.10 %then %do;
+    %if %sysevalf(&sysver  > 6.10) %then %do;
         %let rc=%sysfunc(fdelete(&fileref));
         %let rc=%sysfunc(filename(&fileref,''));
     %end;

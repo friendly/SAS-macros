@@ -357,7 +357,7 @@ run;
 %end;  /* if &adjust */
 
 * Find number of levels of each effect;
-proc freq data=&out %if &sysver>6.10 %then noprint;;
+proc freq data=&out %if %sysevalf(&sysver >6.10) %then noprint;;
    tables _type_ / noprint out=_levels_;
 
 data &out;
@@ -396,7 +396,7 @@ data _gmean_;
       by _type_;
 %end;
 
-%if &sysver < 6.09 %then %do;
+%if %sysevalf(&sysver  < 6.09) %then %do;
 	%if &adjust=HSD or &adjust=TUKEY %then %do;
 	%let adjust=BON;
 	%put WARNING: Tukey studentized range adjustment is not available in Version &sysver.;
@@ -448,7 +448,7 @@ proc sort data=&out;
 		%if &panels ^= %str() %then %do;
 			by &panels;
 		%end;
-		%if &sysver > 6.07 %then %do;
+		%if %sysevalf(&sysver  > 6.07) %then %do;
 		plot &resp * &xvar $ &sym;
 		%end;
 		%else %do;

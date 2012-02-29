@@ -13,6 +13,10 @@ arrays used by the IML modules. It also provides the
 means to produce multiple agreement plots for two-way tables stratified
 by other C<BY=> variables.
 
+In SAS 9.3, these plots are now provided directly by PROC FREQ under
+ODS graphics, when the AGREE option is specified on the TABLES statement.
+Other C<PLOT()=AGREEPLOT> sub-options allow some control of the details of 
+these plots.
 
 =head1 Usage
 
@@ -53,17 +57,22 @@ Name of the frequency variable [Default: C<COUNT=COUNT>]
 Specifies weights for exact agreement and for steps removed 
              from exact agreement, both in the plot and in the calculation
           of the Bangdiwala agreement strength statistic. C<WEIGHTS=1 >counts
-          only exact agreement. C<WEIGHTS=LIN2> or C<WEIGHTS=CA2> uses inverse
+          only exact agreement. C<WEIGHTS=LIN2 >or C<WEIGHTS=CA2 >uses inverse
           linear (Cicchetti-Allison) weights: 1, 1/(n-1) for an n x n
-          table.  C<WEIGHTS=SQ2> or C<WEIGHTS=FC2> uses inverse square
+          table.  C<WEIGHTS=SQ2 >or C<WEIGHTS=FC2 >uses inverse square
           (Fleiss-Cohen) weights, 1, 1/(n-1)**2. You can also use an
           IML expression that evaluates to a row vector starting with 1,
-          e.g., C<WEIGHTS=1 || 1-1/(n-1)> or C<WEIGHTS={1 0.5}>.
+          e.g., C<WEIGHTS=1 >|| 1-1/(n-1) or WEIGHTS={1 0.5}.
 
 =item COLORS=
 
 Specifies colors for exact agreement and for one or more steps 
              removed from exact agreement.  [Default: C<COLORS=BLACK GRAY>]
+
+=item FILLS=
+
+Specifies fill patterns for exact agreement and for one or more steps 
+             removed from exact agreement.  [Default: C<FILLS=SOLID LR>]
 
 =item HTEXT=
 
@@ -121,9 +130,10 @@ The name of the graph in the graphic catalog [Default: C<NAME=AGREE>]
  %table(data=sexfun, var=Husband Wife, char=true, weight=count, out=table);
  %agreeplot(data=table, var=Husband Wife, title=Husband and Wife Sexual Fun);
 
+
+
 =head1 Bugs
 
 With C<BY=> variables, the graphs are correct, but the BN statistics
 dont use the given WEIGHTS.
-
 

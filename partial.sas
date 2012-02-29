@@ -219,7 +219,7 @@ start partial(x, y, names, obs, uv, uvname ) global(xscale, yscale);
        /**--------------------------------**
         | Start IML graphics               |
         **--------------------------------**/
-       %if &sysver < 6 %then %do;
+       %if %sysevalf(&sysver  < 6) %then %do;
           %let lib=%scan(&gout,1,'.');
           %let cat=%scan(&gout,2,'.');
           %if &cat=%str() %then %do;

@@ -42,7 +42,7 @@
 %global webhelp;
 
 %macro webhelp(doc);
- %if &sysver < 6.12 %then %do;
+ %if %sysevalf(&sysver  < 6.12) %then %do;
     %put NOTE:  Webhelp is not available in SAS Version &sysver.;
     %goto done;
  %end;

@@ -1,0 +1,157 @@
+<html> 
+<head>
+	<title>gencorr - Generalized correlations for ordinal and continuous variables</title>
+	<link rev=made href="mailto:friendly@yorku.ca">
+	<link rel="stylesheet" href="macdoc.css" type="text/css">
+	<!-- Author: Michael Friendly York University  -->
+<!-- BeginInsertHead -->
+<script type="text/javascript" src="../menu/JSCookMenu.js"></script>
+<link rel="stylesheet" href="../menu/ThemeMacro/theme.css" type="text/css" />
+<script type="text/javascript" src="../menu/ThemeMacro/theme.js"></script>
+<script language="javascript" src="macmenu2.js"></script>
+<!-- EndInsertHead -->
+
+</head>
+<body>
+<!-- BeginInsertBody -->
+<div id="Panel">
+<script type="text/javascript">
+cmDraw ('Panel', macmenu, 'hbr', cmThemeMacro, 'ThemeMacro');
+</script>
+</div>
+<!-- EndInsertBody -->
+
+<!-- pnuts -->
+<CENTER>
+<TABLE width="100%">
+<TR>
+<td class="linksasL"> <a href="http://www.datavis.ca/sas/macros/gencorr.sas">gencorr</a></td>
+<td class="title">Generalized correlations for ordinal and continuous variables</td>
+<td class="linksasR"> <a href="http://www.datavis.ca/sas/macros/gencorr.sas">gencorr</a></td>
+</TR>
+</TABLE>
+</CENTER>
+<h1>SAS Macro Programs: <tt>gencorr</tt></h1>
+
+$Version: 1.0 (27 Mar 2002 12:11:51)<br>
+<b>
+<a href="http://www.datavis.ca/">Michael Friendly</a><br>
+York University
+</b><br>
+<script language="JavaScript">
+<!--
+	document.write("Updated " + document.lastModified);
+// -->
+</script>
+<hr>
+
+<h2>The <tt>gencorr</tt> macro (<A  HREF="http://www.datavis.ca/sas/macros/gencorr.sas">
+<img width=16 height=16 src="../icons/download.gif" alt="[download]" border=0> get gencorr.sas</A>)</h2>
+<h3>Generalized correlations for ordinal and continuous</h3>
+
+<p>The <tt>GENCORR</tt> macro calculates a generalized correlation
+matrix for a data set containing a mixture of continuous and
+ordinal variables.  For pairs of ordinal variables, the polychoric
+(or, for 2x2 tables, the tetrachoric) correlation is calculated; 
+otherwise (in is version), the Pearson correlation is calculated. 
+Alternatively, a distance matrix, calculated as 1-r**2 may be reqested.</p>
+
+<H3><a name="method">Method</a></H3>
+<p>The program simply runs PROC FREQ (for pairs of ordinal variables)
+or PROC CORR for each pair of variables,  and assembles the results 
+in an output data set.  It is therefore horribly inefficient for large
+problems, since it makes p*(p-1)/2 passes over the input data set.</p>
+
+
+<H2><a name="usage">Usage</a></H2>
+<p>The <tt>GENCORR</tt> macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example:</p>
+<pre>
+  %gencorr();</pre>
+
+<H3><a name="parameters">Parameters</a></H3>
+<dl>
+<dt><a name="data" class="item">DATA=</a></dt>
+
+<dd>
+<p>The name of the input data set. If the <a href="#data"><code>DATA=</code></a> option is not
+             supplied, the most recently created SAS data set is
+             used. [Default: <code>DATA=_LAST_</code>]</p>
+</dd>
+<dt><a name="var" class="item">VAR=</a></dt>
+
+<dd>
+<p>The names of the variables to be analyzed. Individual variable
+             names, separated by blanks, must be specified.  
+             By default, all numeric variables found in the data set will 
+             be used. [Default: <code>VAR=_NUMERIC_</code>]</p>
+</dd>
+<dt><a name="weight" class="item">WEIGHT=</a></dt>
+
+<dd>
+<p>Specifies the name of an input variable to be used
+             as an observation weight. If specified, you must list
+             the <a href="#var"><code>VAR=</code></a> variables explicitly, rather than using the
+             default (_NUMERIC_).</p>
+</dd>
+<dt><a name="vtype" class="item">VTYPE=</a></dt>
+
+<dd>
+<p>A list of C, for continous, and O for ordinal, corresponding
+             to the variables in the <a href="#var"><code>VAR=</code></a> list.  If the <a href="#vtype"><code>VTYPE=</code></a> list is
+             shorter than the <a href="#var"><code>VAR=</code></a> list, the former is repeated as
+             necessary.  The default treats all variables as ordinal.
+             [Default: <code>VTYPE=O</code>]</p>
+</dd>
+<dt><a name="out" class="item">OUT=</a></dt>
+
+<DD>The name of the output data set [Default: <code>OUT=_CORR</code>]
+</dd>
+<dt><a name="type" class="item">TYPE=</a></dt>
+
+<dd>
+<p>Specifies the type of matrix to be created.  If 
+             <code>TYPE=CORR </code>(the default), then a correlation matrix is 
+             computed and the output data set is assigned a data set 
+             type of CORR.  If <code>TYPE=DISTANCE</code>, then a distance matrix 
+             is computed and the output dat set is assigned a data 
+             set type of DISTANCE.</p>
+</dd>
+</dl>
+
+
+<H2><a name="example">Example</a></H2>
+<pre>
+%include macros(gencorr);        *-- or include in an autocall library;
+  *-- Create a set of 5 ordinal variables with an AR(1) structure
+      plus two continuous variables;
+  data mixed;
+     array x{5} x1-x7; 
+     do n=1 to 50;
+        do i=1 to 5;
+           if i=1 
+              then x{i}=rantbl(238423, .1,.2,.4,.2,.1);
+              else x{i}=rantbl(238423, .1,.2,.4,.2,.1) + 4 * x{i-1};
+        end;
+        x6 = normal(238423);
+        x7 = sum(x1, x2, x6) + 2* normal(238423);
+        keep x1-x7; 
+        output;
+     end; 
+     run;</pre>
+<pre>
+  %gencorr(data=mixed, 
+     var=   x1 x2 x3 x4 x5 x6 x7,
+     vtype=  O  O  O  O  O  C  C);</pre>      
+<!--
+<center>
+<img src="gencorrt.gif">
+</center>
+-->
+<h3>See also</h3>
+<hr>
+<!-- pnuts -->
+
+</body>
+</html>

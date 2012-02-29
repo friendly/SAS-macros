@@ -1,0 +1,97 @@
+=head1 Description
+
+The GENCORR macro calculates a generalized correlation
+matrix for a data set containing a mixture of continuous and
+ordinal variables.  For pairs of ordinal variables, the polychoric
+(or, for 2x2 tables, the tetrachoric) correlation is calculated; 
+otherwise (in is version), the Pearson correlation is calculated. 
+Alternatively, a distance matrix, calculated as 1-r**2 may be reqested. 
+
+=head2 Method
+
+The program simply runs PROC FREQ (for pairs of ordinal variables)
+or PROC CORR for each pair of variables,  and assembles the results 
+in an output data set.  It is therefore horribly inefficient for large
+problems, since it makes p*(p-1)/2 passes over the input data set.
+
+=head1 Usage
+
+The GENCORR macro is defined with keyword parameters.
+The arguments may be listed within parentheses in any order, separated
+by commas. For example: 
+
+  %gencorr();
+
+=head2 Parameters
+
+=over 4
+
+=item DATA=
+
+The name of the input data set. If the C<DATA=> option is not
+             supplied, the most recently created SAS data set is
+             used. [Default: C<DATA=_LAST_>]
+
+=item VAR=
+
+The names of the variables to be analyzed. Individual variable
+             names, separated by blanks, must be specified.  
+             By default, all numeric variables found in the data set will 
+             be used. [Default: C<VAR=_NUMERIC_>]
+
+=item WEIGHT=
+
+Specifies the name of an input variable to be used
+             as an observation weight. If specified, you must list
+             the C<VAR=> variables explicitly, rather than using the
+             default (_NUMERIC_).
+
+=item VTYPE=
+
+A list of C, for continous, and O for ordinal, corresponding
+             to the variables in the C<VAR=> list.  If the C<VTYPE=> list is
+             shorter than the C<VAR=> list, the former is repeated as
+             necessary.  The default treats all variables as ordinal.
+             [Default: C<VTYPE=O>]
+
+=item OUT=
+
+The name of the output data set [Default: C<OUT=_CORR>]
+
+=item TYPE=
+
+Specifies the type of matrix to be created.  If 
+             C<TYPE=CORR >(the default), then a correlation matrix is 
+             computed and the output data set is assigned a data set 
+             type of CORR.  If C<TYPE=DISTANCE>, then a distance matrix 
+             is computed and the output dat set is assigned a data 
+             set type of DISTANCE.
+
+
+=back 4
+
+=head1 Example
+
+  *-- Create a set of 5 ordinal variables with an AR(1) structure
+      plus two continuous variables;
+  data mixed;
+     array x{5} x1-x7; 
+     do n=1 to 50;
+        do i=1 to 5;
+           if i=1 
+              then x{i}=rantbl(238423, .1,.2,.4,.2,.1);
+              else x{i}=rantbl(238423, .1,.2,.4,.2,.1) + 4 * x{i-1};
+        end;
+        x6 = normal(238423);
+        x7 = sum(x1, x2, x6) + 2* normal(238423);
+        keep x1-x7; 
+        output;
+     end; 
+     run;
+
+  %gencorr(data=mixed, 
+     var=   x1 x2 x3 x4 x5 x6 x7,
+     vtype=  O  O  O  O  O  C  C);
+
+
+

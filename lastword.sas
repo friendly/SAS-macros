@@ -64,7 +64,7 @@
 %*;
 
 %local N W;
-%if &sysver >= 8 %then %do;
+%if %sysevalf(&sysver  >= 8) %then %do;
     %let W = %scan(&words, -1, %quote(&sep));
     %end;    
 

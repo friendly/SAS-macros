@@ -205,7 +205,7 @@
 );
 
 	%*-- Reset required global options;
-	%if &sysver >= 7 %then %do;
+	%if %sysevalf(&sysver  >= 7) %then %do;
 		%local o1 o2;
 		%let o1 = %sysfunc(getoption(notes));
 		%let o2 = %sysfunc(getoption(validvarname,keyword));
@@ -244,7 +244,7 @@
 %let nx = %numwords(&gx);       /* number of abscissa vars */
 %let ny = %numwords(&gy);       /* number of ordinate vars */
 
-%if &sysver < 6.12 %then %do;
+%if %sysevalf(&sysver  < 6.12) %then %do;
    %if %upcase(&dist)=BINOMIAL %then %do;
       %if %length(%scan(&resp,2,/))=0 %then %do;
          %put ERROR: Response must be specified as RESP=events/trials for DIST=BINOMIAL;
@@ -266,7 +266,7 @@ proc genmod data=&data;
 		%if %length(&offset)>0 %then %do; offset=&offset  %end;
         %if %length(&mopt)>0 %then %do;  %str(&mopt) %end;
         obstats residuals;
-	%if &sysver<7 %then %do;
+	%if %sysevalf(&sysver <7) %then %do;
   	make 'obstats'  out=_obstat_ noprint;
   	make 'parmest'  out=_parms_ noprint;
 		%end;
@@ -417,7 +417,7 @@ proc print data=&out noobs label;
 %done:
 %if &abort %then %put ERROR: The INFLGLIM macro ended abnormally.;
 	%*-- Restore global options;
-	%if &sysver >= 7 %then %do;
+	%if %sysevalf(&sysver  >= 7) %then %do;
 		options &o1 &o2;
 		%end;
 	%else %do;

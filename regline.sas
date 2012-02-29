@@ -132,7 +132,7 @@ data &out;
     %if %length(&xmax) %then %str(xmax=&xmax;);
 
    *-- Draw the regression line;
-    %if &sysver >= 7 %then %let int=Intercept;
+    %if %sysevalf(&sysver  >= 7) %then %let int=Intercept;
     %else %let int=intercep;
    xsys='2'; ysys='2';
     %if %length(&z)>0 %then %do;

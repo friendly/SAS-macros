@@ -70,7 +70,7 @@
 		%let libname=work;
 		%end;
 
-	%if &sysver >= 6.12 %then %do;
+	%if %sysevalf(&sysver  >= 6.12) %then %do;
   proc sql noprint;
     create view work.VARLIST as select format, label, name, type
       from dictionary.columns

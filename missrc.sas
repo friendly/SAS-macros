@@ -118,7 +118,7 @@
 	verbose=0);
 
 	%*-- Reset required global options;
-	%if &sysver >= 7 %then %do;
+	%if %sysevalf(&sysver  >= 7) %then %do;
 		%local o1 o2;
 		%let o1 = %sysfunc(getoption(notes));
 		%let o2 = %sysfunc(getoption(validvarname,keyword));
@@ -272,7 +272,7 @@ quit;
 proc print;
 	id _type_;
 
-%if &sysver < 6.10 %then %do;
+%if %sysevalf(&sysver  < 6.10) %then %do;
    %put MISSRC:  Cant run GENMOD in SAS Version &sysver.  Sorry.;
    %let abort=1;
    %goto done;
@@ -283,14 +283,14 @@ proc print;
 proc genmod data=&design;
    model count = &parms / covb
          dist=poisson link=id offset=offset noint;
-	%if &sysver < 7 %then %do;
+	%if %sysevalf(&sysver  < 7) %then %do;
 		make 'parmest' out=parm;
 		make 'cov'     out=cov  noprint;
 		%end;
 	%else %do;
 		ods output ParameterEstimates=parm;
 		ods output CovB=cov;
-		%if &sysver > 8 %then %let parm=paramete;
+		%if %sysevalf(&sysver  > 8) %then %let parm=paramete;
 		%end;
    run;
 
@@ -343,7 +343,7 @@ run;
 %done:
 %if &abort %then %put ERROR: The MISSRC macro ended abnormally.;
 	%*-- Restore global options;
-	%if &sysver >= 7 %then %do;
+	%if %sysevalf(&sysver  >= 7) %then %do;
 		options &o1 &o2;
 		%end;
 	%else %do;

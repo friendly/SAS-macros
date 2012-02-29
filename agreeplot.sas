@@ -5,8 +5,9 @@
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 15 Mar 2007 10:12:15                                *
-  * Revised: 16 Mar 2007 07:42:24                                *
-  * Version: 1.0-0                                               *
+  * Revised: 24 Jan 2012 14:44:37                                *
+  * Version: 1.1-0                                               *
+    - Added FILLS= to allow other fill patterns
   *                                                              *
   *--------------------------------------------------------------*/
  /*=
@@ -25,6 +26,10 @@
  means to produce multiple agreement plots for two-way tables stratified
  by other BY= variables.
 
+ In SAS 9.3, these plots are now provided directly by PROC FREQ under
+ ODS graphics, when the AGREE option is specified on the TABLES statement.
+ Other PLOT()=AGREEPLOT sub-options allow some control of the details of 
+ these plots.
 
 =Usage:
 
@@ -62,6 +67,9 @@
 
 * COLORS=     Specifies colors for exact agreement and for one or more steps 
               removed from exact agreement.  [Default: COLORS=BLACK GRAY]
+
+* FILLS=      Specifies fill patterns for exact agreement and for one or more steps 
+              removed from exact agreement.  [Default: FILLS=SOLID LR]
 
 * HTEXT=      Height of text value labels. Variable names are scaled up from
               this by a factor of 1.4 [Default: HTEXT=1.5]
@@ -118,6 +126,7 @@
    count=count,     /* Name of the frequency variable              */
    weights = LIN2,  /* Weights for exact, 1-step, ... agreement    */
    colors=black gray, /* colors for exact and 1-step, ...          */
+   fills=solid LR,   /* fill patterns for exact and 1-step, ...     */
    htext=1.5,       /* height of text labels                       */
    font=,           /* font for text labels                        */
    labrot=0 90,     /* rotation angles for horiz, vert labels      */
@@ -147,7 +156,7 @@ proc iml symsize=256;
 	*-- Include the agree.sas IML modules; 
 
 start agree(freq, w, vnames, lnames, title )
-   global (font, htext, colors, gout, name, labrot);
+   global (font, htext, colors, gout, name, labrot, fills);
 
    if type(font ) ^= 'C' then do;
       call execute('device  = upcase("&sysdevic");');
@@ -157,6 +166,7 @@ start agree(freq, w, vnames, lnames, title )
       end;
    if type(htext ) ^= 'N' then htext=1.2;
    if type(colors)   ^='C'  then colors= {BLACK GRAY};
+   if type(fills)    ^='C'  then fills= {solid LR};
    if type(gout    ) ^= 'C' then gout='WORK.GSEG';
    if type(labrot  ) ^= 'N' then labrot= {0 90};
 
@@ -217,7 +227,7 @@ start agree(freq, w, vnames, lnames, title )
    q = ncol(w) - 1;
    a = J(q+1,k,0);
    *-- b indexes distance from main diagonal for agreement;
-   do b = 0 to q;
+   do b = q to 0 by -1;
    do s = 1 to k;
       agr = max(1, s-b) : min(k, s+b) ;    * cells which agree;
       dis = 1 : max(1, s-b-1) ;            * disagre;
@@ -233,16 +243,22 @@ start agree(freq, w, vnames, lnames, title )
       if b>0 then a[b+1,s] =thisbox[3] # thisbox[4];
  
       if b=0 then do;
-	  	fill    = fill   // 'SOLID';
+	  	fill    = fill   // fills[1];
 		colr    = colr   // colors[1];
 		end;
       else do;
+	  	if fills[2]="LR" then do;
          if mod(b,2)=1 then dir='L';
                        else dir='R';
          dens = int((b+1) / 2);
          fill    = fill   // (dir + char(dens,1));
 		 colr    = colr   // colors[2];
          end;
+		else do;
+	  		fill    = fill   // fills[2];
+			colr    = colr   // colors[2];
+		 end;
+       end;
       end;
    end;
    print 'Bangdiwala agreement scores';
@@ -252,7 +268,7 @@ start agree(freq, w, vnames, lnames, title )
    BN =  1 - ( ( tot_agr - obs_agr - part[,+] ) / tot_agr );
    reset name;
    print steps weights[f=8.5] BN[f=8.4];
-*  print boxes[c={'BotX' 'BotY' 'LenX' 'LenY'}] fill;
+*  print boxes[c={'BotX' 'BotY' 'LenX' 'LenY'}] fill colr;
 *  print labels labelx[c={X Y ANGLE}] ht;
  
    run gboxes( boxes, labels, labelx, fill, ht, title, colr );
@@ -576,6 +592,7 @@ start gskip;
 	     assigned here, the defaults in the agree module are used.;
 
 	%if %length(&colors) %then %str(colors={&colors};) ;
+	%if %length(&fills)   %then %str(fills={&fills};) ;
 	%if %length(&labrot) %then %str(labrot={&labrot};) ;
 	%if %length(&htext)  %then %str(htext=&htext;) ;
 	%if %length(&font)   %then %str(font={&font};) ;

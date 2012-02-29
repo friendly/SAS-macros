@@ -187,7 +187,7 @@ data ellipse for one or more groups.
 	 );
  
 	%*-- Reset required global options;
-	%if &sysver >= 7 %then %do;
+	%if %sysevalf(&sysver  >= 7) %then %do;
 		%local o1 o2;
 		%let o1 = %sysfunc(getoption(notes));
 		%let o2 = %sysfunc(getoption(validvarname,keyword));
@@ -514,7 +514,7 @@ goptions reset=symbol;
 %end;
 %done: ;
 	%*-- Restore global options;
-	%if &sysver >= 7 %then %do;
+	%if %sysevalf(&sysver  >= 7) %then %do;
 		options &o1 &o2;
 		%end;
 	%else %do;

@@ -5,8 +5,8 @@
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 03 May 2005 10:05:15                                *
-  * Revised: 18 May 2005 12:08:53                                *
-  * Version: 1.0                                                 *
+  * Revised: 17 Feb 2012 09:29:58                                *
+  * Version: 1.0-1                                               *
   *  - added code to set file=, better support for HTML          *
   *                                                              *
   *--------------------------------------------------------------*/
@@ -41,7 +41,7 @@
 * SWITCH       ON or OFF
 
 * TYPE=       Type of ODS output: HTML or LATEX.  If not specified,
-              the global macro variable &DEVTYPE is consulted.
+              the global macro variable &DEVTYP is consulted.
 
 * STYLE=      Output style [Default: STYLE=JOURNAL]
 
@@ -52,7 +52,7 @@
 
  =*/
 
-%global devtype gsasdir gsasfile sasfile;  /* input globals */
+%global devtyp gsasdir gsasfile sasfile;  /* input globals */
 %global odstype;                           /* output global */
 
 %macro odsgraphics(

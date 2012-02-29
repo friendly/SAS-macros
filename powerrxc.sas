@@ -288,7 +288,7 @@ options nonotes;
    %goto exit;
 %end;
 
-%if &sysver < 6.10 %then %do;
+%if %sysevalf(&sysver  < 6.10) %then %do;
    %put The POWERRXC macro requires SAS Version 6.10 or later.;
    %goto exit;
 %end;

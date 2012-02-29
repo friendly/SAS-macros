@@ -110,7 +110,7 @@
 
 *-- load the colormac macros if any non-hex color;
 %if %verify(&start.&mid.&end,0123456789ABCDEF) %then %do;
-	%if &sysver < 8 %then %do;
+	%if %sysevalf(&sysver  < 8) %then %do;
 		%put WARNING: You need the SAS supplied COLORMAC macro to use named or HLS colors;
 		%end;
 	%colormac(NOMSG);

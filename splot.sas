@@ -6,8 +6,8 @@
   *-------------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>         *
   * Created:  12 Aug 1991 15:46:41                                    *
-  * Revised:   7 Jun 2001 08:23:30                                    *
-  * Version:  1.7                                                     *
+  * Revised:  29 Feb 2012 09:50:24                                    *
+  * Version:  1.7-1                                                   *
   *  - Added ps= option, %sysfunc functions to delete temp file       *
   * 1.7  Updated to use ODS for V7+                                   *
   *                                                                   *
@@ -20,7 +20,7 @@
                ps=);
 
 %*-- Save original linesize;
-%if &sysver>6.10 %then %do;
+%if %sysevalf(&sysver >6.10) %then %do;
    %let lso=%sysfunc(getoption(ls,keyword));
    %let pso=%sysfunc(getoption(ls,keyword));
    %end;
@@ -52,7 +52,7 @@ proc sort data=&data out=_sorted_;
    by &class;
 %if &syserr > 4 %then %let abort=1; %if &abort %then %goto DONE;
  
-%if &sysver>7 %then %do;
+%if %sysevalf(&sysver >7) %then %do;
 	ods select SSPlots;
 	proc univariate plot data=_sorted_;
 		var &var;
@@ -110,7 +110,7 @@ options notes &lso &pso;
 %macro tempdel(fileref);
 	%global tempfn;
     *-- Avoid annoying flash with X commands;
-    %if &sysver > 6.10 %then %do;
+    %if %sysevalf(&sysver  > 6.10) %then %do;
         %let rc=%sysfunc(fdelete(&fileref));
         %let rc=%sysfunc(filename(&fileref,''));
     %end;

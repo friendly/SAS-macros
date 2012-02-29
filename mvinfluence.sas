@@ -5,7 +5,7 @@
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 15 Jan 2012 15:01:15                                *
-  * Revised: 19 Jan 2012 16:02:01                                *
+  * Revised: 22 Jan 2012 12:23:05                                *
   * Version: 1.0-1                                               *
     - Added diagonal reference lines to LR plot
 
@@ -137,7 +137,7 @@ http://ftp.sas.com/samples/A55809, Program 5_6.sas, was used in the initial impl
 
 	%*-- Reset required global options;
 
-	%if &sysver >= 7 %then %do;
+	%if %sysevalf(&sysver  >= 7) %then %do;
 		%local o1 o2;
 		%let o1 = %sysfunc(getoption(notes));
 		%let o2 = %sysfunc(getoption(validvarname,keyword));
@@ -191,8 +191,8 @@ proc iml;
    Beta=inv(t(X)*X)*t(X)*Y;
    print 'Regression Coefficients', Beta[c=yn r=xn];
 
-   S=(t(Y)*Y - t(Y)*X*Beta)/(n-k);
    E = Y - X * Beta;
+   S = t(E)*E / (n-k);
    XPXI = inv(t(X) * X);
    EPEI = inv(t(E) * E);
    print 'Estimated Covariance Matrix', S[r=yn c=yn];
@@ -359,7 +359,7 @@ run;
 %done:
 %if &abort %then %put ERROR: The &me macro ended abnormally.;
 	%*-- Restore global options;
-	%if &sysver >= 7 %then %do;
+	%if %sysevalf(&sysver  >= 7) %then %do;
 		options &o1 &o2;
 		%end;
 	%else %do;

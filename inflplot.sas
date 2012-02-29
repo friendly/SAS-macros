@@ -207,7 +207,7 @@
     %end;
  
 	%*-- Reset required global options;
-	%if &sysver >= 7 %then %do;
+	%if %sysevalf(&sysver  >= 7) %then %do;
 		%local o1;
 		%let o1 = %sysfunc(getoption(notes));
 		options nonotes;
@@ -504,7 +504,7 @@ proc summary data=_grid_;
  
 %exit:
 	%*-- Restore global options;
-	%if &sysver >= 7 %then %do;
+	%if %sysevalf(&sysver  >= 7) %then %do;
 		options &o1;
 		%end;
 	%else %do;

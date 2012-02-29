@@ -184,12 +184,12 @@
    %let method=MVE;
    %end;
 
-%if &sysver < 6.12 %then %do;
+%if %sysevalf(&sysver  < 6.12) %then %do;
    %put ERROR: &me requires at least SAS 6.12;
    %let abort=1;
    %goto DONE;
    %end;
-%if &sysver < 7 %then %do;
+%if %sysevalf(&sysver  < 7) %then %do;
    %if &method = MCD %then %do;
       %put WARNING: The MCD method requires SAS 7 or later.;
       %put METHOD has been reset to METHOD=MVE;
