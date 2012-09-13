@@ -116,6 +116,7 @@ proc means data=&data noprint;
 data &out;
    set &data;
    if _n_=1 then set sum(drop=_type_ _freq_);
+   drop min max mean sum;
    k = &count;
    nk= &freq;                  * n(k);
    nk1 = lag(&freq);           * n(k-1);
@@ -123,13 +124,18 @@ data &out;
    if nk > 1
       then wk = sqrt(nk-1);            * weight for regression line;
       else wk = 0;
+   label y='Frequency ratio' 
+    nk='n_k'
+	nk1='n_{k-1}'
+    wk='Weight';
+run;
 
-proc print data=&out;
+proc print data=&out label;
    id &count;
    var nk nk1 wk y;
    sum nk;
  
-proc reg data=&out outest=parms;
+proc reg data=&out outest=parms noprint;
    weight wk;
    model y =  k;
 %local lx ly;

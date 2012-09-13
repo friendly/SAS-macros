@@ -129,12 +129,13 @@ data &out;
        &ay = &at;
        last = lag(value);
 	   *-- draw tick mark, using relative %;
+/*
        function='MOVE'; output;
 	   &AY.SYS = '9';
 *       &ay=&at + &side * &htick;
        &ay = &side * &htick;
        function='DRAW'; output;
-/*
+*/
 	   *-- draw tick label;
 *       &ay=&at + 1.5 * &side * &htick;
 	   &AY.SYS = '1';
@@ -146,7 +147,7 @@ data &out;
 	   &ax=+0; &ay=-1;
        text=compress(put(value, &fmt));
        function='LABEL'; output;
-*/ 
+ 
        if minor > 0 & last^=. then do;
           save = value;
           dif = value-last;

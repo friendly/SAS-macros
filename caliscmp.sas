@@ -6,8 +6,9 @@
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 25 Oct 2000 08:55:11                                *
   * Revised:  8 Nov 2001 17:45:19                                *
-  * Version: 1.0                                                 *
+  * Version: 2.0                                                 *
   *  Added more fit indices for V8                               *
+  *  Revised to work in V9.3
   *                                                              *
   *--------------------------------------------------------------*/
  /*=
@@ -18,14 +19,18 @@
  (e.g., AMOS), which can fit multiple models together.
 
  The CALISCMP macro extracts goodness of fit statistics from the
- RAM data sets produced in a series of models fit to a given data
+ RAM or OUTFIT data sets produced in a series of models fit to a given data
  set using PROC CALIS.  The COMPARE= parameter allows pairs of
  nested models to be tested.
+ 
+ THIS MACRO WORKS DIFFERENTLY IN SAS 9.3 DUE TO EXTENSIVE CHANGES IN
+ THE FORMAT OF OUTPUT DATA SETS.
 
 =Usage:
 
- For each model, use the OUTRAM= option on the PROC CALIS statement
- to same the model fit statistics in a separate data set.  For example,
+ For each model, use the OUTRAM= option (or OUTFIT= in SAS 9.3+) on the 
+ PROC CALIS statement to same the model fit statistics in a separate data set.  
+ For example,
  
 		proc calis data=lord cov summary outram=ram1;
 		lineqs ....
@@ -45,7 +50,7 @@
  
 ==Parameters:
 
-* RAM=        List of the names of two or more RAM data sets from 
+* RAM=        List of the names of two or more OUTRAM data sets from 
               CALIS runs, separated by spaces.
 
 * MODELS=     List of model descriptions or labels, separated by '/',
@@ -125,19 +130,13 @@
 	out=ramstats
 	);
 
-%let abort=0;
-%if %length(&ram)=0 %then %do;
-	%put ERROR:  The RAM= parameter must specify a list of RAM data sets;
-	%let abort=1;
-	%goto done;
-	%end;
-	
 	%*-- Reset required global options;
 	%if %sysevalf(&sysver  >= 7) %then %do;
 		%local o1 o2;
 		%let o1 = %sysfunc(getoption(notes));
 		%let o2 = %sysfunc(getoption(validvarname,keyword));
 		options nonotes validvarname=upcase;
+		/* This bit doesnt seem to work in SAS 9.3 */
 		data _null_;
 			set sashelp.vtitle(obs=2);
 			if _n_=2 then call symput('title2', text);
@@ -146,6 +145,17 @@
 	   options nonotes;
 		%end;
 
+%if %sysevalf(&sysver > 9.2) %then %do;
+	%goto v93;
+	%end;
+
+%let abort=0;
+%if %length(&ram)=0 %then %do;
+	%put ERROR:  The RAM= parameter must specify a list of RAM data sets;
+	%let abort=1;
+	%goto done;
+	%end;
+	
 *-- Combine the OUTRAM data sets, select the _TYPE_='STAT' statistics;
 data _stats_;
 	length model $40;
@@ -268,18 +278,195 @@ data _null_;
 		end;
 		run;
 	%end;
+%goto exit;
 
+/*
+  Code for SAS V 9.3+: Still under development
+*/
+%v93:
+	%put WARNING: This macro does not work the same with PROC CALIS in SAS 9.3+;
+
+
+proc format;
+	value fitcode
+101 = "N Observations"
+103 = "N Variables"
+104 = "N Moments"
+105 = "N Parameters"
+106 = "N Active Constraints"
+111 = "Baseline Model Function Value"
+113 = "Baseline Model Chi-Square"
+114 = "Baseline Model Chi-Square DF"
+115 = "Pr > Baseline Model Chi-Square"
+201 = "Fit Function"
+203 = "Chi-Square"
+204 = "Chi-Square DF"
+205 = "Pr > Chi-Square"
+211 = "Z-Test of Wilson & Hilferty"
+212 = "Hoelter Critical N"
+213 = "Root Mean Square Residual (RMSR)"
+214 = "Standardized RMSR (SRMSR)"
+215 = "Goodness of Fit Index (GFI)"
+301 = "Adjusted GFI (AGFI)"
+302 = "Parsimonious GFI"
+303 = "RMSEA Estimate"
+304 = "RMSEA Lower 90% Confidence Limit"
+305 = "RMSEA Upper 90% Confidence Limit"
+306 = "Probability of Close Fit"
+307 = "ECVI Estimate"
+308 = "ECVI Lower 90% Confidence Limit"
+309 = "ECVI Upper 90% Confidence Limit"
+310 = "Akaike Information Criterion"
+311 = "Bozdogan CAIC"
+312 = "Schwarz Bayesian Criterion"
+313 = "McDonald Centrality"
+401 = "Bentler Comparative Fit Index"
+402 = "Bentler-Bonett NFI"
+403 = "Bentler-Bonett Non-normed Index"
+404 = "Bollen Normed Index Rho1"
+405 = "Bollen Non-normed Index Delta2"
+406 = "James et al. Parsimonious NFI";
+
+
+data _stats0_;
+	merge
+	%let i=1;
+	%let dsn = %scan(&ram, 1, %str( ));
+	%do %while (&dsn ne );
+			&dsn (rename=FitValue=Model&i)
+		%let i = %eval(&i+1);
+		%let dsn = %scan(&ram, &i, %str( ));
+		%end;
+	%let n = %eval(&i-1);
+	   ;
+	by IndexCode;
+	drop PrintChar;
+	label
+	%do i=1 %to &n;
+		Model&i = "%scan(&models, &i, %str(/))"
+		%end;	
+	;
+
+	if IndexCode in (101,105,203,204,205,213,215,301,303,304,305,306, 310,311,312);
+
+proc print data=_stats0_(drop=IndexCode) label;
+	id FitIndex;
+	by _type_ notsorted;
+	run;
+
+data _stats_;
+	length model $40;
+	set
+	%let i=1;
+	%let dsn = %scan(&ram, 1, %str( ));
+	%do %while (&dsn ne );
+			&dsn (in=in&i)
+		%let i = %eval(&i+1);
+		%let dsn = %scan(&ram, &i, %str( ));
+		%end;
+	%let n = %eval(&i-1);
+	   ;
+	%do i=1 %to &n;
+		if in&i then do;
+			model = "%scan(&models, &i, %str(/))";
+			if model = ' ' then model = "Model &i";
+			end;
+		%end;	
+
+  keep model _type_ IndexCode FitIndex FitValue;
+	if IndexCode in (105,203,204,205,213,215,301,303,304,305,306, 310,311,312);
+
+proc transpose data=_stats_ out=&out(drop=_label_ _name_);
+   by model notsorted;
+   id FitIndex;
+   var FitValue;
+data &out;
+	set &out nobs=nmod end=eof;
+	if eof then call symput('nmod', trim(left(put(nmod,3.0))));
+	run;
+%put CALISCMP: Model Comparison Statistics from nmod=&nmod models;
+*title2 "Model Comparison Statistics from &nmod RAM data sets";
+
+/*
+proc print data=&out;
+	id model;
+run;
+*/
+
+%if %length(&compare) %then %do;
+
+proc format;
+	value stars     0 - 0.0001 = '****'
+	             0.0001<-0.001 = '*** '
+					 0.001 <-0.01  = '**  '
+					 0.01 <-0.05   = '*   '
+					 other         = '    ';
+	
+
+ods escapechar='^';
+%let delta = ^{unicode 0394};
+data _comp_;
+	set &out(keep=model chi_square chi_square_df) end=eof;
+	*file print;
+	length comp modcmp $200 pair $20;
+	array chi{&nmod} chisq1-chisq&nmod;
+	array dof{&nmod} df1-df&nmod;
+	array mod{&nmod} $40 model1-model&nmod;
+	retain chisq1-chisq&nmod df1-df&nmod model1-model&nmod;
+	drop chisq1-chisq&nmod df1-df&nmod model1-model&nmod;
+	drop comp sep pair m1 m2 i chi_square chi_square_df model;
+	chi[_n_] = chi_square;
+	dof[_n_] = chi_square_df;
+	mod[_n_] = model;
+	label modcmp='Model comparison'
+				chisq="&delta Chi Square"
+	      p="Pr(>&delta Chi Square)"
+	      ddf="&delta df";
+	if eof then do;
+		comp = "&compare";
+		sep = ' vs. ';
+		pair = scan(comp, 1, "/");
+		do i=1 by 1 until (pair = ' ');
+			m1 = input(scan(pair, 1), 4.0);
+			m2 = input(scan(pair, 2), 4.0);
+*			put pair= m1= m2=;
+			if (m1^=. & m2^=.) then do;
+				chisq = chi[m1] - chi[m2];
+				ddf = dof[m1] - dof[m2];
+				modcmp = trim(mod[m1]) || sep || trim(mod[m2]);
+				if (chisq < 0) then do;
+					chisq = - chisq;
+					ddf = - ddf;
+					modcmp = trim(mod[m2]) || sep || trim(mod[m1]) || ' [R]';
+					end;
+				p = 1 - probchi(chisq, ddf);
+				stars = put(p, stars.);
+*				put +indent chisq 10.4 ddf 5. p 10.5 +1 stars $4. +5 modcmp;
+*				put +indent modcmp @(statind) chisq 10.4 ddf 5. p 10.5 +1 stars $4.;
+				output;
+				end;
+			pair = scan(comp, i+1, "/");
+			end;
+		end;
+		run;
+proc print data=_comp_ label;
+	id modcmp;
+	var chisq ddf p stars;
+  run;		
+	%end;
+	
 %exit:
 	%*-- Restore global options;
 	%if %sysevalf(&sysver  >= 7) %then %do;
 		options &o1 &o2;
-		title2 "&title2";
+		*title2 "&title2";
 		%end;
 	%else %do;
 	   options notes;
-		title2;
+		*title2;
 		%end;
 
 %done:
 
 %mend;
+                                     
