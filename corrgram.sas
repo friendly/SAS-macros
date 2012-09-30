@@ -5,15 +5,16 @@
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 24 Nov 2000 07:10:52                                *
-  * Revised: 30 Oct 2011 11:58:56                                *
-  * Version: 1.2-2                                               *
+  * Revised: 21 Sep 2012 17:32:36                                *
+  * Version: 1.2-3                                               *
   *  1.1 Added FILL=L type for parametric ellipse                *
   *  1.2 Added FONT=  (suggestions from Ray.Lindsay@abare.gov.au)*
   *      Fixed problem with TITLE=                               *
   *      Added output of global macro variable VORDER            *
   *      Fixed buglet with var=a1-a8 (thx: Ian Wakeling)         *
   *   Try to handle longer variable names (thx: Bill Raynor)     *
-  *   Updated for V 9.3 where CORR is builtin (thx: Bill Raynor) * 
+  *   Updated for V 9.3 where CORR is builtin (thx: Bill Raynor) *
+  *   Fixed minor warning with vname_                            * 
   *                                                              *
   *--------------------------------------------------------------*/
  /*=
@@ -150,8 +151,8 @@
     set &data (obs=1);
        %*-- convert shorthand variable list to long form;
      length 
-		%if &sysver>=7	%then vname_ $ 32  _vlist_ $ 1000;
-                        %else vname_ $ 8  _vlist_ $ 200;
+		%if &sysver>=7	%then _vname_ $ 32  _vlist_ $ 1000;
+                        %else _vname_ $ 8  _vlist_ $ 200;
 						;
      array _xx_ &var;
      _vname_ = ' ';
