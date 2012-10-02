@@ -9,19 +9,19 @@
  /*=
 =Description: 
 
-    Calculates the following power-related measures for retrospective and
-    prospective analyses (see the DETAILS section below for definitions):
+    Calculates the following power-related measures for retrospective and
+    prospective analyses (see the DETAILS section below for definitions):
 												
-   - Effect size
+   - Effect size
 	- Power for an effect test      
 	- Adjusted power and confidence limits
 	- Least significant number      
-   - Power for least significant number
+   - Power for least significant number
 												
 =Usage:
 
- You must first run PROC GLM to fit the desired model and use the
- OUTSTAT= option to create the input data set for the %POWER macro.
+ You must first run PROC GLM to fit the desired model and use the
+ OUTSTAT= option to create the input data set for the %POWER macro.
 
  The macro is invoked with the following statement.                         
  The keyword parameters assigned in any order.
@@ -38,46 +38,46 @@
                                                 
 ==Parameters:
 
-* DATA=   is the name of the data set created by the
-          OUTSTAT= option in the previous run of PROC GLM.
-
+* DATA=   is the name of the data set created by the
+          OUTSTAT= option in the previous run of PROC GLM.
+
 * OUT=    is the name of a new data set into which %POWER will store
 	       all calculations. In the output data set, values of .N indicate
 	       statistics that were not calculated and values of .U indicate
 	       that the macro was unable to calculate the statistic.
-
+
 * EFFECT= (REQUIRED) is a list of one or more effects from the MODEL 
           statement in the previous run of PROC GLM, or the keyword _ALL_.
-			 Power calculations are performed for thespecified effect(s).
-
-* CALCS=  is one or more of the following, separated by spaces:
-        POWER to request that power be computed and displayed
-        ADJPOW to request that adjusted power be computed and displayed
-        POWCI to request that a confidence interval for adjusted power be
-          computed and displayed
-        LSN to request that the least significant number be computed
-          and displayed.
-      
+			 Power calculations are performed for thespecified effect(s).
+
+* CALCS=  is one or more of the following, separated by spaces:
+        POWER to request that power be computed and displayed
+        ADJPOW to request that adjusted power be computed and displayed
+        POWCI to request that a confidence interval for adjusted power be
+          computed and displayed
+        LSN to request that the least significant number be computed
+          and displayed.
+      
 * SS=   type sums of squares to use in the power calculations. Should be 
         one of these values: ss1, ss2, ss3, or ss4.  The default is ss3.  
-		  These sumsof squares must have been computed by the previous run
-		  of PROC GLM.
-
+		  These sumsof squares must have been computed by the previous run
+		  of PROC GLM.
+
 * ALPHA=  LIST OF SIGNIFICANCE LEVELS, a list of values separated by
-        spaces. The default value of 0.05.
-
-* N=    LIST OF SAMPLE SIZES is a list of values separated by spaces. The
-        default value is the observed sample size. Any values you specify are
-        used in addition to the default.
-        
-* SIGMA= LIST_OF_STANDARDS_DEVIATIONS is a list of values separated by spaces.
-        The default value is the observed standard deviation. Any values you
-        specify are used in addition to the default.
-        
-* DELTA=  LIST_OF_EFFECT_SIZES is a list of values separated by spaces. The
-        default value is the observed effect size. Any values you specify are
-        used in addition to the default.
-      
+        spaces. The default value of 0.05.
+
+* N=    LIST OF SAMPLE SIZES is a list of values separated by spaces. The
+        default value is the observed sample size. Any values you specify are
+        used in addition to the default.
+        
+* SIGMA= LIST_OF_STANDARDS_DEVIATIONS is a list of values separated by spaces.
+        The default value is the observed standard deviation. Any values you
+        specify are used in addition to the default.
+        
+* DELTA=  LIST_OF_EFFECT_SIZES is a list of values separated by spaces. The
+        default value is the observed effect size. Any values you specify are
+        used in addition to the default.
+      
  
  All calculations are output to OUT=. Calculations are
  done/reported for CALCS= on the EFFECT= effects from the 
@@ -265,27 +265,27 @@
             end;
  
  
-          * GET CI ON LAMBDA AND POWER;
-            if index("&calcs",'POWCI')>0 and
-               adjpow not in (.N,.U) then do;
-              %if &fsamp=I %then %do;
-                powlow=.U; powup=.U;
-              %end;
-              %else %do;
-               lamlow=&dfh*(max(0,(sqrt(&fsamp)-sqrt(fcrit))))**2;
-               if lamlow>135 then powlow=1.0;
-               else powlow=1-probf(fcrit,&dfh,dfe,lamlow);
-
-               lamup=&dfh*(sqrt(&fsamp)+sqrt(fcrit))**2;
-               if lamup>135 then powup=1.0;
-               else powup=1-probf(fcrit,&dfh,dfe,lamup);
-              %end;
-            end;
-            else do;
-               powlow=.N;
-               powup=.N;
-            end;
-
+          * GET CI ON LAMBDA AND POWER;
+            if index("&calcs",'POWCI')>0 and
+               adjpow not in (.N,.U) then do;
+              %if &fsamp=I %then %do;
+                powlow=.U; powup=.U;
+              %end;
+              %else %do;
+               lamlow=&dfh*(max(0,(sqrt(&fsamp)-sqrt(fcrit))))**2;
+               if lamlow>135 then powlow=1.0;
+               else powlow=1-probf(fcrit,&dfh,dfe,lamlow);
+
+               lamup=&dfh*(sqrt(&fsamp)+sqrt(fcrit))**2;
+               if lamup>135 then powup=1.0;
+               else powup=1-probf(fcrit,&dfh,dfe,lamup);
+              %end;
+            end;
+            else do;
+               powlow=.N;
+               powup=.N;
+            end;
+
  
  
           * FIND LEAST SIGNIFICANT N;
