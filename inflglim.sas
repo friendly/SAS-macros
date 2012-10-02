@@ -6,8 +6,8 @@
   *-------------------------------------------------------------------*
      Author:  Michael Friendly            <friendly@yorku.ca>          
     Created:  24 Nov 1997 10:36:05                                     
-    Revised:  08 Jan 2012 16:31:02                                     
-    Version:  1.6-1                                                   
+    Revised:  30 Sep 2012 15:14:13                                     
+    Version:  1.6-2                                                   
      - Fixed error if DIST= not specified. Added FREQ= parm            
      - Added MOPT= parm, INFL= parm (what's influential?)              
      1.4   Fixed make ... noprint for V7+                              
@@ -18,7 +18,8 @@
        Fixed problem with long variable names                          
 	 1.6 
 	  Added BFILL= option for filled bubbles.  BFILL=gradient is useful
-	  Added LFONT= option for font of bubble labels                            
+	  Added LFONT= option for font of bubble labels
+	  Fixed warning for lfont style                            
                                                                        
     Dependencies:  %gskip (needed for eps/gif only)                    
                                                                        
@@ -349,8 +350,8 @@ proc print data=&out noobs label;
    %if &label ^= NONE %then %do;
    data _label_;
       set &out nobs=n;
-      length xsys $1 ysys $1 function $8 position $1 text $12 color $8;
-      retain xsys '2' ysys '2' function 'LABEL' color "&lcolor" when 'A';
+      length xsys $1 ysys $1 function $8 position $1 text $12 color $8 style $32;
+      retain xsys '2' ysys '2' function 'LABEL' color "&lcolor" when 'A' style '';
       keep &id &class x y xsys ysys function position text color size
            position hat difchi &bubble when style;
       x = &gxj;

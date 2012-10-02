@@ -5,9 +5,11 @@
   *-------------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>         *
   * Created: 08 Nov 1998  9:51                                        *
-  * Revised:  9 Nov 2000 13:36:44                                     *
-  * Version: 1.1                                                      *
-  *  1.1   Fixed make ... noprint for V7+                             *
+  * Revised: 02 Oct 2012 08:49:52                                     *
+  * Version: 1.2-1
+  *  1.1  Fixed make ... noprint for V7+                             
+     1.2  Added NEGBIN
+	      Modified to use output statement rather than ODS
   *                                                                   *
   * From ``Visualizing Categorical Data'', Michael Friendly (2000)    *         
   *-------------------------------------------------------------------*/
@@ -46,7 +48,8 @@
 
 * CLASS=    Names of any class variables in the model.
 
-* DIST=     Error distribution.  [Default: DIST=NORMAL].
+* DIST=     Error distribution. One of NORmal, BINomial, POIsson, GAMma or
+            NEGbin; can be abbreviated to the first 3 characters.  [Default: DIST=NORMAL].
 
 * LINK=     Link function.  The default is the canonical link for the
             DIST= error distribution.
@@ -94,31 +97,35 @@
 
 * GOUT=     The name of the graphics catalog. [Default: GSEG]
 
+==Dependencies:
+
+ Requires: labels.sas
+
  =*/
  
 %macro halfnorm(
    data=_last_,    /* Name of input data set                     */
-	y=,             /* Name of response variable                  */
+   y=,             /* Name of response variable                  */
    resp=,          /* Name of response variable                  */
-	trials=,        /* Name of trials variable (dist=bin only)    */
+   trials=,        /* Name of trials variable (dist=bin only)    */
    model=,         /* Model specification                        */
    class=,         /* Names of class variables                   */
    dist=,          /* Error distribution                         */
    link=,          /* Link function                              */
-	offset=,        /* Offset variable(s)                         */
+   offset=,        /* Offset variable(s)                         */
    mopt=,          /* other model options (e.g., NOINT)          */
    freq=,          /* Freq variable                              */
    id=,            /* Name of observation ID variable (char)     */
-	out=_res_,      /* output data set                            */
-	label=top 5,    /* NONE|ALL|ABOVE|TOP n                       */
-	seed=0,         /* Seed for simulated residuals               */
-	res=stresdev,   /* Type of residual to use: streschi/stresdev */
-	nres=19,        /* Number of simulations for envelope         */
-	symbol=dot,     /* plotting symbol for residuals              */
-	interp=none,    /* interpolation for residuals                */
-	color=red,      /* color for residuals                        */
-	name=halfnorm,  /* graph name in graphics catalog             */
-	gout=
+   out=_res_,      /* output data set                            */
+   label=top 5,    /* NONE|ALL|ABOVE|TOP n                       */
+   seed=0,         /* Seed for simulated residuals               */
+   res=stdresdev,  /* Type of residual to use: strdeschi/stdresdev */
+   nres=19,        /* Number of simulations for envelope         */
+   symbol=dot,     /* plotting symbol for residuals              */
+   interp=none,    /* interpolation for residuals                */
+   color=red,      /* color for residuals                        */
+   name=halfnorm,  /* graph name in graphics catalog             */
+   gout=
 );
 
 %let label=%upcase(&label);
@@ -143,21 +150,25 @@
     %end;
 
 %let lres=&res;
-      %if %upcase(&res)=STRESDEV %then %let lres=Std Deviance Residual;
-%else %if %upcase(&res)=STRESCHI %then %let lres=Std Pearson Residual;
+/*      %if %upcase(&res)=STRESDEV %then %let lres=Std Deviance Residual; */
+      %if %upcase(&res)=STDRESDEV %then %let lres=Std Deviance Residual;
+%else %if %upcase(&res)=STRDESCHI %then %let lres=Std Pearson Residual;
 %else %if %upcase(&res)=RESDEV   %then %let lres=Deviance Residual;
 %else %if %upcase(&res)=RESCHI   %then %let lres=Pearson Residual;
 %else %if %upcase(&res)=RESLIK   %then %let lres=Likelihood Residual;
 %else %if %upcase(&res)=RESRAW   %then %let lres=Raw Residual;
 %else %do;
-    %put WARNING: Residual type &res is unknown.  Using RES=STRESDEV;
-    %let res=stresdev;
+    %put WARNING: Residual type &res is unknown.  Using RES=STDRESDEV;
+    %let res=stdresdev;
 	 %let lres=Std Deviance Residual;
     %goto done;
 	%end;
 
 %put HALFNORM: Fitting initial model: &resp = &model.;
-%let _print_=OFF;
+%*let _print_=OFF;
+*ods listing close;
+*ods output ObStats=work._obstat_ ;
+ods output ParameterEstimates=work.parm(where=(Parameter='Dispersion'));
 proc genmod data=&data;
    %if %length(&class)>0 %then %do; class &class; %end;
    %if %length(&freq)>0 %then %do;  freq &freq;   %end;
@@ -171,9 +182,12 @@ proc genmod data=&data;
 	%if %length(&link)>0 %then %do;  link=&link %end;
 	%if %length(&offset)>0 %then %do; offset=&offset  %end;
 	%if %length(&mopt)>0 %then %do;  %str(&mopt) %end;
-		obstats residuals;
-  make 'obstats'  out=_obstat_ %if %sysevalf(&sysver <7) %then noprint;;
+/*		obstats residuals */
+		;
+	output out=_obstat_ pred=pred &res=res;
   run;
+
+
 
 %*-- Find variables listed in model statment;
 data _null_;
@@ -187,26 +201,34 @@ run;
 
 %*-- Generate simulated response values from the error distribution;
 data _obstat_;
+	%if %substr(&dist,1,3) = NEG %then %do;
+		if _n_  = 1 then set parm(keep = estimate);
+		%end;
    merge &data(keep=&resp &trials &freq &class &xvars &offset &id)
-	      _obstat_(keep=pred &res);
+	      _obstat_(keep=pred res);
+
 	array _y_{&nres} _y1 - _y&nres;
 	drop i seed;
 	retain seed &seed;
 	do i=1 to dim(_y_);
-		%if %substr(&dist,1,1)=N %then %do;
+		%if %substr(&dist,1,3)=NOR %then %do;
 			call rannor(seed, _y_[i]);
 			_y_[i] = pred + _y_[i];
 			%end;
-		%else %if %substr(&dist,1,1)=B %then %do;
+		%else %if %substr(&dist,1,3)=BIN %then %do;
 			n=&trials;
 			call ranbin(seed, n, pred, _y_[i]);
 			%end;
-		%else %if %substr(&dist,1,1)=P %then %do;
+		%else %if %substr(&dist,1,3)=POI %then %do;
 			call ranpoi(seed, pred, _y_[i]);
 			%end;
-		%else %if %substr(&dist,1,1)=G %then %do;
+		%else %if %substr(&dist,1,3)=GAM %then %do;
 			call rangam(seed, pred, _y_[i]);
 			%end;
+		%else %if %substr(&dist,1,3) = NEG %then %do;
+		   teta = 1 / estimate;
+		   _y_[i] = rand('NEGBIN', (teta /(teta+pred)), teta);
+		%end;
 		end;
 run;
 
@@ -223,10 +245,11 @@ run;
 %if %sysevalf(&sysver  >= 7) %then %do;
 	ods listing exclude all;
 	%end;
-%do i=1 %to &nres;
 options nonotes;
-%*put Generating residual set &i;
+%do i=1 %to &nres;
+%*put HALFNORM: Generating residual set &i;
 	
+*ods output ObStats=work._hres&i(keep=&res rename=(&res=res&i));
 proc genmod data=_obstat_;
    %if %length(&class)>0 %then %do; class &class; %end;
    %if %length(&freq)>0 %then %do;  freq &freq;   %end;
@@ -240,12 +263,16 @@ proc genmod data=_obstat_;
 	%if %length(&link)>0 %then %do;  link=&link %end;
 	%if %length(&offset)>0 %then %do; offset=&offset  %end;
 	%if %length(&mopt)>0 %then %do;  %str(&mopt) %end;
-		obstats residuals;
-  make 'obstats'  out=_hres&i(keep=&res rename=(&res=res&i));
+	/*
+		obstats residuals
+	*/
+		;
+	output out=work._hres&i &res = res&i;
   run;
 
 %end;  /* End %do i */
-%let _print_=ON;
+*let _print_=ON;
+*ods listing;
 %if %sysevalf(&sysver  >= 7) %then %do;
 	ods listing exclude none;
 	%end;
@@ -262,10 +289,11 @@ data _obstat_;
 	do i=1 to dim(_res_);
 		if _res_[i]^=. then _res_[i] = abs(_res_[i]);;
 		end;
-	_ares_ = abs(&res);
+	_ares_ = abs(res);
 
 proc sort data=_obstat_;
 	by _ares_;
+run;
 
 %*-- Sort each set of residuals;
 proc iml;
@@ -303,7 +331,8 @@ finish;
 	create _sorted_  from Y;
 	append from Y;
 	quit;
-%put NOTE: There are &nc sorted columns of simulated residuals;
+
+%put HALFNORM: There are &nc sorted columns of simulated residuals;
 %if &nc=0 %then %do;
 	%let abort=1;
 	%goto done;
@@ -317,10 +346,8 @@ data _obstat_;
 	resmin = min(of col1-col&nc);		
 	resmax = max(of col1-col&nc);
 	resmean = mean(of col1-col&nc);		
+	run;
 
-*proc print data=_obstat_(obs=20);
-run;
-		
 options notes;
 data &out;
 	set _obstat_ nobs=nobs end=eof;
@@ -343,6 +370,8 @@ options nonotes;
 %label(data=&out, x=_z_, y=_ares_, text=&id, out=_labels_, pos=4,
 	subset=&subset, xoff=-.04);
 %end;
+
+title2;
 
 proc gplot data=&out;
 	plot _ares_  * _z_ = 1
