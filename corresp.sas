@@ -6,8 +6,8 @@
   *-------------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>         *
   * Created:  19 Jan 1990 15:23:09                                    *
-  * Revised:   2 Nov 2001 17:30:39                                    *
-  * Version:  1.9                                                     *
+  * Revised:  27 Feb 2013 16:23:47                                    *
+  * Version:  1.9-1                                                   *
   * 1.2  Added dim parameter and colors                               *
   * 1.3  Added graphics GPLOT plot, annotation controls               *
   * 1.5  Uses PROC CORRESP rather than IML , equate axes              *
@@ -19,8 +19,9 @@
   * 1.8  Fixed validvarname for V7+                                   *
   * 1.9  Added BY= processing and an INANNO= data set                 *
   *      Fixed buglet with MCA when TABLES= includes char & numeric   *
+  *      Replaced %label with %labels
   *                                                                   *
-  * Requires: %label, %equate                                         *
+  * Requires: %labels, %equate                                        *
   *                                                                   *
   * From ``Visualizing Categorical Data'', Michael Friendly (2000)    *         
   *-------------------------------------------------------------------*/
@@ -494,14 +495,14 @@ data _lab_;
 	where (_type_ ^= 'INERTIA');
 	_name_ = trim(left(_name_));
 
-	%label(data=_lab_, x=&xa, y=&ya, z=&za, text=_name_, size=&rowht,
+	%labels(data=_lab_, x=&xa, y=&ya, z=&za, text=_name_, size=&rowht,
       color="&c1", subset=_type_='OBS', pos=&p1, out=_lab1_, len=16,
 		copy=_type_, by=&by);
-	%label(data=_lab_, x=&xa, y=&ya, z=&za, text=_name_, size=&colht,
+	%labels(data=_lab_, x=&xa, y=&ya, z=&za, text=_name_, size=&colht,
       color="&c2", subset=_type_='VAR', pos=&p2, out=_lab2_, len=16,
 		copy=_type_, by=&by);
 	%if %length(&sup) %then %do;
-	%label(data=_lab_, x=&xa, y=&ya, z=&za, text=_name_, size=&colht,
+	%labels(data=_lab_, x=&xa, y=&ya, z=&za, text=_name_, size=&colht,
       color="&c3", subset=_type_=:'SUP', pos=&p3, out=_lab3_, len=16,
 		copy=_type_, by=&by);
 		%end;

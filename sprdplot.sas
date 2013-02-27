@@ -5,15 +5,18 @@
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created:  2 Feb 1997 10:59:29                                *
-  * Revised: 01 Nov 2004 10:11:26                                *
-  * Version:  1.2                                                *
-  *  - Combined sprdplot and eqvar to give plot plus transform   *
-  *  - Added GROUPS= to handle a continuous covariate by grouping*
-  *  - Added GOUT=                                               *
-  *  - Removed WEIGHT from REG step                              *
-  *  - Added VAXIS=, HAXIS=                                      *
-  *  - Fixed buglet when power<0                                 *
-  *                                                              *
+  * Revised: 27 Feb 2013 16:17:35                                *
+  * Version:  1.2-1                                              *
+     - Combined sprdplot and eqvar to give plot plus transform    
+     - Added GROUPS= to handle a continuous covariate by grouping 
+     - Added GOUT=                                                
+     - Removed WEIGHT from REG step                               
+     - Added VAXIS=, HAXIS=                                       
+     - Fixed buglet when power<0                                  
+     - Replaced %label with %labels
+
+  * Requires: %labels                                            *
+                                                                  
   *--------------------------------------------------------------*/
  /*=
 =Description:
@@ -228,7 +231,7 @@ proc reg data=_sumry_ outest=_parms_ noprint;
 *	  weight n;
 
 %if &gplot=Y %then %do;
-%label(data=_sumry_, x=logm, y=logs, text=left(%scan(&class,1)),
+%labels(data=_sumry_, x=logm, y=logs, text=left(%scan(&class,1)),
        size=&htext, pos=2, out=_label_);
 
 data _slope_;

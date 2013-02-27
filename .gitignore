@@ -15,6 +15,7 @@
 _*.sas
 *.eml
 *0.sas
+.titles
 # special files
 tags
 Distfile

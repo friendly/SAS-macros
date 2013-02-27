@@ -19,9 +19,9 @@ $interactive = $opt_i;
 $interactive = 1;
 $uninstall = $opt_u;
 
-$sasmac='/home/friendly/datavis.ca/sasmac';
+$sasmac='/home/friendly/datavis/sasmac';
 #$serverbase='/home/ftp/pub/sas/macros';
-$serverbase='/home/friendly/datavis.ca/sas/macros';
+$serverbase='/home/friendly/datavis/sas/macros';
 $macdir='/home/friendly/sasuser/macros';
 
 $xref="$sasmac/.xref";
@@ -39,7 +39,7 @@ for $mac (@ARGV) {
 #            next;
             }
         &move ("$mac.html", $sasmac);
-        &link ("$macdir/$mac.sas", "$serverbase/$sdir");
+        &copy ("$macdir/$mac.sas", "$serverbase/$sdir");    # now use copy rather than link for github
    }    
 }
 

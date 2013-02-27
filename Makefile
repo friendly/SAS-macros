@@ -1,8 +1,8 @@
 SAS2POD = /home/friendly/bin/sas2pod
 SPOD2HTML = /home/friendly/bin/spod2html
 SPOD2LATEX = /home/friendly/bin/spod2latex
-XREF = /home/friendly/datavis.ca/sasmac/.xref
-MENU = /home/friendly/datavis.ca/sasmac/.menu2
+XREF = /home/friendly/datavis/sasmac/.xref
+MENU = /home/friendly/datavis/sasmac/.menu2
 
 # Server dir under which macro goes
 # relative to $serverbase = '/ftp/sas/macros/';

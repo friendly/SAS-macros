@@ -176,7 +176,8 @@ start partial(x, y, names, obs, uv, uvname ) global(xscale, yscale);
 		print "Regression weights" , b[ rowname=names ];
 		%end;
    lev = hat > 2*k1/n;
-   flag = lev | (abs(rstudent) > 2);
+   flag = (lev>0) | (abs(rstudent) > 2);
+	* print obs hat[f=8.4] lev flag;
 
    if any( flag ) then do;
       l = loc(flag)`;

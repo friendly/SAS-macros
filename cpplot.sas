@@ -13,12 +13,16 @@
  *-------------------------------------------------------------------*
  *  Author:  Michael Friendly            <friendly@yorku.ca>         *
  * Created:  8 Jun 1990 12:12:47                                     *
- * Revised:  26 May 2003 16:25:13                                    *
- * Version:  1.5                                                     *
- *   - use REG, not RSQUARE                                          *
- *   - added AIC plot                                                *
- * 1.5 Fixed validvarname for V7+.  Fixed GOUT=                      *
- *   - added htext=                                                  *
+ * Revised:  27 Feb 2013 16:27:07                                    *
+ * Version:  1.5-1                                                   *
+     - use REG, not RSQUARE                                           
+     - added AIC plot                                                 
+   1.5 Fixed validvarname for V7+.  Fixed GOUT=                       
+     - added htext= 
+     - Replaced %label with %labels
+ 
+ * Requires: %labels                                       *
+
  *-------------------------------------------------------------------*/
 %macro CPPLOT(
        yvar=,                /* name of dependent variable        */
@@ -177,7 +181,7 @@ data labels;
  
 *include label;
 %if %index(&gplot,CD)>0 %then %do;
-%label(data=_models_,x=_P_, y=_CPD_, text=symbol,
+%labels(data=_models_,x=_P_, y=_CPD_, text=symbol,
        xoff=-.05, pos=4, size=&htext,
        subset=_CPD_<&cpmax, out=labeld);
 %end;
@@ -200,7 +204,7 @@ proc gplot data=_models_ &GOUT ;
    run; quit;
  
 %if %index(&gplot,F )>0 %then %do;
-%label(data=_models_,x=_P_, y=_F_, text=symbol,
+%labels(data=_models_,x=_P_, y=_F_, text=symbol,
        xoff=.15, pos=6, size=&htext,
        subset=_F_<&fmax and _F_^=., out=labelf);
 proc gplot data=_models_ &GOUT ;
@@ -214,7 +218,7 @@ proc gplot data=_models_ &GOUT ;
    run; quit;
 %end;
 %if %index(&gplot,PROBF)>0 %then %do;
-%label(data=_models_,x=_P_, y=_PROBF_, text=symbol,
+%labels(data=_models_,x=_P_, y=_PROBF_, text=symbol,
        xoff=-.05, pos=4, size=&htext,
        subset=1,             out=labelp);
 proc gplot data=_models_ &GOUT ;
@@ -230,7 +234,7 @@ proc gplot data=_models_ &GOUT ;
 %end;
 
 %if %index(&gplot,AIC)>0 %then %do;
-%label(data=_models_,x=_P_, y=_AIC_, text=symbol,
+%labels(data=_models_,x=_P_, y=_AIC_, text=symbol,
        xoff=-.05, pos=4, size=&htext,
        subset=1,             out=_lab_);
 proc gplot data=_models_ &GOUT ;

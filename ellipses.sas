@@ -6,7 +6,7 @@
   *  Author:  Michael Friendly            <friendly@YorkU.ca>         *
   * Created: 24 Oct 2006 16:10:05                                     *
   * Revised: 07 Oct 2011 15:22:31                                     *
-  * Version:  2.5-0                                                   *
+  * Version:  2.5-1                                                   *
   * Requires: IML                                                     *
   *                                                                   *
   *    Renamed from contour.sas, originally from SSSG.  contour.sas   *
@@ -20,6 +20,7 @@
   *  WIDTH=0 will now suppress the ellipse
   * V 2.5
   *  Added IWIDTH= to control width of interpolated line.
+  *  IWIDTH=1 is default
   *                                                                   *
   *-------------------------------------------------------------------*/
  /*=
@@ -176,7 +177,7 @@ data ellipse for one or more groups.
 	vaxis=,                /* AXIS statement for vertical axis    */
 	i=none,                /* SYMBOL statement interpolate option */
 	interp=,               /* (synonym for I=)                    */
-	iwidth=,
+	iwidth=1,
 	colors=RED BLUE GREEN BLACK PURPLE BROWN ORANGE YELLOW ,
 	symbols=dot square circle + star -     plus   :      $     =,
 	hsym=1.2,               /* Height of plot symbols              */
