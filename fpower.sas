@@ -7,8 +7,9 @@
  *  Author:  Michael Friendly       <FRIENDLY@YorkU.CA>              *
  *  After : AJL Cary, Syntex Research; from: SAS SUGI, 1983          *
  * Created:  14 Mar 1990 11:16:28                                    *
- * Revised:  24 Mar 1995 21:06:48                                    *
- * Version:  1.2                                                     *
+ * Revised:  28 Aug 2013 09:05:51                                    *
+ * Version:  1.2-1                                                   *
+ * - Default N extended to 90
  *                                                                   *
  *-------------------------------------------------------------------*/
 
@@ -61,7 +62,7 @@ Proc format;
                  /*  levels of factors D, E, etc.          */
      R=1,        /* Levels of repeated measure factor      */
      ALPHA=.05,  /* Significance level of test of factor A */
-     N =%str( 2 to 10 by 1, 12 to 18 by 2,  20 to 40 by 5, 50),
+     N =%str( 2 to 10 by 1, 12 to 18 by 2,  20 to 40 by 5, 50 to 90 by 10),
      DELTA=.50 to 2.5 by 0.25,  /* DO list of DELTA values */
      RHO=0,      /* Intraclass correlation for repeated    */
                  /*   measures (DO list of values)         */

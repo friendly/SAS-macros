@@ -280,9 +280,9 @@ data _null_;
 	%end;
 %goto exit;
 
-/*
+/***********************************************
   Code for SAS V 9.3+: Still under development
-*/
+************************************************/
 %v93:
 	%put WARNING: This macro does not work the same with PROC CALIS in SAS 9.3+;
 
