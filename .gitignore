@@ -24,6 +24,7 @@ tags
 Distfile
 HEADER
 Makefile
+fixdoc
 .dir.*
 *-save.sas
 # exclude directories
