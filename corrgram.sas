@@ -5,8 +5,8 @@
   *--------------------------------------------------------------*
   *  Author:  Michael Friendly            <friendly@yorku.ca>    *
   * Created: 24 Nov 2000 07:10:52                                *
-  * Revised: 21 Sep 2012 17:32:36                                *
-  * Version: 1.2-3                                               *
+  * Revised: 27 Feb 2016 17:03:34                                *
+  * Version: 1.2-4                                               *
   *  1.1 Added FILL=L type for parametric ellipse                *
   *  1.2 Added FONT=  (suggestions from Ray.Lindsay@abare.gov.au)*
   *      Fixed problem with TITLE=                               *
@@ -14,7 +14,8 @@
   *      Fixed buglet with var=a1-a8 (thx: Ian Wakeling)         *
   *   Try to handle longer variable names (thx: Bill Raynor)     *
   *   Updated for V 9.3 where CORR is builtin (thx: Bill Raynor) *
-  *   Fixed minor warning with vname_                            * 
+  *   Fixed minor warning with vname_                            *
+  *   Update documentation for VAR= with TYPE=CORR 
   *                                                              *
   *--------------------------------------------------------------*/
  /*=
@@ -46,6 +47,7 @@
               (the case of variable names will be preserved), or any of
               the SAS abbreviations, such as X1-X15, height--strength,
               or _NUMERIC_ (variable labels will apprear in upper case).
+			  Abbreviated variable lists only work with TYPE=DATA input.
 
 * TYPE=       Type of input data: DATA or CORR.  If not specified, the
               program tries to guess, by examining the type attribute
