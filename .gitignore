@@ -16,10 +16,16 @@ _*.sas
 *.eml
 *0.sas
 .titles
+.mactitles
+.versions
+.xref
 # special files
 tags
 Distfile
+HEADER
+Makefile
 .dir.*
+*-save.sas
 # exclude directories
 mtest/
 Private/
@@ -29,4 +35,5 @@ in/
 old/
 eda/
 einar/
+pod/
 
