@@ -10,4 +10,10 @@ You can more easily browse my macros by category and view documentation and exam
 Some of these in this repository were written by others. I simply collected them here, in a single directory, for use
 as a `SASAUTOS` variable in my `autoexec.sas` file so I could test and use them.
 
+Please note that:
 
+* These macros used available SAS facilities at the time of development, mainly base SAS, `SAS/IML`,
+`PROC G*` graphics and the Annotate facility.  Some of my graphical methods have been incorporated into
+new developments in SAS procedures and ODS graphics.
+
+* I no longer actively support or maintain this macro collection.  

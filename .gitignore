@@ -19,14 +19,20 @@ _*.sas
 .mactitles
 .versions
 .xref
+.directory
+.copyright
 # special files
 tags
 Distfile
 HEADER
+COPYING
 Makefile
 fixdoc
+revlink
 .dir.*
+*-bugged.sas
 *-save.sas
+*-old.sas
 # exclude directories
 mtest/
 Private/
